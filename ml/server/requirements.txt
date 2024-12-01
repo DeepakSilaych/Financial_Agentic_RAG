@@ -1,0 +1,18 @@
+# FastAPI and ASGI Server
+fastapi==0.104.1
+uvicorn==0.24.0
+
+# Database
+sqlalchemy==2.0.23
+
+# WebSocket Support
+websockets==12.0
+python-socketio==5.10.0
+python-engineio==4.8.0
+
+# File Handling
+python-multipart==0.0.6
+aiofiles==23.2.1
+
+# Async Support
+pydantic==2.5.2

@@ -1,0 +1,454 @@
+[
+  {
+    "topic": "balance sheet reviews",
+    "kpis": [
+      "ratio of cash to cash equivalent liabilities data ",
+      "avg days for debt collections",
+      "inventory turnover",
+      "days to sell inventory",
+      "return on assets",
+      "capital expenditure to total revenue data",
+      "asset growth data",
+      "avg age of company assets",
+      "total asset liquidity ratio",
+      "total dollar amount due in depreciation"
+    ]
+  },
+
+  {
+    "topic": "income statement reviews",
+    "kpis": [
+      "total return on investments",
+      "price earning data",
+      "sales numbers",
+      "percent changes in revenue",
+      "percent increase in revenue after deducting costs",
+      "cost to sales ratio",
+      "percent of net profit",
+      "return on investments",
+      "total earnings before interests",
+      "avg time of inventory sales",
+      "number of accounts receivable collected",
+      "debt to equity ratio",
+      "interest coverage ratio",
+      "working capital ratio",
+      "percent of seasonal change in revenue"
+    ]
+  },
+
+  {
+    "topic": "cashflow analysis",
+    "kpis": [
+      "total operating cash flow data",
+      "total free cash flow",
+      "cash to debt ratios",
+      "time taken to convert investments into cash flows",
+      "avg number of days to collect payment after a sale",
+      "percentage of operating cash flow",
+      "percent of cash used for acquisition and other investments",
+      "cash ratio",
+      "percent of earnings paid as dividends",
+      "accuracy of predicted cash flow"
+    ]
+  },
+
+  {
+    "topic": "industry analysis and benchmarks",
+    "kpis": [
+      "gross profit margins",
+      "net profit margins",
+      "return on assets",
+      "return on equity",
+      "current ratio",
+      "quick ratio",
+      "debt to equity ratio",
+      "interest coverage ratio",
+      "inventory turnover",
+      "accounts receivable",
+      "stock price",
+      "market capitalization",
+      "price to earnings",
+      "dividend yield",
+      "industry avg profit",
+      "industry avg debt ratio",
+      "GDP growth rate",
+      "inflation rate",
+      "interest rates",
+      "market growth rate",
+      "market share trends",
+      "customer spending trends",
+      "regulatory compliance score",
+      "sustainability compliance metrics",
+      "sales growth",
+      "market share growth",
+      "marketing return on investments",
+      "employee growth rate",
+      "avg wages",
+      "employee turnover",
+      "customer satisfaction scores",
+      "demographic target achievements",
+      "inventory turnover ratio",
+      "order fulfillment ratio",
+      "RnD spending",
+      "adoption rate of new technologies",
+      "net promoter score",
+      "customer review ratings",
+      "carbon footprint metrics",
+      "waste reduction metrics",
+      "customer acquisition cost"
+    ]
+  },
+
+  {
+    "topic": "trend analysis",
+    "kpis": [
+      "company profit allocated to outstanding share of common stock ratios",
+      "rate of revenue increase",
+      "gross profit margin",
+      "operating margins",
+      "ratio of gross profit to revenue percent",
+      "ratio of net profit to revenue",
+      "percent of operating profit by net sales",
+      "percent of income by total assets",
+      "how much profit a company generates with the money stakeholders have invested",
+      "percent of equity and debt used by the company",
+      "short-term to long term obligations ratio",
+      "avg number of days to collect payment",
+      "company’s current share price ",
+      "time firm will be deprived of cash if investment in resources to expand customer sales"
+    ]
+  },
+
+  {
+    "topic": "working capital analysis",
+    "kpis": [
+      "current asset to current liabilities difference",
+      "current asset to current liabilities ratio",
+      "total cash generated from core operations",
+      "time to convert resources to cash",
+      "avg time to collect receivables",
+      "percent of cover for short term obligations with cash flows",
+      "overdue payments and collections",
+      "avg time taken to pay bills",
+      "times inventory is sold for a period",
+      "total pending sales orders",
+      "debt to equity ratio",
+      "tax payment ratio",
+      "change of working capital over time"
+    ]
+  },
+
+  {
+    "topic": "liquidity analysis",
+    "kpis": [
+      "current assets to current liabilities ratio",
+      "difference of current asset to inventory VS current liabilities ratio",
+      "operating cash flow to current liabilities ratio",
+      "avg time taken to collect receivables ratio",
+      "overdue payments and collection efficiency ratio",
+      "avg time taken to pay bills",
+      "cash and cash equivalent to liabilities ratio",
+      "cash flow to current liabilities ratio",
+      "number of times inventory is sold within a period",
+      "operating income to total debt ratio",
+      "accuracy of projected to actual cash flow ratio",
+      "tax payment ratio",
+      "trends in liquidity over time"
+    ]
+  },
+
+  {
+    "topic": "profitability analysis",
+    "kpis": [
+      "gross profit to revenue percent",
+      "net-income to revenue percent",
+      "operating expense to revenue percent",
+      "actual profit to forecasted profit difference",
+      "tax expense to net income percent",
+      "net-income to avg value of assets percent",
+      "net-income to avg shareholders equity percent",
+      "net-income to operating revenue percent",
+      "gross profit yo revenue percent",
+      "net profit from customers to total revenue from customers percent",
+      "net-income to industry avg net income difference",
+      "net income growth rate to GDP growth rate difference"
+    ]
+  },
+
+  {
+    "topic": "solvency analysis",
+    "kpis": [
+      "total equity to total assets ratio",
+      "total debt to total equity ratio",
+      "operating income to interest expense",
+      "operating income to total debt service",
+      "current retained earnings to previous retained earnings ratio",
+      "cash available for distribution",
+      "current total equity to previous equity ratio",
+      "retained earnings to total assets ratio",
+      "debt ratios",
+      "market capitalization to book value of equity ratio"
+    ]
+  },
+
+  {
+    "topic": "break even analysis",
+    "kpis": [
+      "total fixed cost to total cost ratio",
+      "total variable to total cost ratio",
+      "selling price to variable cost per unit ratio",
+      "contribution margin per unit to selling price ratio",
+      "the point at which total revenue equals total costs",
+      "the sales volume at which the firm covers all the costs",
+      "actual sales volume to projected sales volume difference",
+      "actual production volume to projected production volume difference",
+      "variance between actual fixed and variable costs and the budgeted costs",
+      "net profit to total revenue percent",
+      "total revenue to total variable control different and total revenue percent",
+      "visual representation of the relationship between costs, volume and profit"
+    ]
+  },
+
+  {
+    "topic": "cash flow analysis",
+    "kpis": [
+      "overdue payments and collection efficiency",
+      "avg time taken to pay bills",
+      "cash and cash equivalent dividends",
+      "cash flow dividend by current liabilities ratio",
+      "number of times inventory is sold for a time period",
+      "operating income divided by total debt service",
+      "measure of accuracy of predicted cash against actual figures",
+      "tax payment ratio",
+      "trends in liquidity changes over time",
+      "forecast accuracy",
+      "revenue variance",
+      "expense accuracy",
+      "avg daily sales to accounts receivable ratio",
+      "total debt service to operating income ratio",
+      "forecasted bank balance to actual bank balance ratio",
+      "cash turnover ratio",
+      "tax payment variance",
+      "accuracy of forecasting to payroll expense ratio"
+    ]
+  },
+
+  {
+    "topic": "capital structure analysis",
+    "kpis": [
+      "debt to equity ratio",
+      "interest coverage ratio",
+      "equity ratio",
+      "debt ratio",
+      "DSCR scores",
+      "retained earnings growth",
+      "RDE scores",
+      "divident payment ratio",
+      "EDITDA scores",
+      "market to book ratio",
+      "stock buyback yield percent",
+      "weighted avg cost of capital",
+      "debt maturity profile",
+      "equity issuance trends"
+    ]
+  },
+
+  {
+    "topic": "SWOT analysis",
+    "kpis": [
+      "revenue growth rate",
+      "customer satisfaction index",
+      "employee productivity index",
+      "market share percentage",
+      "brand recognition score",
+      "cost to income ratio",
+      "employee turnover ratio",
+      "defect rate",
+      "success rate",
+      "market share growth",
+      "impact index"
+    ]
+  },
+
+  {
+    "topic": "scenario analysis",
+    "kpis": [
+      "scenario accuracy",
+      "revenue variance",
+      "profit margin",
+      "cash flow accuracy",
+      "avg time taken to collect receivables",
+      "market share change",
+      "competitor impact",
+      "rick mitigation",
+      "cash flow dividend to current liabilities ratio",
+      "adoption rate",
+      "retention rate",
+      "marketing ROI",
+      "employee satisfaction index",
+      "utilization rate",
+      "environmental impact index"
+    ]
+  },
+
+  {
+    "topic": "customer acquisition analysis",
+    "kpis": [
+      "CAC score",
+      "CAC by channel score",
+      "ROI",
+      "CPL",
+      "conversion rate",
+      "sales conversion cost",
+      "CPC",
+      "CPA by channel",
+      "CLV",
+      "CLV to CAC ratio"
+    ]
+  },
+
+  {
+    "topic": "customer lifetime value analysis",
+    "kpis": [
+      "AOV score",
+      "purchase frequency score",
+      "retention rate",
+      "difference between customers at start of period to new customers percent",
+      "churn rate",
+      "customer lifetime index",
+      "CLV",
+      "CLV to CAC ratio",
+      "high value customer ",
+      "low value customer",
+      "cross sell rate",
+      "upsell rate",
+      "emails open and click through rate",
+      "social media engagement index",
+      "participation rate",
+      "redemption rate",
+      "NPS score",
+      "CSAT score"
+    ]
+  },
+
+  {
+    "topic": "employee productivity analysis",
+    "kpis": [
+      "work life balance score",
+      "sales revenue per employee",
+      "project completion rate",
+      "task completion time",
+      "team collaboration score",
+      "departmental efficiency ratio",
+      "employee engagement score",
+      "employee satisfaction index",
+      "attendance rate",
+      "task backlog size",
+      "training participation rate",
+      "skill improvements index",
+      "benefits satisfaction score"
+    ]
+  },
+
+  {
+    "topic": "valuation analysis",
+    "kpis": [
+      "gross profit margin",
+      "net profit margin",
+      "ROA",
+      "ROE",
+      "FCF",
+      "Growth rate",
+      "EPS growth",
+      "market cap",
+      "P/E ratio",
+      "customers at end of period to new customers percent change",
+      "employee productivity index",
+      "supply chain efficiency ratio"
+    ]
+  },
+
+  {
+    "topic": "risk analysis",
+    "kpis": [
+      "debt to equity ratio",
+      "interest coverage ratio",
+      "current ratio",
+      "market share volatility",
+      "competitor rick index",
+      "supply chain dependency",
+      "customer concentration risks",
+      "regulatory compliance score",
+      "legal risk exposure",
+      "cybersecurity incident rate",
+      "employee turnover risk",
+      "effectiveness in terms of number of predicted scenarios matching actual outcomes to total number of predicted outcomes percent"
+    ]
+  },
+
+  {
+    "topic": "profitability driver analysis",
+    "kpis": [
+      "gross profit margin",
+      "operating profit margin",
+      "net profit margin",
+      "ROA",
+      "ROE",
+      "contribution margins",
+      "avg transaction value",
+      "CLV",
+      "sales growth rate",
+      "operating expense ratio",
+      "marketing ROI",
+      "employee productivity ratio",
+      "R&D efficiency",
+      "operating cash flow margin",
+      "online conversion rate",
+      "ROMI",
+      "Industry benchmark comparison"
+    ]
+  },
+
+  {
+    "topic": "company debt analysis",
+    "kpis": [
+      "debt to equity ratio",
+      "debt to asset ratio",
+      "interest coverage ratio",
+      "current ratio",
+      "quick ratio",
+      "DSCR",
+      "debt repayment capacity",
+      "credit ratings scores",
+      "debt issuance costs",
+      "avg interest rate",
+      "debt covenant compliance",
+      "dilution impact",
+      "debt sustainability impact"
+    ]
+  },
+
+  {
+    "topic": "evaluation efficiency",
+    "kpis": [
+      "current revenue to previous revenue percent change",
+      "operating income to revenue ratio",
+      "net income to revenue percent change",
+      "CDGS to revenue percent",
+      "operating expense to revenue percent change",
+      "net profit to total revenue percent change",
+      "gross profit from product or services to revenue product or services",
+      "cost of goods sold to avg inventory",
+      "accounts receivable to avg sales daily percent",
+      "accounts payable to avg daily purchase percent",
+      "actual revenue to budgeted revenue changes",
+      "actual operating expenses to budgeted operating expenses percent",
+      "total revenue by number of employees",
+      "avg output to standard output percent",
+      "efficiency metrics to industry avg difference",
+      "efficiency metrics growth to GDP growth",
+      "net income to avg total asset percent",
+      "net profit to total investment percent"
+    ]
+  }
+]
