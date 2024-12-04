@@ -19,6 +19,7 @@ import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import './index.css';
 import Navbar from './components/Navbar';
 import Blank from './pages/Blank';
+import PDFChat from './pages/PDFChat';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useUser();
@@ -87,6 +88,7 @@ createRoot(document.getElementById('root')).render(
               <Route index element={<Blank />} />
               <Route path="chat" element={<App />} />
               <Route path="storage" element={<FileStorage />} />
+							<Route path="storage/pdf" element={<PDFChat />} />
               <Route path="chat/:id" element={<Chat />} />
               <Route path="settings" element={<Settings />} />
               <Route path="help" element={<Help />} />

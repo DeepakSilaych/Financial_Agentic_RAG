@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { File, Image, FileText, Music, Video, Archive, Search, Upload, Folder, ArrowLeft, Trash2, Download, X } from 'lucide-react';
 import { format } from 'date-fns';
 import * as Dialog from '@radix-ui/react-dialog';
-import PDFRenderer from './PDFRenderer';
 
 // Inline Button component
 const Button = ({ children, onClick, variant = 'primary', className = '', ...props }) => {
@@ -259,13 +258,8 @@ const FileTable = ({
 				return;
 		
 		const path = currentPath==='' ? file.name : `${currentPath}/${file.name}`;
-		const response = await fetch(`http://localhost:8000/spaces/${spaceId}/file/download?path=${path}`);
-		if (!response.ok) {
-			throw new Error(`Download failed with status: ${response.status}`);
-		}
-
-		const blob = await response.blob();
-		setPdfBlob(blob);
+		localStorage.setItem('pdf_req_url', `http://localhost:8000/spaces/${spaceId}/file/download?path=${path}`);
+		window.open('/app/storage/pdf', '_blank');
   };
 
   // Drag and drop handlers
@@ -298,133 +292,129 @@ const FileTable = ({
   if (error) return <div className="text-center py-4 text-red-500">{error}</div>;
 
   return (
-		<>
-    <div
-      className={`p-6 bg-gray-50 rounded-lg shadow-sm ${isDragging ? 'bg-blue-100 border-2 border-dashed border-blue-400' : ''}`}
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
-    >
-      <div className="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
-        <div className="flex items-center gap-4 w-full md:w-auto">
-          {currentPath && (
-            <Button variant="outline" onClick={handleNavigateUp} className="flex items-center">
-              <ArrowLeft size={18} className="mr-2" />
-              Back
-            </Button>
-          )}
-          <div className="relative flex-grow md:flex-grow-0">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-            <input
-              type="text"
-              placeholder="Search files..."
-              className="w-full md:w-64 pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        </div>
-        <div className="flex gap-3 w-full md:w-auto">
-          <Button onClick={() => setShowNewFolderInput(true)} className="flex items-center justify-center flex-1 md:flex-initial">
-            <Folder className="mr-2" size={18} />
-            New Folder
-          </Button>
-          <Button onClick={() => fileInputRef.current?.click()} className="flex items-center justify-center flex-1 md:flex-initial">
-            <Upload className="mr-2" size={18} />
-            Upload
-          </Button>
-          <input
-            type="file"
-            ref={fileInputRef}
-            className="hidden"
-            multiple
-            onChange={(e) => handleFileUpload(Array.from(e.target.files))}
-          />
-        </div>
-      </div>
+		<div
+			className={`p-6 bg-gray-50 rounded-lg shadow-sm ${isDragging ? 'bg-blue-100 border-2 border-dashed border-blue-400' : ''}`}
+			onDragEnter={handleDragEnter}
+			onDragLeave={handleDragLeave}
+			onDragOver={handleDragOver}
+			onDrop={handleDrop}
+		>
+			<div className="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
+				<div className="flex items-center gap-4 w-full md:w-auto">
+					{currentPath && (
+						<Button variant="outline" onClick={handleNavigateUp} className="flex items-center">
+							<ArrowLeft size={18} className="mr-2" />
+							Back
+						</Button>
+					)}
+					<div className="relative flex-grow md:flex-grow-0">
+						<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+						<input
+							type="text"
+							placeholder="Search files..."
+							className="w-full md:w-64 pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value)}
+						/>
+					</div>
+				</div>
+				<div className="flex gap-3 w-full md:w-auto">
+					<Button onClick={() => setShowNewFolderInput(true)} className="flex items-center justify-center flex-1 md:flex-initial">
+						<Folder className="mr-2" size={18} />
+						New Folder
+					</Button>
+					<Button onClick={() => fileInputRef.current?.click()} className="flex items-center justify-center flex-1 md:flex-initial">
+						<Upload className="mr-2" size={18} />
+						Upload
+					</Button>
+					<input
+						type="file"
+						ref={fileInputRef}
+						className="hidden"
+						multiple
+						onChange={(e) => handleFileUpload(Array.from(e.target.files))}
+					/>
+				</div>
+			</div>
 
-      <NewFolderDialog
-        isOpen={showNewFolderInput}
-        onClose={() => setShowNewFolderInput(false)}
-        onCreateFolder={handleCreateFolder}
-        newFolderName={newFolderName}
-        setNewFolderName={setNewFolderName}
-      />
+			<NewFolderDialog
+				isOpen={showNewFolderInput}
+				onClose={() => setShowNewFolderInput(false)}
+				onCreateFolder={handleCreateFolder}
+				newFolderName={newFolderName}
+				setNewFolderName={setNewFolderName}
+			/>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Size</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modified</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {filteredItems
-              .sort((a, b) => {
-                if (a.type === 'folder' && b.type !== 'folder') return -1;
-                if (a.type !== 'folder' && b.type === 'folder') return 1;
-                return a.name.localeCompare(b.name);
-              })
-              .map((item, index) => (
-                <tr
-                  key={index}
-                  className={`hover:bg-gray-50 transition-colors duration-150 ${item.type === 'folder' ? 'cursor-pointer' : ''}`}
-                  onClick={async () => item.type === 'folder' ? handleItemClick(item) : await handleFileClick(item)}
-                >
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      {item.type === 'folder' ? (
-                        <Folder className="text-blue-500 mr-3" size={20} />
-                      ) : (
-                        getFileIcon(item.name)
-                      )}
-                      <span className="ml-2 text-sm font-medium text-gray-900">{item.name}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {item.type === 'file' ? formatFileSize(item.size) : '-'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {formatDate(item.lastModified)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex gap-2">
-                    <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(item.name, item.type);
-                        }}
-                        className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-full transition-colors duration-150"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                      {item.type !== 'folder' && (
-                        <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDownload(item.name);
-                        }}
-                        className="text-indigo-600 hover:text-indigo-900 p-2 hover:bg-indigo-50 rounded-full transition-colors duration-150"
-                      >
-                        <Download size={18} />
-                      </button>
-                    )}
-                
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-		
-		{pdfBlob && <PDFRenderer pdf={pdfBlob} />}
-		</>
+			<div className="bg-white rounded-lg shadow overflow-hidden">
+				<table className="min-w-full divide-y divide-gray-200">
+					<thead className="bg-gray-50">
+						<tr>
+							<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+							<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Size</th>
+							<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modified</th>
+							<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+						</tr>
+					</thead>
+					<tbody className="bg-white divide-y divide-gray-200">
+						{filteredItems
+							.sort((a, b) => {
+								if (a.type === 'folder' && b.type !== 'folder') return -1;
+								if (a.type !== 'folder' && b.type === 'folder') return 1;
+								return a.name.localeCompare(b.name);
+							})
+							.map((item, index) => (
+								<tr
+									key={index}
+									className={`hover:bg-gray-50 transition-colors duration-150 ${item.type === 'folder' ? 'cursor-pointer' : ''}`}
+									onClick={async () => item.type === 'folder' ? handleItemClick(item) : await handleFileClick(item)}
+								>
+									<td className="px-6 py-4 whitespace-nowrap">
+										<div className="flex items-center">
+											{item.type === 'folder' ? (
+												<Folder className="text-blue-500 mr-3" size={20} />
+											) : (
+												getFileIcon(item.name)
+											)}
+											<span className="ml-2 text-sm font-medium text-gray-900">{item.name}</span>
+										</div>
+									</td>
+									<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+										{item.type === 'file' ? formatFileSize(item.size) : '-'}
+									</td>
+									<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+										{formatDate(item.lastModified)}
+									</td>
+									<td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+										<div className="flex gap-2">
+										<button
+												onClick={(e) => {
+													e.stopPropagation();
+													handleDelete(item.name, item.type);
+												}}
+												className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-full transition-colors duration-150"
+											>
+												<Trash2 size={18} />
+											</button>
+											{item.type !== 'folder' && (
+												<button
+												onClick={(e) => {
+													e.stopPropagation();
+													handleDownload(item.name);
+												}}
+												className="text-indigo-600 hover:text-indigo-900 p-2 hover:bg-indigo-50 rounded-full transition-colors duration-150"
+											>
+												<Download size={18} />
+											</button>
+										)}
+								
+									</div>
+								</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+		</div>
   );
 };
 
