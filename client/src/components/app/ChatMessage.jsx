@@ -1,5 +1,5 @@
 import { BotMessageSquareIcon, CheckSquare, Square, ExternalLink, FileText, Check, User, BarChart2, LineChart, PieChart } from 'lucide-react';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bar, Line, Pie } from 'react-chartjs-2';
@@ -39,12 +39,42 @@ export const Avatar = ({ isUser }) => (
   </div>
 );
 
-// Message Content Component
 const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, isLastInGroup, isWebSocketResponse }) => {
   const { text, citations } = processBotMessage();
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(isWebSocketResponse);
-  
+  const [textSelection, setTextSelection] = useState('');
+  const [showAddToNote, setShowAddToNote] = useState(false);
+  const [noteButtonPosition, setNoteButtonPosition] = useState({ top: 0, left: 0 });
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    const handleSelectionChange = () => {
+      const selection = window.getSelection();
+      const selectedText = selection?.toString().trim();
+      setTextSelection(selectedText);
+
+      if (selectedText && contentRef.current) {
+        const range = selection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        const contentRect = contentRef.current.getBoundingClientRect();
+
+        setNoteButtonPosition({
+          top: rect.bottom - contentRect.top + 5,
+          left: rect.left + (rect.width / 2) - contentRect.left
+        });
+        setShowAddToNote(true);
+      } else {
+        setShowAddToNote(false);
+      }
+    };
+
+    document.addEventListener('selectionchange', handleSelectionChange);
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChange);
+    };
+  }, []);
+
   useEffect(() => {
     if (!isWebSocketResponse) {
       setDisplayedText(text);
@@ -52,25 +82,16 @@ const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, is
       return;
     }
 
-    let currentText = '';
-    const textToType = text;
     let currentIndex = 0;
-    
-    if (!textToType) {
-      setIsTyping(false);
-      return;
-    }
-
     const typingInterval = setInterval(() => {
-      if (currentIndex < textToType.length) {
-        currentText += textToType[currentIndex];
-        setDisplayedText(currentText);
+      if (currentIndex < text.length) {
+        setDisplayedText(prevText => prevText + text[currentIndex]);
         currentIndex++;
       } else {
         setIsTyping(false);
         clearInterval(typingInterval);
       }
-    }, 20); // Adjust speed as needed
+    }, 20);
 
     return () => clearInterval(typingInterval);
   }, [text, isWebSocketResponse]);
@@ -79,20 +100,38 @@ const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, is
     const baseWidth = 300;
     const charWidth = 8;
     const contentLength = text.length;
-    const calculatedWidth = Math.min(Math.max(baseWidth, contentLength * charWidth), 800);
-    return calculatedWidth;
+    return Math.min(Math.max(baseWidth, contentLength * charWidth), 800);
   }, [text]);
   
   return (
     <motion.div 
-      className="space-y-2 p-4"
+      className="space-y-2 p-4 relative"
       initial={isWebSocketResponse ? { width: 0, opacity: 0 } : false}
-      animate={isWebSocketResponse ? { width: containerWidth, opacity: 1 } : { width: '100%', opacity: 1 }}
+      animate={{ width: isWebSocketResponse ? containerWidth : '100%', opacity: 1 }}
       transition={{ duration: 0.5 }}
+      ref={contentRef}
     >
       <div className="prose prose-sm max-w-none">
         <ReactMarkdown>{displayedText}</ReactMarkdown>
       </div>
+      <AnimatePresence>
+        {showAddToNote && (
+          <motion.button
+            className="absolute bg-blue-500 text-white px-2 py-1 rounded-md text-sm z-10 flex items-center shadow-md hover:bg-blue-600 transition-colors"
+            style={{ top: noteButtonPosition.top, left: noteButtonPosition.left, transform: 'translateX(-50%)' }}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            onClick={() => {
+              console.log("Add to note:", textSelection);
+              setShowAddToNote(false);
+            }}
+          >
+            <FileText size={14} className="mr-1" />
+            Add to Note
+          </motion.button>
+        )}
+      </AnimatePresence>
       {!isTyping && citations.length > 0 && (
         <motion.div 
           className="flex flex-wrap gap-2 mt-2"
@@ -104,34 +143,29 @@ const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, is
             const [_, id, rest] = citation.match(/^(\d+)\/(.*)/) || [];
             const isUrl = rest && rest.includes('://');
             
-            return isUrl ? (
-              <motion.a
+            const CitationComponent = isUrl ? motion.a : motion.span;
+            const props = isUrl ? {
+              href: rest,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              className: "inline-flex items-center px-2 py-1 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
+            } : {
+              className: "inline-flex items-center px-2 py-1 text-sm bg-gray-50 text-gray-600 rounded-md"
+            };
+
+            return (
+              <CitationComponent
                 key={index}
-                href={rest}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center px-2 py-1 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
+                {...props}
                 initial={isWebSocketResponse ? { opacity: 0, x: -20 } : false}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 + index * 0.1 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <ExternalLink size={14} className="mr-1" />
+                {isUrl ? <ExternalLink size={14} className="mr-1" /> : <FileText size={14} className="mr-1" />}
                 Source {id}
-              </motion.a>
-            ) : (
-              <motion.span
-                key={index}
-                className="inline-flex items-center px-2 py-1 text-sm bg-gray-50 text-gray-600 rounded-md"
-                initial={isWebSocketResponse ? { opacity: 0, x: -20 } : false}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 + index * 0.1 }}
-                whileHover={{ scale: 1.02 }}
-              >
-                <FileText size={14} className="mr-1" />
-                Source {id}
-              </motion.span>
+              </CitationComponent>
             );
           })}
         </motion.div>
@@ -170,7 +204,7 @@ const IntermediateQuestion = ({ question, onAnswerSubmit }) => {
       className="mt-4 bg-white border border-gray-200 rounded-lg overflow-hidden"
     >
       <div className="flex items-start p-4">
-        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+        <div className="flex-shrink-0 w-s interesting patterns. Th8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
           <BotMessageSquareIcon size={18} className="text-blue-600" />
         </div>
         <div className="flex-1">
