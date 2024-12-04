@@ -360,32 +360,47 @@ const FileTable = ({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredItems.map((item, index) => (
-              <tr
-                key={index}
-                className={`hover:bg-gray-50 transition-colors duration-150 ${item.type === 'folder' ? 'cursor-pointer' : ''}`}
-                onClick={async () => item.type === 'folder' ? handleItemClick(item) : await handleFileClick(item)}
-              >
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center">
-                    {item.type === 'folder' ? (
-                      <Folder className="text-blue-500 mr-3" size={20} />
-                    ) : (
-                      getFileIcon(item.name)
-                    )}
-                    <span className="ml-2 text-sm font-medium text-gray-900">{item.name}</span>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {item.type === 'file' ? formatFileSize(item.size) : '-'}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {formatDate(item.lastModified)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <div className="flex gap-2">
-                    {item.type === 'file' && (
-                      <button
+            {filteredItems
+              .sort((a, b) => {
+                if (a.type === 'folder' && b.type !== 'folder') return -1;
+                if (a.type !== 'folder' && b.type === 'folder') return 1;
+                return a.name.localeCompare(b.name);
+              })
+              .map((item, index) => (
+                <tr
+                  key={index}
+                  className={`hover:bg-gray-50 transition-colors duration-150 ${item.type === 'folder' ? 'cursor-pointer' : ''}`}
+                  onClick={async () => item.type === 'folder' ? handleItemClick(item) : await handleFileClick(item)}
+                >
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      {item.type === 'folder' ? (
+                        <Folder className="text-blue-500 mr-3" size={20} />
+                      ) : (
+                        getFileIcon(item.name)
+                      )}
+                      <span className="ml-2 text-sm font-medium text-gray-900">{item.name}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {item.type === 'file' ? formatFileSize(item.size) : '-'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {formatDate(item.lastModified)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div className="flex gap-2">
+                    <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(item.name, item.type);
+                        }}
+                        className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-full transition-colors duration-150"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                      {item.type !== 'folder' && (
+                        <button
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDownload(item.name);
@@ -395,15 +410,7 @@ const FileTable = ({
                         <Download size={18} />
                       </button>
                     )}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(item.name, item.type);
-                      }}
-                      className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-full transition-colors duration-150"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                
                   </div>
                 </td>
               </tr>

@@ -222,3 +222,16 @@ export const fileApi = {
     }
   }
 };
+
+// Auto-completion related API calls
+export const autoCompleteApi = {
+  // Get auto-completion suggestions
+  getSuggestions: async (query) => {
+    try {
+      return await api.post('/api/auto-complete', { query });
+    } catch (error) {
+      console.error('Error getting auto-completion suggestions:', error);
+      throw error;
+    }
+  },
+};

@@ -8,6 +8,7 @@ import uvicorn
 import logging
 import asyncio
 import os
+from auto_completion import auto_completion
 
 from server.database import engine
 from server import models
@@ -140,6 +141,35 @@ app.include_router(chat_router)
 app.include_router(file_router)
 app.include_router(ws_router)
 app.include_router(space_router)
+
+@app.post("/api/auto-complete")
+async def get_auto_complete_suggestions(request: Request):
+    """
+    Endpoint to get auto-completion suggestions for user queries
+    Expected format:
+    {
+        "query": "string"
+    }
+    """
+    try:
+        data = await request.json()
+        query = data.get("query")
+        
+        if not query:
+            return JSONResponse(
+                content={"error": "Query is required"}, 
+                status_code=400
+            )
+            
+        suggestions = auto_completion(query)
+        return JSONResponse(content={"suggestions": suggestions})
+        
+    except Exception as e:
+        logger.error(f"Auto-completion error: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": f"Auto-completion failed: {str(e)}"}
+        )
 
 if __name__ == "__main__":
     uvicorn.run("backend_server:app", host="0.0.0.0", port=8000, reload=True)
