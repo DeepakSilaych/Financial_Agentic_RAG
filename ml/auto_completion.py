@@ -54,7 +54,7 @@ Output: {{
 }}
 Task: Analyze the input query and auto-complete it based on the database. Ensure the query is clear and specific.
 
-Output Format: Always return the output in the following format:
+Output Format: Always return the output in the following format:yy
 
 {{
     Suggestions: ["<Completed query 1>", "<Completed query 2>", "<Completed query 3>"]

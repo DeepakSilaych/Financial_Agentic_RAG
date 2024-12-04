@@ -1,5 +1,5 @@
 import { BotMessageSquareIcon, CheckSquare, Square, ExternalLink, FileText, Check, User, BarChart2, LineChart, PieChart } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bar, Line, Pie } from 'react-chartjs-2';
@@ -40,16 +40,66 @@ export const Avatar = ({ isUser }) => (
 );
 
 // Message Content Component
-const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, isLastInGroup }) => {
+const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, isLastInGroup, isWebSocketResponse }) => {
   const { text, citations } = processBotMessage();
+  const [displayedText, setDisplayedText] = useState('');
+  const [isTyping, setIsTyping] = useState(isWebSocketResponse);
+  
+  useEffect(() => {
+    if (!isWebSocketResponse) {
+      setDisplayedText(text);
+      setIsTyping(false);
+      return;
+    }
+
+    let currentText = '';
+    const textToType = text;
+    let currentIndex = 0;
+    
+    if (!textToType) {
+      setIsTyping(false);
+      return;
+    }
+
+    const typingInterval = setInterval(() => {
+      if (currentIndex < textToType.length) {
+        currentText += textToType[currentIndex];
+        setDisplayedText(currentText);
+        currentIndex++;
+      } else {
+        setIsTyping(false);
+        clearInterval(typingInterval);
+      }
+    }, 20); // Adjust speed as needed
+
+    return () => clearInterval(typingInterval);
+  }, [text, isWebSocketResponse]);
+
+  const containerWidth = useMemo(() => {
+    const baseWidth = 300;
+    const charWidth = 8;
+    const contentLength = text.length;
+    const calculatedWidth = Math.min(Math.max(baseWidth, contentLength * charWidth), 800);
+    return calculatedWidth;
+  }, [text]);
   
   return (
-    <div className="space-y-2 p-4">
+    <motion.div 
+      className="space-y-2 p-4"
+      initial={isWebSocketResponse ? { width: 0, opacity: 0 } : false}
+      animate={isWebSocketResponse ? { width: containerWidth, opacity: 1 } : { width: '100%', opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="prose prose-sm max-w-none">
-        <ReactMarkdown>{text}</ReactMarkdown>
+        <ReactMarkdown>{displayedText}</ReactMarkdown>
       </div>
-      {citations.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-2">
+      {!isTyping && citations.length > 0 && (
+        <motion.div 
+          className="flex flex-wrap gap-2 mt-2"
+          initial={isWebSocketResponse ? { opacity: 0, y: 20 } : false}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
           {citations.map((citation, index) => {
             const [_, id, rest] = citation.match(/^(\d+)\/(.*)/) || [];
             const isUrl = rest && rest.includes('://');
@@ -61,6 +111,9 @@ const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, is
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center px-2 py-1 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
+                initial={isWebSocketResponse ? { opacity: 0, x: -20 } : false}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 + index * 0.1 }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -71,6 +124,9 @@ const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, is
               <motion.span
                 key={index}
                 className="inline-flex items-center px-2 py-1 text-sm bg-gray-50 text-gray-600 rounded-md"
+                initial={isWebSocketResponse ? { opacity: 0, x: -20 } : false}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 + index * 0.1 }}
                 whileHover={{ scale: 1.02 }}
               >
                 <FileText size={14} className="mr-1" />
@@ -78,9 +134,9 @@ const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, is
               </motion.span>
             );
           })}
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 };
 
@@ -183,7 +239,22 @@ const IntermediateQuestion = ({ question, onAnswerSubmit }) => {
 };
 
 // Chart Component
-const ChartComponent = ({ chart }) => {
+const ChartComponent = ({ chart, index, isWebSocketResponse }) => {
+  const [isVisible, setIsVisible] = useState(!isWebSocketResponse);
+
+  useEffect(() => {
+    if (!isWebSocketResponse) {
+      setIsVisible(true);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, index * 500);
+
+    return () => clearTimeout(timer);
+  }, [index, isWebSocketResponse]);
+
   const chartIcons = {
     'bar': <BarChart2 size={18} className="text-blue-600" />,
     'line': <LineChart size={18} className="text-blue-600" />,
@@ -225,11 +296,16 @@ const ChartComponent = ({ chart }) => {
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto p-2 bg-gray-50 rounded-md">
+    <motion.div 
+      className="w-full max-w-xl mx-auto p-2 bg-gray-50 rounded-md"
+      initial={isWebSocketResponse ? { opacity: 0, y: 20 } : false}
+      animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="aspect-[4/3] w-full max-h-[300px]">
-        {getChartComponent()}
+        {isVisible && getChartComponent()}
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -241,7 +317,8 @@ const ChatMessage = ({
   charts = [], 
   onAnswerSubmit,
   isFirstInGroup,
-  isLastInGroup
+  isLastInGroup,
+  isWebSocketResponse = false
 }) => {
   const processBotMessage = () => {
     if (!content) return { text: '', citations: [] };
@@ -267,21 +344,28 @@ const ChatMessage = ({
       transition={{ duration: 0.3 }}
       className={`flex flex-col ${isUser ? 'text-gray-800' : 'text-gray-800'} w-full`}
     >
+      {/* Show charts above text */}
+      {charts && charts.length > 0 && (
+        <div className="px-4 pb-4 space-y-3">
+          {charts.map((chart, index) => (
+            <ChartComponent 
+              key={index} 
+              chart={chart} 
+              index={index}
+              isWebSocketResponse={isWebSocketResponse}
+            />
+          ))}
+        </div>
+      )}
+      
       <MessageContent 
         content={content} 
         isUser={isUser} 
         processBotMessage={processBotMessage}
         isFirstInGroup={isFirstInGroup}
         isLastInGroup={isLastInGroup}
+        isWebSocketResponse={isWebSocketResponse}
       />
-      
-      {charts && charts.length > 0 && (
-        <div className="px-4 pb-4 space-y-3">
-          {charts.map((chart, index) => (
-            <ChartComponent key={index} chart={chart} />
-          ))}
-        </div>
-      )}
       
       {intermediate_questions && intermediate_questions.length > 0 && (
         <div className="px-4 pb-4">
