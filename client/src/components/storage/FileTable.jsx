@@ -233,7 +233,6 @@ const FileTable = ({
     try {
 			const full_path = currentPath==='' ? filename : `${currentPath}/${filename}`;
 			const response = await fetch(`http://localhost:8000/spaces/${spaceId}/file/download?path=${full_path}`);
-      
       if (!response.ok) {
         throw new Error(`Download failed with status: ${response.status}`);
       }
@@ -252,10 +251,19 @@ const FileTable = ({
     }
   };
 
-  const handleFileClick = (file) => {
-    if (file.type === 'pdf') {
-      window.open(file.url, '_blank');
-    }
+  const handleFileClick = async (file) => {
+    if (file.type !== 'pdf')
+				return;
+		
+		const path = currentPath==='' ? file.name : `${currentPath}/${file.name}`;
+		const response = await fetch(`http://localhost:8000/spaces/${spaceId}/file/download?path=${path}`);
+		if (!response.ok) {
+			throw new Error(`Download failed with status: ${response.status}`);
+		}
+
+		const blob = await response.blob();
+		const url = window.URL.createObjectURL(blob);
+		window.open(url, '_blank');
   };
 
   // Drag and drop handlers
@@ -356,7 +364,7 @@ const FileTable = ({
               <tr
                 key={index}
                 className={`hover:bg-gray-50 transition-colors duration-150 ${item.type === 'folder' ? 'cursor-pointer' : ''}`}
-                onClick={() => item.type === 'folder' ? handleItemClick(item) : handleFileClick(item)}
+                onClick={async () => item.type === 'folder' ? handleItemClick(item) : await handleFileClick(item)}
               >
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
