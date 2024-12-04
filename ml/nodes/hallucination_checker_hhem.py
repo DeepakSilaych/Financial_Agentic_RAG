@@ -71,26 +71,32 @@ def check_hallucination_hhem(state: state.InternalRAGState):
         log_message(
             f"Error evaluating hallucination: {e}", f"question_group{question_group_id}"
         )
-        state["answer_contains_hallucinations"] = None
-        return state
+        return {
+            "answer_contains_hallucinations":None
+        }
 
     # Determine hallucination flag
     hallucination_flag = "yes" if score < 0.5 else "no"
+
+    answer_contains_hallucinations=False
 
     if hallucination_flag == "yes":
         log_message(
             "---GRADE: ANSWER CONTAINS HALLUCINATIONS---",
             f"question_group{question_group_id}",
         )
-        state["answer_contains_hallucinations"] = True
+        answer_contains_hallucinations = True
     else:
         log_message(
             "---GRADE: ANSWER DOES NOT CONTAIN HALLUCINATIONS---",
             f"question_group{question_group_id}",
         )
-        state["answer_contains_hallucinations"] = False
 
-    state["hallucinations_retries"] = state.get("hallucinations_retries", 0)
-    state["hallucinations_retries"] += 1
+    hallucination_retries=state.get("hallucinations_retries", 0)
+    hallucination_retries+=1
+    
 
-    return state
+    return {
+        "answer_contains_hallucinations":answer_contains_hallucinations,
+        "hallucinations_retries":hallucination_retries
+    }

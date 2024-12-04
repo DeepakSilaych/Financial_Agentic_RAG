@@ -5,11 +5,14 @@ from pydantic import BaseModel
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
-import state
+import state , nodes
 from llm import llm
 from retriever import retriever
 from nodes.calculator import execute_task_and_get_result
 from nodes.missing_reports import company_year_extractor
+from utils import send_logs
+from config import LOGGING_SETTINGS
+import uuid
 
 
 class Value(BaseModel):
@@ -51,7 +54,7 @@ def _get_required_value(input: dict[str, str]):
     )
 
 
-def get_required_kpis(state: state.OverallState):
+def get_required_kpis(state: state.KPIState):
     analyses_to_be_done = state["analyses_to_be_done"]  # filled in by query clarifier
 
     kpis = []
@@ -60,9 +63,7 @@ def get_required_kpis(state: state.OverallState):
             _kpis = json.load(f)["kpis"]
         kpis.extend(_kpis)
 
-    company_year_pairs = company_year_extractor.invoke(
-        {"query": state["question"]}
-    ).company_year_pairs
+    company_year_pairs = state["analysis_subject"]
 
     analyses_kpis = []
     for company_year_pair in company_year_pairs:
@@ -76,12 +77,40 @@ def get_required_kpis(state: state.OverallState):
             }
         )
 
-    return {
+    # ###### log_tree part
+    # # import uuid , nodes 
+    # id = str(uuid.uuid4())
+    # child_node = nodes.grade_documents.__name__ + "//" + id
+    # parent_node = state.get("prev_node" , "START")
+    # log_tree = {}
+    # log_tree[parent_node] = [child_node]
+    # ######
+
+    # ##### Server Logging part
+
+    # if not LOGGING_SETTINGS['get_required_kpis']:
+    #     child_node = parent_node  
+
+    output_state = {
         "analyses_kpis_by_company_year": analyses_kpis,
     }
 
 
-def get_required_values(state: state.OverallState):
+    # send_logs(
+    #     parent_node = parent_node , 
+    #     curr_node= child_node , 
+    #     child_node=None , 
+    #     input_state=state , 
+    #     output_state=output_state , 
+    #     text=child_node.split("//")[0] ,
+    # )
+    
+    # ######
+
+    return output_state 
+
+
+def get_required_values(state: state.KPIState):
     kpis_by_company_year = state["analyses_kpis_by_company_year"]
 
     required_values = []
@@ -126,7 +155,21 @@ def get_required_values(state: state.OverallState):
                         )
                     )
 
-    return {
+    # ###### log_tree part
+    # # import uuid , nodes 
+    # id = str(uuid.uuid4())
+    # child_node = nodes.grade_documents.__name__ + "//" + id
+    # parent_node = state.get("prev_node" , "START")
+    # log_tree = {}
+    # log_tree[parent_node] = [child_node]
+    # ######
+
+    # ##### Server Logging part
+
+    # if not LOGGING_SETTINGS['get_required_values']:
+    #     child_node = parent_node  
+
+    output_state = {
         "analyses_values": [
             {
                 "key": value.key,
@@ -139,6 +182,20 @@ def get_required_values(state: state.OverallState):
         ],
         "analyses_kpis_by_company_year": kpis_by_company_year,
     }
+
+
+    # send_logs(
+    #     parent_node = parent_node , 
+    #     curr_node= child_node , 
+    #     child_node=None , 
+    #     input_state=state , 
+    #     output_state=output_state , 
+    #     text=child_node.split("//")[0] ,
+    # )
+    
+    # ######
+
+    return output_state 
 
 
 def calculate_kpis_for_company_year(kpis, values, company_name, year):
@@ -181,7 +238,7 @@ Use these values for the calculation:
     }
 
 
-def calculate_kpis(state: state.OverallState):
+def calculate_kpis(state: state.KPIState):
     kpis_by_company_year = state["analyses_kpis_by_company_year"]
 
     with ThreadPoolExecutor() as executor:
@@ -221,7 +278,7 @@ Here are the KPIs calculated for the companies:
 _generate_answer_from_kpis = generate_answer_from_kpis_prompt | llm | StrOutputParser()
 
 
-def generate_answer_from_kpis(state: state.OverallState):
+def generate_answer_from_kpis(state: state.KPIState)->state.OverallState:
     kpis = ""
     for kpi_by_company_year in state["analyses_kpis_by_company_year_calculated"]:
         if kpi_by_company_year["calculated_kpis"] == {}:
@@ -239,13 +296,26 @@ def generate_answer_from_kpis(state: state.OverallState):
         )
         kpis += "\n\n"
 
+    companies_and_years = list(
+        set(
+            [
+                f"{kpi_by_company_year['company_name']}({kpi_by_company_year['year']})"
+                for kpi_by_company_year in state[
+                    "analyses_kpis_by_company_year_calculated"
+                ]
+            ]
+        )
+    )
+    companies_and_years = (
+        ", ".join(companies_and_years[:-1]) + " and " + companies_and_years[-1]
+    )
     res = _generate_answer_from_kpis.invoke(
         {
-            "question": state["question"],
+            "question": f"Analyze the financial performance of {companies_and_years} on the basis of the given KPIs.",
             "kpis": kpis,
         }
     )
 
     return {
-        "final_answer": res,
+        "partial_answer": res,
     }

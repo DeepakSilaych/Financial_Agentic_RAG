@@ -5,7 +5,6 @@ import requests
 import urllib3
 from urllib3.exceptions import InsecureRequestWarning
 
-from chromadb.api import ClientAPI
 from langchain_core.embeddings import Embeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader

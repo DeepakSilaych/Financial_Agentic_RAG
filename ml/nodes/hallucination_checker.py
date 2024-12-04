@@ -84,23 +84,26 @@ def check_hallucination(state: state.InternalRAGState):
     hallucination_flag = score.binary_score  # type: ignore
     hallucination_reason = score.reason
 
+    answer_contains_hallucinations=False
+    hallucination_reason_var=None
+
     if hallucination_flag == "yes":
         log_message(
             "---GRADE: ANSWER CONTAINS HALLUCINATIONS---",
             f"question_group{question_group_id}",
         )
-        state["answer_contains_hallucinations"] = True
-        state["hallucination_reason"] = hallucination_reason
+        answer_contains_hallucinations = True
+        hallucination_reason_var = hallucination_reason
     else:
         log_message(
             "---GRADE: ANSWER DOES NOT CONTAIN HALLUCINATIONS---",
             f"question_group{question_group_id}",
         )
-        state["answer_contains_hallucinations"] = False
-        state["hallucination_reason"] = "None"
+        answer_contains_hallucinations = False
+        hallucination_reason_var = "None"
 
-    state["hallucinations_retries"] = state.get("hallucinations_retries", 0)
-    state["hallucinations_retries"] += 1
+    hallucinations_retries=state.get("hallucinations_retries", 0)
+    hallucinations_retries += 1
 
     # ##### log_tree part
     # curr_node = nodes.check_hallucination.__name__
@@ -109,4 +112,8 @@ def check_hallucination(state: state.InternalRAGState):
 
     # #####
 
-    return state
+    return {
+        "answer_contains_hallucinations":answer_contains_hallucinations,
+        "hallucination_reason":hallucination_reason_var,
+        "hallucinations_retries":hallucinations_retries
+    }

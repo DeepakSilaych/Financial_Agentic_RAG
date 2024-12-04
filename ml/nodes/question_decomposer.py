@@ -382,6 +382,7 @@ What were General Motors’ net profit margins for the last three years?
 
 ##OUTPUT:
 ["What were Tesla’s annual operating expenses for the last three years?","What were General Motors’ annual operating expenses for the last three years?"]
+
 """
 
 question_decomposition_prompt_v6 = ChatPromptTemplate.from_messages(
@@ -1281,14 +1282,47 @@ def combine_answer_v3(state: state.OverallState):
     )
     combined_answer = combined_answer.combined_answer
 
-    log_message(f"Combined answer: {combined_answer}")
-    delete_messages(state)
-    reset_state_except_final_and_messages(state)
-    return {
+    ###### log_tree part
+    import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = nodes.combine_answer_v3.__name__ + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    log_tree = {}
+    log_tree[parent_node] = [child_node]
+    ######
+
+        ##### Server Logging part
+
+    from utils import send_logs
+    from config import LOGGING_SETTINGS
+
+    if not LOGGING_SETTINGS['decomposer_node_3']:
+        child_node = parent_node  
+
+    output_state = {
         "final_answer": combined_answer,
         "messages": [AIMessage(role="Chatbot", content=combined_answer)],
         "clarifying_questions": [],
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
     }
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    log_message(f"Combined answer: {combined_answer}")
+    delete_messages(state)
+    reset_state_except_final_and_messages(state)
+
+    return output_state 
 
 ## SEMANTIC CACHING
 

@@ -98,7 +98,7 @@ def _task_subgraph(state: state.OverallState):
 
 def rag_done(state):
     print("RAG Done")
-    return state
+    return {}
 
 #fmt off
 # Main Path

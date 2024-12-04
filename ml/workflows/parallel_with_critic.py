@@ -9,22 +9,7 @@ from nodes.question_decomposer import (
     check_sufficient,
 )
 from .rag_e2e import rag_e2e
-
-
-# Define the QuestionNode class
-class QuestionNode:
-    def __init__(self, parent_question: Optional[str], question: str, layer: int):
-        self.parent_question = parent_question  # The question that led to this one
-        self.question = question  # The current question
-        self.layer = layer  # The depth of this question in the tree
-        self.answer = None
-        self.child_answers = []
-        self.children = []
-        self.sufficient_answers = []
-
-    def add_child(self, child):
-        self.children.append(child)
-
+from state import QuestionNode
 
 # Function to build the question tree
 def build_question_tree(
@@ -105,14 +90,14 @@ def aggregate_child_answers(root: QuestionNode):
 def decomposer_node_1(state: state.OverallState):
     question = state["question"]
     tree = build_question_tree(question)
-    return {"question_tree_1": tree, "question_store": [question]}
+    return {"question_tree_1": tree.to_dict(), "question_store": [question]}
 
 
 def decomposer_node_2(state: state.OverallState):
     question = state["question_store"][-1]
     tree = build_question_tree(question)
     return {
-        "question_tree_2": tree,
+        "question_tree_2": tree.to_dict(),
     }
 
 
@@ -120,7 +105,7 @@ def decomposer_node_3(state: state.OverallState):
     question = state["question_store"][-1]
     tree = build_question_tree(question)
     return {
-        "question_tree_3": tree,
+        "question_tree_3": tree.to_dict(),
     }
 
 
@@ -133,12 +118,12 @@ def rag_1_time(state: state.InternalRAGState):
             "question_group_id": question_group_id,
         }
     )
-    question_tree = state["question_tree_1"]
+    question_tree = QuestionNode.from_dict(state["question_tree_1"])
     question_node = search_question_in_tree(question_tree, question)
     question_node.answer = res["answer"]
     return {
         # "decomposed_questions": [prev_question],
-        "question_tree_1": question_tree,
+        "question_tree_1": question_tree.to_dict(),
         "combined_documents": res["documents"],
         # "question_group": [state["question_group"]],
         # "number_of_question" : [len(state["question_group"])]
@@ -154,12 +139,12 @@ def rag_2_time(state: state.InternalRAGState):
             "question_group_id": question_group_id,
         }
     )
-    question_tree = state["question_tree_2"]
+    question_tree = QuestionNode.from_dict(state["question_tree_2"])
     question_node = search_question_in_tree(question_tree, question)
     question_node.answer = res["answer"]
     return {
         # "decomposed_questions": [prev_question],
-        "question_tree_2": question_tree,
+        "question_tree_2": question_tree.to_dict(),
         "combined_documents": res["documents"],
         # "question_group": [state["question_group"]],
         # "number_of_question" : [len(state["question_group"])]
@@ -175,12 +160,12 @@ def rag_3_time(state: state.InternalRAGState):
             "question_group_id": question_group_id,
         }
     )
-    question_tree = state["question_tree_3"]
+    question_tree = QuestionNode.from_dict(state["question_tree_3"])
     question_node = search_question_in_tree(question_tree, question)
     question_node.answer = res["answer"]
     return {
         # "decomposed_questions": [prev_question],
-        "question_tree_3": question_tree,
+        "question_tree_3": question_tree.to_dict(),
         "combined_documents": res["documents"],
         # "question_group": [state["question_group"]],
         # "number_of_question" : [len(state["question_group"])]
@@ -189,7 +174,7 @@ def rag_3_time(state: state.InternalRAGState):
 
 def aggregate1(state: state.OverallState):
     question = state["question"]
-    question_tree = state["question_tree_1"]
+    question_tree = QuestionNode.from_dict(state["question_tree_1"])
     # question_node=workflows.search_question_in_tree()
 
     aggregate_child_answers(question_tree)
@@ -214,13 +199,12 @@ def aggregate1(state: state.OverallState):
         "question_store": [new_question],
         "qa_pairs": qa_pairs,
         "sufficient": answered,
-        #    'question_tree_store':[question_tree]
     }
 
 
 def aggregate2(state: state.OverallState):
     question = state["question_store"][-1]
-    question_tree = state["question_tree_2"]
+    question_tree = QuestionNode.from_dict(state["question_tree_2"])
     # question_node=workflows.search_question_in_tree()
 
     aggregate_child_answers(question_tree)
@@ -245,13 +229,12 @@ def aggregate2(state: state.OverallState):
         "question_store": [new_question],
         "qa_pairs": qa_pairs,
         "sufficient": answered,
-        #    'question_tree_store':[question_tree]
     }
 
 
 def aggregate3(state: state.OverallState):
     question = state["question_store"][-1]
-    question_tree = state["question_tree_3"]
+    question_tree = QuestionNode.from_dict(state["question_tree_3"])
     # question_node=workflows.search_question_in_tree()
 
     aggregate_child_answers(question_tree)
@@ -270,12 +253,13 @@ def aggregate3(state: state.OverallState):
     return {
         "question_store": [new_question],
         "qa_pairs": qa_pairs,
-        #   'question_tree_store':[question_tree]
     }
 
 
 graph = StateGraph(state.OverallState)
-graph.add_node(nodes.process_query.__name__, nodes.process_query)
+graph.add_node(
+    nodes.combine_conversation_history.__name__, nodes.combine_conversation_history
+)
 graph.add_node(nodes.check_safety.__name__, nodes.check_safety)
 graph.add_node(nodes.decompose_question_v2.__name__, nodes.decompose_question_v2)
 graph.add_node(nodes.ask_clarifying_questions.__name__, nodes.ask_clarifying_questions)
@@ -296,9 +280,9 @@ graph.add_node(rag_3_time.__name__, rag_3_time)
 graph.add_node(nodes.combine_answer_v3.__name__, nodes.combine_answer_v3)
 
 graph.add_edge(START, nodes.check_safety.__name__)
-graph.add_edge(nodes.check_safety.__name__, nodes.process_query.__name__)
+graph.add_edge(nodes.check_safety.__name__, nodes.combine_conversation_history.__name__)
 graph.add_conditional_edges(
-    nodes.process_query.__name__,
+    nodes.combine_conversation_history.__name__,
     edges.route_initial_query,
     {
         nodes.ask_clarifying_questions.__name__: nodes.ask_clarifying_questions.__name__,
@@ -307,8 +291,11 @@ graph.add_conditional_edges(
 )
 graph.add_conditional_edges(
     nodes.check_safety.__name__,
-    edges.query_modified_or_not,
-    {nodes.process_query.__name__: nodes.process_query.__name__, END: END},
+    edges.query_safe_or_not,
+    {
+        nodes.combine_conversation_history.__name__: nodes.combine_conversation_history.__name__,
+        END: END,
+    },
 )
 graph.add_conditional_edges(
     nodes.ask_clarifying_questions.__name__,

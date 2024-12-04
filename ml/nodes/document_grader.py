@@ -4,7 +4,11 @@ from langchain_core.prompts import ChatPromptTemplate
 
 import state, nodes
 from llm import llm
-
+import uuid
+from dotenv import load_dotenv
+load_dotenv()
+from utils import send_logs
+from config import LOGGING_SETTINGS
 
 class DocumentGrade(BaseModel):
     """Binary score and reason for relevance check on retrieved documents."""
@@ -72,22 +76,42 @@ def grade_documents(state: state.InternalRAGState):
     reasons = [res["reason"] for res in results if res["grade"] == "no"]
 
     concatenated_reasons = " | ".join(reasons)
-    documents_kv = state.get("documents_with_kv", [])
-    filtered_docs.extend(documents_kv)
+    # documents_kv = state.get("documents_with_kv", [])
+    # filtered_docs.extend(documents_kv)
 
-    # ##### log_tree part
-    # curr_node = nodes.grade_documents.__name__
-    # prev_node = state.get("prev_node" , "")
-    # state["documents"] = filtered_docs
-    # state["irrelevancy_reason"] = concatenated_reasons
-    # state["doc_grading_retries"] = doc_grading_retries+1
-    # state["log_tree"][prev_node] = [{"node" : curr_node , "state" : state}]
-    # state["prev_node"] = curr_node
 
-    # #####
-    return {
+    ###### log_tree part
+    # import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = nodes.grade_documents.__name__ + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    log_tree = {}
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+
+    if not LOGGING_SETTINGS['grade_documents']:
+        child_node = parent_node  
+
+    output_state = {
         "documents": filtered_docs,
         "irrelevancy_reason": concatenated_reasons,
-        "prev_node": nodes.grade_documents.__name__,
         "doc_grading_retries": doc_grading_retries + 1,
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
     }
+
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    return output_state 

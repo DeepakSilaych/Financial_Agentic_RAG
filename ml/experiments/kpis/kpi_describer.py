@@ -7,7 +7,7 @@ from langchain.prompts import ChatPromptTemplate
 from pydantic import BaseModel
 from llm import llm
 
-NUM_KPIS = 5
+NUM_KPIS = 8
 
 
 class KPIDescription(BaseModel):

@@ -10,7 +10,9 @@ from nodes.data_loaders import (
     get_responses,
 )
 from langchain_google_community import GoogleSearchAPIWrapper
-from utils import log_message
+from utils import log_message , send_logs 
+from config import LOGGING_SETTINGS             
+
 
 web_search_tool = TavilySearchResults(max_results=1)
 
@@ -27,7 +29,7 @@ def search_web(state):
     """
 
     log_message("---WEB SEARCH---")
-    question = state["original_question"]
+    question = state.get("original_question",state["question"])
 
     # print("Inside search_web")
     # Perform web search
@@ -35,9 +37,9 @@ def search_web(state):
     
     
     # print([doc["url"] for doc in docs])
-    urls = [doc["url"] for doc in docs]
-    urls = [tldextract.extract(url) for url in urls]
-    urls = [".".join([url.subdomain, url.domain, url.suffix]) for url in urls]
+    # urls = [doc["url"] for doc in docs]
+    # urls = [tldextract.extract(url) for url in urls]
+    # urls = [".".join([url.subdomain, url.domain, url.suffix]) for url in urls]
     
     documents = []
     # Process docs based on its actual structure
@@ -61,9 +63,48 @@ def search_web(state):
     # Wrap the final results in a Document
     # web_results = Document(page_content=web_results)
 
+    ###### log_tree part
+    import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = nodes.search_web.__name__ + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    log_tree = {}
+
+    if not LOGGING_SETTINGS['search_web']:
+        child_node = parent_node  
+    
+    log_tree[parent_node] = [child_node]
+    ######
+
+    
+    ##### Server Logging part
+
+    output_state = {
+        "documents": documents,
+        "original_question": question, 
+        "web_searched": True, 
+        # "urls": urls , 
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
+    }
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
     log_message(f" \n\n Web Results : \n\n {documents} \n\n")
 
-    return {"documents": documents, "original_question": question, "web_searched": True, "urls": urls}
+    return output_state
+
+    
+
 
 
 google_search_retriever = GoogleSearchAPIWrapper(
@@ -73,11 +114,11 @@ google_search_retriever = GoogleSearchAPIWrapper(
 )
 
 
-def search_google_snnipets(state):
+def search_google_snippets(state):
 
     # Return snnipets from google search ( does not return source urls )
     # All results are returned as 1 combined string ( by the google_search_retriever)
-    question = state["original_question"]
+    question = state.get("original_question",state["question"])
     search_results = google_search_retriever.run(question)
     state["documents"] = [search_results]
 
@@ -86,7 +127,7 @@ def google_search_scrapper(state):
     # Working fine ( adds the scrapped content along with the source url to the state["documents"] )
     # Scrapping too much content ( can't pass this to llm for answer generation due to very long scrapped content )
 
-    question = state["original_question"]
+    question = state.get("original_question",state["question"])
     documents = []
     search_results = google_search_retriever.results(query=question, num_results=3)
     search_result_links = [res["link"] for res in search_results]
@@ -110,6 +151,8 @@ def google_search_scrapper(state):
     #                 extract_pdf_content(link) for link in pdf_links
     #             ]
 
-    state["documents"] = documents
 
-    return state
+
+    return {
+        "documents":documents
+    }

@@ -33,12 +33,10 @@ const ToggleSwitch = ({ checked, onChange, label }) => (
         checked={checked}
         onChange={onChange}
       />
-      <div className={`block w-10 h-6 rounded-full transition-colors duration-200 ${
-        checked ? 'bg-pink-500' : 'bg-gray-400'
-      }`} />
-      <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-200 transform ${
-        checked ? 'translate-x-4' : 'translate-x-0'
-      }`} />
+      <div className={`block w-10 h-6 rounded-full transition-colors duration-200 ${checked ? 'bg-blue-500' : 'bg-gray-400'
+        }`} />
+      <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-200 transform ${checked ? 'translate-x-4' : 'translate-x-0'
+        }`} />
     </div>
     <span className="ml-3 text-sm font-medium text-gray-700">{label}</span>
   </label>
@@ -50,7 +48,7 @@ const Select = ({ value, onChange, options, label }) => (
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="ml-3 block w-40 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm rounded-md"
+      className="ml-3 block w-40 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
     >
       {options.map(option => (
         <option key={option.value} value={option.value}>
@@ -83,13 +81,18 @@ const Settings = () => {
     { value: 'purple', label: 'Purple' },
   ];
 
+  const themeOptions = [
+    { value: 'light', label: 'Light' },
+    { value: 'dark', label: 'Dark' },
+  ];
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
         <button
           onClick={resetSettings}
-          className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+          className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
           <RotateCcw size={16} className="mr-2" />
           Reset to Defaults
@@ -98,6 +101,12 @@ const Settings = () => {
 
       <div className="space-y-6 bg-white shadow rounded-lg p-6">
         <SettingSection title="Theme" icon={Palette}>
+          <Select
+            value={settings.theme.mode}
+            onChange={(value) => updateSettings('theme', 'mode', value)}
+            options={themeOptions}
+            label="Theme Mode"
+          />
           <Select
             value={settings.theme.accentColor}
             onChange={(value) => updateSettings('theme', 'accentColor', value)}

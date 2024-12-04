@@ -2,6 +2,8 @@ from langgraph.graph import END, StateGraph, START
 
 import state, nodes, edges
 from config import WORKFLOW_SETTINGS
+import sys
+sys.setrecursionlimit(1000)
 
 # fmt: off
 graph = StateGraph(state.InternalRAGState)
@@ -26,11 +28,6 @@ if WORKFLOW_SETTINGS["rewrite_with_hyde"]:
 else:
     graph.add_node("query_rewriter", nodes.rewrite_question)
 
-if WORKFLOW_SETTINGS["query_expansion"]:
-    graph.add_node(nodes.expand_question.__name__, nodes.expand_question)
-
-    graph.add_edge(START, nodes.expand_question.__name__)
-
 if WORKFLOW_SETTINGS["metadata_filtering"]:
     graph.add_node(nodes.extract_metadata.__name__, nodes.extract_metadata)
     if WORKFLOW_SETTINGS["metadata_filtering_with_quant_qual"]:
@@ -38,10 +35,7 @@ if WORKFLOW_SETTINGS["metadata_filtering"]:
     else:
         graph.add_node("retriever", nodes.retrieve_documents_with_metadata)
 
-    if WORKFLOW_SETTINGS["query_expansion"]:
-        graph.add_edge(nodes.expand_question.__name__, nodes.extract_metadata.__name__)
-    else:
-        graph.add_edge(START, nodes.extract_metadata.__name__)
+    graph.add_edge(START, nodes.extract_metadata.__name__)
     graph.add_edge(nodes.extract_metadata.__name__, "retriever")
 
     if WORKFLOW_SETTINGS["assess_metadata_filters"]:
@@ -64,10 +58,9 @@ if WORKFLOW_SETTINGS["metadata_filtering"]:
 else:
     graph.add_node("retriever", nodes.retrieve_documents)
 
-    if WORKFLOW_SETTINGS["query_expansion"]:
-        graph.add_edge(nodes.expand_question.__name__, "retriever")
-    else:
-        graph.add_edge(START, "retriever")
+    graph.add_edge(START, "retriever")
+
+
 
 if WORKFLOW_SETTINGS["grade_documents"]:
     graph.add_node(nodes.grade_documents.__name__, nodes.grade_documents)
@@ -104,26 +97,49 @@ if not WORKFLOW_SETTINGS["reranking"] and not WORKFLOW_SETTINGS["grade_documents
 if WORKFLOW_SETTINGS["grade_answer"]:
     graph.add_node(nodes.grade_answer.__name__, nodes.grade_answer)
 
+if WORKFLOW_SETTINGS["calculator"]:
+    graph.add_node(nodes.calc_agent.__name__, nodes.calc_agent)
+
 if WORKFLOW_SETTINGS["check_hallucination"]:
     if WORKFLOW_SETTINGS["hallucination_checker"] == "hhem":
         graph.add_node("hallucination_checker", nodes.check_hallucination_hhem)
     else:
         graph.add_node("hallucination_checker", nodes.check_hallucination)
 
-    graph.add_edge(nodes.generate_answer_with_citation_state.__name__, "hallucination_checker")
-    graph.add_conditional_edges(
-        "hallucination_checker",
-        edges.assess_hallucination,
-        {
-            "retry": nodes.generate_answer_with_citation_state.__name__,
-            "too_many_retries": nodes.search_web.__name__,
-            "no_hallucination": nodes.grade_answer.__name__ if WORKFLOW_SETTINGS["grade_answer"] else END,
-        },
-    )
+    if WORKFLOW_SETTINGS['calculator']:
+        graph.add_edge(nodes.generate_answer_with_citation_state.__name__, nodes.calc_agent.__name__)
+        graph.add_edge(nodes.calc_agent.__name__, "hallucination_checker")
+
+        graph.add_conditional_edges(
+            "hallucination_checker",
+            edges.assess_hallucination,
+            {
+                "retry": nodes.generate_answer_with_citation_state.__name__,
+                "too_many_retries": nodes.search_web.__name__,
+                "no_hallucination": nodes.grade_answer.__name__ if WORKFLOW_SETTINGS["grade_answer"] else END,
+            },
+        )
+
+    
+    else:
+        graph.add_edge(nodes.generate_answer_with_citation_state.__name__, "hallucination_checker")
+        graph.add_conditional_edges(
+            "hallucination_checker",
+            edges.assess_hallucination,
+            {
+                "retry": nodes.generate_answer_with_citation_state.__name__,
+                "too_many_retries": nodes.search_web.__name__,
+                "no_hallucination": nodes.grade_answer.__name__ if WORKFLOW_SETTINGS["grade_answer"] else END,
+            },
+        )
 
 if WORKFLOW_SETTINGS["grade_answer"]:
     if not WORKFLOW_SETTINGS["check_hallucination"]:
-        graph.add_edge(nodes.generate_answer_with_citation_state.__name__, nodes.grade_answer.__name__)
+        if WORKFLOW_SETTINGS["calculator"]:
+            graph.add_edge(nodes.generate_answer_with_citation_state.__name__, nodes.calc_agent.__name__)
+            graph.add_edge(nodes.calc_agent.__name__, nodes.grade_answer.__name__)
+        else:
+            graph.add_edge(nodes.generate_answer_with_citation_state.__name__, nodes.grade_answer.__name__)
 
     graph.add_conditional_edges(
         nodes.grade_answer.__name__, 
@@ -138,12 +154,18 @@ if WORKFLOW_SETTINGS["grade_answer"]:
 graph.add_edge("query_rewriter", "retriever")
 
 if not WORKFLOW_SETTINGS["grade_answer"] and not WORKFLOW_SETTINGS["check_hallucination"]:
-    graph.add_edge(nodes.generate_answer_with_citation_state.__name__, END)
+    if WORKFLOW_SETTINGS['calculator']:
+        graph.add_edge(nodes.generate_answer_with_citation_state.__name__, nodes.calc_agent.__name__)
+        graph.add_edge(nodes.calc_agent.__name__, END)
+    else:
+        graph.add_edge(nodes.generate_answer_with_citation_state.__name__, END)
 # fmt: on
 
-if (WORKFLOW_SETTINGS["with_site_blocker"]):
+if WORKFLOW_SETTINGS["with_site_blocker"]:
     rag_e2e = graph.compile(
-        interrupt_after=[nodes.search_web.__name__,]
+        interrupt_after=[
+            nodes.search_web.__name__,
+        ]
     )
 else:
     rag_e2e = graph.compile()

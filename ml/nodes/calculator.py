@@ -1,9 +1,11 @@
-from typing import Dict
+from typing import Dict, List
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-
+import state
 from utils import log_message
 from llm import llm
+from pydantic import BaseModel, Field
+import sys
 
 code_generator_prompt = ChatPromptTemplate.from_messages(
     [
@@ -40,7 +42,7 @@ def execute_task_and_get_result(task: str) -> Dict:
                     f"Previous error: {previous_error}\nPrevious code:\n{previous_code}\n\n"
                     + prompt
                 )
-                print(f"Reattempting with feedback: {prompt}")
+                log_message(f"Reattempting with feedback: {prompt}")
 
             # Send a prompt to GPT-4 to generate Python code via the chat completion endpoint
             response = code_generator.invoke({"task": prompt})
@@ -69,8 +71,8 @@ def execute_task_and_get_result(task: str) -> Dict:
 
         try:
             # Execute the generated code
-            exec(code[0], safe_globals)
-
+            exec("import os;\nimport sys;\nsys.stdout = open(os.devnull, 'w')\n" + code[0], safe_globals)
+            sys.stdout = sys.__stdout__
             # Retrieve the result
             result = safe_globals.get("result", None)
             if result is None:
@@ -79,7 +81,7 @@ def execute_task_and_get_result(task: str) -> Dict:
 
         except Exception as e:
             # If there is an error in executing the code, print and handle the error
-            print(f"Error during execution: {str(e)}")
+            log_message(f"Error during execution: {str(e)}")
             previous_error = str(e)  # Store the error for the next attempt
 
             # If it's the last attempt, return the error
@@ -94,6 +96,129 @@ def execute_task_and_get_result(task: str) -> Dict:
     return {
         "answer": f"Sorry, the task could not be completed after {max_retries} attempts."
     }
+
+class CalculatorOutput(BaseModel):
+    """Output that we get for the query sent into the calculator"""
+
+    caclculator_ques: List[str] = Field(
+        description="Contains the list of strings which are instructions given to the calculator"
+    )
+
+
+calculator_system_prompt = """
+
+You are a task describing agent, and the current year is 2024. You will be given a question and answer. 
+
+Follow these instructions
+1. For the question input, decide if there is any calculation that needs to be performed from the answer input
+2. Give a list of all these calculations that need to be performed
+3. If there is no calculation required, return an empty list
+
+Here is an example
+
+Example 1:
+##INPUT:
+Question: What was the net percentage increase in revenue for Microsoft from 2022 to 2023?
+Answer: Microsoft's revenue in 2022 was $23 billion and that in 2023 was $27 billion
+
+##OUTPUT:
+["Find the percentage increase from $23 billion to $27 billion"]
+
+Example 2:
+##INPUT:
+Question: What was the net percentage increase in revenue for Microsoft from 2022 to 2023?
+Answer: Microsoft's net percentage increase in revenue from 2022 to 2023 is 12%
+
+##OUTPUT:
+[]
+
+Do it for this input now
+
+"""
+
+calculator_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", calculator_system_prompt),
+        ("human", "##INPUT:\nQuestion: {question}\nAnswer:{answer}\n\n##OUTPUT:\n"),
+    ]
+)
+calculator_input = calculator_prompt | llm.with_structured_output(
+    CalculatorOutput
+)
+
+class ProcessAnswer(BaseModel):
+    """Returns final answer after calculator suggestions"""
+
+    answer: str = Field(
+        description="Contains final answer after calculator suggestions"
+    )
+
+
+process_answer_system_prompt = """
+
+You are a question answer auditing agent, and the current year is 2024. You will be given a question and answer, and a few other input. 
+
+Follow these instructions
+1. Study the given question and answer, and integrate the comments provided into the answer to better answer the question
+2. Dont add any extra information from your side, just use the context given to you
+
+Here is an example
+
+Example 1:
+##INPUT:
+Question: What was the net percentage increase in revenue for Microsoft from 2022 to 2023?
+Answer: Microsoft's revenue in 2022 was $23 billion and that in 2023 was $27 billion
+Suggestion: Find the percentage increase from $23 billion to $27 billion - 17.3%
+
+##OUTPUT:
+Microsoft's net percentage increase in revenue from 2022 to 2023 is 17.3%
+
+Do it for this input now
+
+"""
+
+process_answer_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", process_answer_system_prompt),
+        ("human", "##INPUT:\nQuestion: {question}\nAnswer:{answer}\nSuggestion:{suggestion}\n\n##OUTPUT:\n"),
+    ]
+)
+process_answer = process_answer_prompt | llm.with_structured_output(
+    ProcessAnswer
+)
+
+
+
+def calc_agent(state: state.InternalRAGState):
+    question=state['original_question']
+    answer=state['answer']
+    operations=calculator_input.invoke({
+        "question":question,
+        "answer":answer
+    }).caclculator_ques
+
+    if(operations):
+        final_answer=answer
+        
+    else:
+        calculator_output=[]
+        for operation in operations:
+            calculator_output.append(execute_task_and_get_result(operation))
+
+        suggestion_str='' 
+        for operation, value in zip(operations, calculator_output):
+            suggestion_str+=f'{operation} - {value} \n'
+        
+        final_answer=process_answer.invoke({
+            "question":question,
+            "answer":answer,
+            "suggestion":suggestion_str
+        })
+
+    return{
+            'answer':final_answer
+        }
+
 
 
 # Example usage

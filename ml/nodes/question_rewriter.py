@@ -7,6 +7,10 @@ from pydantic import BaseModel, Field
 
 import state, nodes
 from llm import llm
+import uuid
+
+from utils import send_logs
+from config import LOGGING_SETTINGS
 
 
 class Hyde_doc(BaseModel):
@@ -71,7 +75,7 @@ def rewrite_question(state: state.InternalRAGState):
     Returns:
         state (dict): Updates question key with a re-phrased question
     """
-    question_group_id = state["question_group_id"]
+    question_group_id = state.get("question_group_id", 1)
 
     log_message("---TRANSFORM QUERY---", f"question_group{question_group_id}")
     question = state["original_question"]
@@ -80,6 +84,13 @@ def rewrite_question(state: state.InternalRAGState):
     prev_node = state.get("prev_node", "")
     answer = state.get("answer", "")
     insufficiency_reason = state.get("insufficiency_reason", "")
+
+    metadata_retries = state["metadata_retries"]
+    if len(state["documents"]) + len(state.get("documents_with_kv", [])) == 0 and (
+        prev_node == nodes.retrieve_documents_with_metadata.__name__
+        or prev_node == nodes.retrieve_documents_with_quant_qual.__name__
+    ):
+        metadata_retries += 1
 
     # Re-write question
     if prev_node == "grade_answer":
@@ -91,6 +102,7 @@ def rewrite_question(state: state.InternalRAGState):
 
     return {
         "documents": documents,
+        "metadata_retries": metadata_retries,
         "question": better_question,
         "loop_step": loop_step + 1,
         "prev_node": "rewrite_question",
@@ -135,12 +147,9 @@ def rewrite_with_hyde(state: state.InternalRAGState):
     irrelevancy_reason = state.get("irrelevancy_reason", "")
 
     metadata_retries = state["metadata_retries"]
-    if (
-        len(state["documents"]) + len(state.get("documents_with_kv", [])) == 0
-        and (prev_node == nodes.retrieve_documents_with_metadata.__name__
-             or 
-             prev_node == nodes.retrieve_documents_with_quant_qual.__name__
-        )
+    if len(state["documents"]) + len(state.get("documents_with_kv", [])) == 0 and (
+        prev_node.split("//")[0] == nodes.retrieve_documents_with_metadata.__name__
+        or prev_node.split("//")[0] == nodes.retrieve_documents_with_quant_qual.__name__
     ):
         metadata_retries += 1
 
@@ -150,11 +159,11 @@ def rewrite_with_hyde(state: state.InternalRAGState):
         return hyde_rewriter.invoke({"question": question}).Hyde_ans
 
     def get_rewritten_question() -> str:
-        if prev_node == nodes.grade_answer.__name__:
+        if prev_node.split("//")[0] == nodes.grade_answer.__name__:
             return question_rewriter2.invoke(
                 {"question": question, "answer": answer, "reason": insufficiency_reason}
             )
-        elif prev_node == nodes.grade_documents.__name__:
+        elif prev_node.split("//")[0] == nodes.grade_documents.__name__:
             return question_rewriter3.invoke(
                 {"question": question, "reason": irrelevancy_reason}
             )
@@ -170,19 +179,37 @@ def rewrite_with_hyde(state: state.InternalRAGState):
 
     better_question = hyde_better_question + "xxxxxxxxxx" + rewriting_question
 
-    # ##### log_tree part
-    # curr_node = nodes.rewrite_with_hyde.__name__
-    # prev_node = state.get("prev_node" , "START")
-    # state["question"] = better_question
-    # state["metadata_retries"] = metadata_retries
-    # state["rewritten_question"] = rewriting_question
-    # state["log_tree"][prev_node] = [{"node" : curr_node , "state" : state}]
-    # state["prev_node"] = curr_node
-    # #####
+    ###### log_tree part
+    id = str(uuid.uuid4())
+    child_node = nodes.rewrite_with_hyde.__name__ + "//" + id
+    parent_node = state.get("prev_node", "START")
+    log_tree = {}
 
-    return {
+    if not LOGGING_SETTINGS["rewrite_with_hyde"]:
+        child_node = parent_node
+
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+
+    output_state = {
         "question": better_question,
         "metadata_retries": metadata_retries,
-        "prev_node": nodes.rewrite_with_hyde.__name__,
         "rewritten_question": rewriting_question,
+        "prev_node": child_node,
+        "log_tree": log_tree,
     }
+
+    send_logs(
+        parent_node=parent_node,
+        curr_node=child_node,
+        child_node=None,
+        input_state=state,
+        output_state=output_state,
+        text=child_node.split("//")[0],
+    )
+
+    ######
+
+    return output_state

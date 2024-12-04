@@ -7,15 +7,18 @@ import FileStorage from './pages/FileStorage';
 import Settings from './pages/Settings';
 import Layout from './components/Layout';
 import LandingPage from './pages/LandingPage';
-import { TeamProvider } from './context/TeamContext';
-import { SettingsProvider } from './context/SettingsContext';
 import { UserProvider } from './context/UserContext';
+import { SettingsProvider } from './context/SettingsContext';
 import { useUser } from './context/UserContext';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
+import Help from './pages/Help';
+import Documentation from './pages/Documentation';
+import Notifications from './pages/Notifications';
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import './index.css';
 import Navbar from './components/Navbar';
+import Blank from './pages/Blank';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useUser();
@@ -49,59 +52,53 @@ createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Router>
       <UserProvider>
-        <TeamProvider>
-          <SettingsProvider>
-            <Routes>
-              {/* Landing Page */}
-              <Route
-                path="/"
-                element={
-                  <>
-                    <Navbar />
-                    <LandingPage />
-                  </>
-                }
-              />
-              <Route
-                path="/login"
-                element={
-                  <PublicRoute>
-                    <Navbar />
-                    <LoginPage />
-                  </PublicRoute>
-                }
-              />
-              <Route
-                path="/signup"
-                element={
-                  <PublicRoute>
-                    <Navbar />
-                    <SignupPage />
-                  </PublicRoute>
-                }
-              />
+        <SettingsProvider>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={
+              <>
+                <Navbar />
+                <LandingPage />
+              </>
+            } />
+            
+            <Route path="/login" element={
+              <PublicRoute>
+                <Navbar />
+                <LoginPage />
+              </PublicRoute>
+            } />
+            
+            <Route path="/signup" element={
+              <PublicRoute>
+                <Navbar />
+                <SignupPage />
+              </PublicRoute>
+            } />
 
-              <Route
-                path="/app"
-                element={
-                  <ProtectedRoute>
-                    <Layout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<Navigate to="/app/chat" replace />} />
-                <Route path="chat" element={<App />} />
-                <Route path="storage" element={<FileStorage />} />
-                <Route path="chat/:id" element={<Chat />} />
-                <Route path="settings" element={<Settings />} />
-              </Route>
+            {/* Protected App Routes */}
+            <Route path="/app" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Outlet />
+                </Layout>
+              </ProtectedRoute>
+            }>
+              <Route index element={<Blank />} />
+              <Route path="chat" element={<App />} />
+              <Route path="storage" element={<FileStorage />} />
+              <Route path="chat/:id" element={<Chat />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="help" element={<Help />} />
+              <Route path="documentation" element={<Documentation />} />
+              <Route path="notifications" element={<Notifications />} />
+            </Route>
 
-              {/* Catch-all redirect */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </SettingsProvider>
-        </TeamProvider>
+            {/* Catch-all redirect */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </SettingsProvider>
       </UserProvider>
     </Router>
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);

@@ -1,13 +1,17 @@
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Literal
 
 from pydantic import BaseModel, Field
 from langchain_core.prompts import ChatPromptTemplate
 from utils import log_message
 from database import FinancialDatabase
-
+import config
 import state , nodes
 from llm import llm
+import uuid
 from config import GLOBAL_SET_OF_FINANCE_TERMS
+
+from utils import send_logs
+from config import LOGGING_SETTINGS
 
 
 class QueryMetadata(BaseModel):
@@ -24,6 +28,22 @@ class QueryMetadata(BaseModel):
     #     description="Key topics of interest (e.g., revenue, net income, risk factors, ESG)",
     # )
 
+class QueryMetadata_QQ(BaseModel):
+    """Metadata structure for parsing relevant 10-K report details from user queries."""
+
+    company_name: Optional[str] = Field(
+        description="Matched exact Parent Company Name from the Parent Company List if specified in the query"
+    )
+    filing_year: Optional[str] = Field(
+        description="Filling year for the document (e.g. 2022) if specified in the query"
+    )
+    category: Literal['Quantitative', 'Qualitative'] = Field(
+        description="The category of the question: either 'Quantitative' or 'Qualitative'."
+    )
+    # topics: List[str] = Field(
+    #     default=[],
+    #     description="Key topics of interest (e.g., revenue, net income, risk factors, ESG)",
+    # )
 
 _system_prompt_old = """You are a metadata extractor for financial queries focusing on 10-K reports. 
 Extract relevant metadata to make retrieval more accurate.
@@ -48,6 +68,8 @@ Key tasks:
 2. Extract the **Filing Year**:
    - Identify the filing year of the document.
    - Ensure the output contains only **one specific year** (e.g., `2023`) and not a range or ambiguous dates.
+   - In case of relative terms like last year , present year , next year . Use this information : ( Present year is 2024 )
+   - If there are more than 1 years in the question , then take the most recent year ( Present year is 2024 )
    - If no filing year is identified, set "filing_year" to "None".
 
 Respond with the metadata in a structured format.
@@ -56,11 +78,51 @@ List of parent companies provided:
 {company_set}
 """
 
+prompt_qq = """
+You are a metadata extractor for financial queries focusing on 10-K reports. 
+Your goal is to extract relevant metadata to make retrieval more accurate.
+
+Key tasks:
+1. Identify the **Parent Company Name**:
+   - The company name in the query may not always refer to the parent company.
+   - Match the company name mentioned in the query to the **parent company** in the provided list of parent companies (`company_set`).
+   - Use the context of the query to determine which parent company the mentioned company belongs to.
+   - Ensure that the output is an **exact match** with one of the parent company names in the provided list.
+   - If no match is found or the company cannot be linked to a parent company in the list, set "company_name" to None.
+
+2. Extract the **Filing Year**:
+   - Identify the filing year of the document.
+   - Ensure the output contains only **one specific year** (e.g., `2023`) and not a range or ambiguous dates.
+   - If no filing year is identified, set "filing_year" to "None".
+
+3. Classify user questions into one of the following categories:
+1. **Quantitative**: Questions that require numerical data, tables, charts, or figures in the reports for an answer.
+2. **Qualitative**: Questions that involve interpreting textual content, such as management discussions, business strategies, or narrative descriptions.
+### NOTE ###
+If you are unsure about category direct it to Quantitative Category.
+
+Respond with the metadata in a structured format.
+{{
+    company_name : <parent company name>,
+    filing_year : <year>,
+    category : <Quantitative/Qualitative>
+}}
+
+List of parent companies provided:
+{company_set}
+"""
 metadata_extraction_prompt = ChatPromptTemplate.from_messages(
     [("system", _system_prompt), ("human", "Query: {query}")]
 )
 metadata_extractor = metadata_extraction_prompt | llm.with_structured_output(
     QueryMetadata
+)
+
+metadata_extraction_with_qq_prompt = ChatPromptTemplate.from_messages(
+    [("system", _system_prompt), ("human", "Query: {query}")]
+)
+metadata_extractor_qq = metadata_extraction_with_qq_prompt | llm.with_structured_output(
+    QueryMetadata_QQ
 )
 
 
@@ -90,6 +152,7 @@ def extract_metadata_1(state: state.InternalRAGState):
         f"Extracted Metadata - company_name: {company_name}, year: {filing_year}",
         f"question_group{question_group_id}",
     )
+    
 
     return {
         "metadata": {
@@ -211,15 +274,16 @@ def extract_metadata(state: state.InternalRAGState):
 
     companies_set = db.get_companies()
 
-    extracted_metadata = metadata_extractor.invoke(
+    extracted_metadata = metadata_extractor_qq.invoke(
         {"query": query, "company_set": companies_set}
     )
 
     # Unpack metadata for easy access
     company_name = extracted_metadata.company_name
     filing_year = extracted_metadata.filing_year
+    category = extracted_metadata.category
 
-    metadata = {"company_name": company_name, "year": filing_year}
+    #metadata = {"company_name": company_name, "year": filing_year}
     # topics_union_set = db.get_union_of_topics(metadata , GLOBAL_SET_OF_FINANCE_TERMS)
     state["topics_union_set"] = GLOBAL_SET_OF_FINANCE_TERMS
 
@@ -229,19 +293,48 @@ def extract_metadata(state: state.InternalRAGState):
 
     log_message(
         "------"
-        f"Extracted Metadata - company_name: {company_name}, year: {filing_year}",
+        f"Extracted Metadata - company_name: {company_name}, year: {filing_year}, Category: {category}",
         f"question_group{question_group_id}",
     )
 
-    return {
+    ###### log_tree part
+    # import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = nodes.extract_metadata.__name__ + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    log_tree = {}
+
+    if not LOGGING_SETTINGS['extract_metadata']:
+        child_node = parent_node 
+
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+    output_state =  {
         "question": query,
         "metadata": {
             "company_name": company_name,  # name_string / "None" / None
             "year": filing_year,  # year_string / "None" / None
             "topics": valid_topics,  # list / empty list
         },
-        "prev_node" : nodes.extract_metadata.__name__
+        "category" : category,
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
     }
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    return output_state 
 
 
 # class CompanyYearMetadata(BaseModel):

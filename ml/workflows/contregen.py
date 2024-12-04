@@ -30,7 +30,9 @@ def build_question_tree(question, depth=0, max_depth=3, parent_question=None):
 
     # Decompose the question to find subquestions
     try:
-        subquestions = question_decomposer_v3.invoke({"question": question}).decomposed_questions
+        subquestions = question_decomposer_v3.invoke(
+            {"question": question}
+        ).decomposed_questions
         print(f"Decomposing '{question}' -> {subquestions}")
     except Exception as e:
         print(f"Error during decomposition: {e}")
@@ -38,7 +40,9 @@ def build_question_tree(question, depth=0, max_depth=3, parent_question=None):
 
     # If no subquestions or decomposition returns the same question
     if not subquestions or all(sub == question for sub in subquestions):
-        print(f"Terminating at depth {depth}: No further decomposition for '{question}'")
+        print(
+            f"Terminating at depth {depth}: No further decomposition for '{question}'"
+        )
         return current_node  # Leaf node: no further decomposition
 
     # Recursively build child nodes for each subquestion
@@ -53,7 +57,6 @@ def build_question_tree(question, depth=0, max_depth=3, parent_question=None):
             current_node.add_child(child_node)
 
     return current_node
-
 
 
 def search_question_in_tree(
@@ -87,7 +90,7 @@ def aggregate_child_answers(root: QuestionNode):
 
 def decomposer_node(state: state.OverallState):
     question = state["question"]
-    return {"question_tree": build_question_tree(question)}
+    return {"question_tree": build_question_tree(question).to_dict()}
 
 
 def rag_3_layer(state: state.InternalRAGState):
@@ -99,16 +102,16 @@ def rag_3_layer(state: state.InternalRAGState):
             "question_group_id": question_group_id,
         }
     )["answer"]
-    question_tree = state["question_tree"]
+    question_tree = QuestionNode.from_dict(state["question_tree"])
     question_node = search_question_in_tree(question_tree, question)
     question_node.answer = answer
-    return {"question_tree": question_tree}
+    return {"question_tree": question_tree.to_dict()}
 
 
 def rag_2_layer(state: state.InternalRAGState):
     question_group_id = str(uuid.uuid4())
     question = state["question"]
-    question_tree = state["question_tree"]
+    question_tree = QuestionNode.from_dict(state["question_tree"])
     question_node = search_question_in_tree(question_tree, question)
 
     aggregate_child_answers(question_tree)
@@ -124,13 +127,13 @@ def rag_2_layer(state: state.InternalRAGState):
     question_node.answer = rag_e2e.invoke(
         {"question": question, "question_group_id": question_group_id}
     )["answer"]
-    return {"question_tree": question_tree}
+    return {"question_tree": question_tree.to_dict()}
 
 
 def rag_1_layer(state: state.InternalRAGState):
     question_group_id = str(uuid.uuid4())
     question = state["question"]
-    question_tree = state["question_tree"]
+    question_tree = QuestionNode.from_dict(state["question_tree"])
     question_node = search_question_in_tree(question_tree, question)
 
     aggregate_child_answers(question_tree)
@@ -146,11 +149,13 @@ def rag_1_layer(state: state.InternalRAGState):
     question_node.answer = rag_e2e.invoke(
         {"question": question, "question_group_id": question_group_id}
     )["answer"]
-    return {"question_tree": question_tree}
+    return {"question_tree": question_tree.to_dict()}
 
 
 graph = StateGraph(state.OverallState)
-graph.add_node(nodes.process_query.__name__, nodes.process_query)
+graph.add_node(
+    nodes.combine_conversation_history.__name__, nodes.combine_conversation_history
+)
 graph.add_node(nodes.check_safety.__name__, nodes.check_safety)
 graph.add_node(nodes.decompose_question_v2.__name__, nodes.decompose_question_v2)
 graph.add_node(nodes.ask_clarifying_questions.__name__, nodes.ask_clarifying_questions)
@@ -161,9 +166,9 @@ graph.add_node(rag_2_layer.__name__, rag_2_layer)
 graph.add_node(rag_1_layer.__name__, rag_1_layer)
 graph.add_node(nodes.combine_answer_v2.__name__, nodes.combine_answer_v2)
 graph.add_edge(START, nodes.check_safety.__name__)
-graph.add_edge(nodes.check_safety.__name__, nodes.process_query.__name__)
+graph.add_edge(nodes.check_safety.__name__, nodes.combine_conversation_history.__name__)
 graph.add_conditional_edges(
-    nodes.process_query.__name__,
+    nodes.combine_conversation_history.__name__,
     edges.route_initial_query,
     {
         nodes.ask_clarifying_questions.__name__: nodes.ask_clarifying_questions.__name__,
@@ -172,8 +177,11 @@ graph.add_conditional_edges(
 )
 graph.add_conditional_edges(
     nodes.check_safety.__name__,
-    edges.query_modified_or_not,
-    {nodes.process_query.__name__: nodes.process_query.__name__, END: END},
+    edges.query_safe_or_not,
+    {
+        nodes.combine_conversation_history.__name__: nodes.combine_conversation_history.__name__,
+        END: END,
+    },
 )
 graph.add_conditional_edges(
     nodes.ask_clarifying_questions.__name__,

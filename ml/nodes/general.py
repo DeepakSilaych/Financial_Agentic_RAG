@@ -57,5 +57,6 @@ def general_llm(state: state.OverallState):
     
     return {
         "final_answer": llm_output.answer,
+        "answer": llm_output.answer,
         "messages": [AIMessage(role="Chatbot", content=llm_output.answer)],
     }

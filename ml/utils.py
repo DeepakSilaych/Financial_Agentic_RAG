@@ -4,6 +4,8 @@ from datetime import datetime, timezone
 import os
 import openai
 import base64
+import requests
+import config
 
 from langgraph.graph.graph import CompiledGraph
 from langchain_core.runnables.graph import MermaidDrawMethod
@@ -51,6 +53,50 @@ def log_message(message, component="main"):
     else:
         with open(f"logs/{config.LOG_FILE_NAME}", "a") as log_file:
             log_file.write(message + "\n")
+
+def tree_log(message, component="main"):
+    if config.LOG_FILE_NAME == "stdout":
+        print(message)
+    elif config.LOG_FILE_NAME == "server":
+        # Run the async function
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            return loop.run_until_complete(_send_log(message, component))
+        finally:
+            loop.close()
+    else:
+        with open(f"logs/tree_log.txt", "a") as log_file:
+            log_file.write(message + "\n")
+
+def send_logs(parent_node= None, curr_node= None, child_node=None, text=None , input_state=None , output_state = None, endpoint = config.LOGGING_ENDPOINT):
+    # Construct the JSON payload
+    payload = {
+        "parent_node": parent_node,
+        "current_node": curr_node,
+        "child_node" : child_node , 
+        "text": text,
+        # "input_state": input_state,
+        # "output_state": output_state,
+    }
+    
+    # Send the POST request with the JSON payload
+    try:
+        response = requests.post(endpoint, json=payload)
+        
+        # Check if the request was successful
+        tree_log(f"{{'parent_node': {payload['parent_node']} \n 'current_node' : {payload['current_node']} \n 'child_node' : {payload['child_node']} \n 'text' : {payload['text']}\n\n }}" , 1)
+        if response.status_code == 200:
+            tree_log(f"{curr_node}  : Request successful." , 1)
+            return response.json()  # Return the JSON response from the server
+        else:
+            tree_log(f"{curr_node} : Request failed with status code: {response.status_code}"  ,1)
+            return None
+        
+        # tree_log()
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred: {e}")
+        return None
 
 from functools import lru_cache
 

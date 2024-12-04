@@ -5,7 +5,7 @@ BASE_DATA_DIRECTORY = "MultiData/base_data"
 
 VECTOR_STORE_HOST = "127.0.0.1"
 VECTOR_STORE_PORT = 7000
-VECTOR_STORE_TIMEOUT = 10
+VECTOR_STORE_TIMEOUT = 30
 
 FAST_VECTOR_STORE_HOST = "127.0.0.1"
 FAST_VECTOR_STORE_PORT = 7000
@@ -26,10 +26,13 @@ SLOW2_VECTOR_STORE_DATA_DIR = "MultiData/server2_data"
 SLOW2_VECTOR_STORE_CACHE_DIR = "MultiCache/server2_cache"
 
 CACHE_STORE_HOST = "127.0.0.1"
-CACHE_STORE_PORT= 8000
+CACHE_STORE_PORT = 8000
 
 MULTI_SERVER_HOST = "127.0.0.1"
 MULTI_SERVER_PORT = 8080
+
+# Depth of decomposer
+DECOMPOSER_DEPTH = 2
 
 # Number of documents to retrieve from the vector store
 NUM_DOCS_TO_RETRIEVE = 5
@@ -68,25 +71,132 @@ CHAIN_DEBUG_CONFIG: RunnableConfig = {"callbacks": [ConsoleCallbackHandler()]}
 
 EVAL_QUERY_BATCH_SIZE = 10
 
+# Max number of retries for the entire pipeline
+MAX_RETRIES = 2
+
+# Max number of questions that the query clarifier should ask
+MAX_QUESTIONS_TO_ASK = 3
+
 # Set to "stdout" to log to stdout, "server" to send the logs to the server, or a file name to log to a file
 LOG_FILE_NAME = "pipeline_log.txt"
 
+LOGGING_ENDPOINT = "http://192.168.156.15:8000/receive_nodes/"
+
 WORKFLOW_SETTINGS = {
-    "query_expansion": True,
     "metadata_filtering": True,
     "assess_metadata_filters": True,
     "metadata_filtering_with_quant_qual": False,
     "reranking": False,
-    "grade_documents": True,
-    "assess_graded_documents": True,
+    "grade_documents": False,
+    "assess_graded_documents": False,
     "rewrite_with_hyde": True,
-    "check_hallucination": True,
+    "check_hallucination": False,
     "hallucination_checker": "llm",  # "hhem"
     "grade_answer": False,
     "grade_web_answer": False,
-    "with_table_for_quant_qual": False,
+    #
+    "check_safety": False,
+    "query_expansion": False,
+    "follow_up_questions": True,
+    "with_table_for_quant_qual": True,
     "with_site_blocker": False,
     "vision": False,
+    "calculator": False,
+    "field_to_ignore_from_metadata_for_generation": [
+        "created_at",
+        "image",
+        "is_table_value",
+        "item_10K",
+        "modified_at",
+        "owner",
+        "seen_at",
+        "table",
+        "topic",
+        "topic",
+    ],
+}
+
+# LOGGING_SETTINGS = {
+#     'START' : True , # Always True
+#     'check_safety': False ,
+#     # 'process_query' : False ,
+    # 'combine_conversation_history_v2' : True ,
+    # 'combine_conversation_history' : True ,
+#     'refine_query' : True ,
+#     'ask_clarifying_questions' : False ,
+#     'identify_missing_reports' : False ,
+#     'download_missing_reports' : False ,
+
+#     'decomposer_node_1' : True ,# Always True
+#     'rag_1_time' : True ,
+
+#     # rag_e2e nodes ( Atleast 1 should be True : To visualize branching )
+#     'expand_question' : True ,
+#     'extract_metadata' : False ,
+#     'retrieve_documents_with_metadata' : True ,
+#     'grade_documents' : False ,
+#     'rewrite_with_hyde' : True ,
+#     'generate_answer_with_citation_state' : True ,
+#     'grade_answer' : False ,
+#     'search_web' : True ,
+#     'generate_web_answer' : True ,
+#     'grade_web_answer' : False ,
+#      ####
+
+#     'aggregate1' : True ,
+#     'decomposer_node_2' : True ,
+#     'rag_2_time' : True ,
+
+#     ## rag_e2e : Calling 2nd time ( Branching )
+#     'aggregate2' : True ,
+#     'decomposer_node_3' : True , # Always True
+#     'rag_3_time' : True ,
+
+#     ## rag_e2e : Calling 2nd time ( Branching )
+#     'aggregate3' : True ,
+#     'combine_answer_v3' : True ,
+#     'append_citations' : True ,
+
+# }
+
+
+LOGGING_SETTINGS = {
+    "START": True,  # Always True
+    "check_safety": True,
+    'combine_conversation_history_v2' : True ,
+    'combine_conversation_history' : True ,
+    "refine_query": True,
+    "ask_clarifying_questions": True,
+    "identify_missing_reports": True,
+    "download_missing_reports": True,
+    # kpi_nodes
+    "get_required_values": True,
+    "get_required_kpis": True,
+    "decomposer_node_1": True,  # Always True
+    "rag_1_time": True,
+    # rag_e2e nodes ( Atleast 1 should be True : To visualize branching )
+    "expand_question": True,
+    "extract_metadata": True,
+    "retrieve_documents_with_metadata": True,
+    "grade_documents": True,
+    "rewrite_with_hyde": True,
+    "generate_answer_with_citation_state": True,
+    "grade_answer": True,
+    "search_web": True,
+    "generate_web_answer": True,
+    "grade_web_answer": True,
+    ####
+    "aggregate1": True,
+    "decomposer_node_2": True,
+    "rag_2_time": True,
+    ## rag_e2e : Calling 2nd time ( Branching )
+    "aggregate2": True,
+    "decomposer_node_3": True,  # Always True
+    "rag_3_time": True,
+    ## rag_e2e : Calling 2nd time ( Branching )
+    "aggregate3": True,
+    "combine_answer_v3": True,
+    "append_citations": True,
 }
 
 GLOBAL_SET_OF_FINANCE_TERMS = {

@@ -110,7 +110,7 @@ def combine_task_question(state: state.OverallState):
     
     print("Inside combine_task_question")
     if task == "None" and question == "None":
-        return state
+        return {}
     elif question == "None":
         code = state["code"]
     else:

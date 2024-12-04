@@ -4,7 +4,10 @@ from langchain_core.prompts import ChatPromptTemplate
 import state , nodes
 from llm import llm
 from utils import log_message
+import uuid
 
+from utils import send_logs 
+from config import LOGGING_SETTINGS
 
 class AnswerGrader(BaseModel):
     """Grader assesses whether an answer addresses a question with a binary score and reasoning."""
@@ -65,20 +68,55 @@ def grade_answer(state: state.InternalRAGState):
         log_message(
             "------ANSWER IS INSUFFICIENT------", f"question_group{question_group_id}"
         )
-        state["is_answer_sufficient"] = False
-        state["insufficiency_reason"] = reason
+        is_answer_sufficient = False
+        insufficiency_reason = reason
     else:
         log_message(
             "------ANSWER IS SUFFICIENT------", f"question_group{question_group_id}"
         )
-        state["is_answer_sufficient"] = True
-        state["insufficiency_reason"] = None
+        is_answer_sufficient = True
+        insufficiency_reason = None
 
-    state["answer_generation_retries"] = state.get("answer_generation_retries", 0)
-    state["answer_generation_retries"] += 1
-    state["prev_node"] = "grade_answer"
+    answer_generation_retries = state.get("answer_generation_retries", 0)
+    # state["answer_generation_retries"] += 1
+    # state["prev_node"] = "grade_answer"
 
-    return state
+    ###### log_tree part
+    id = str(uuid.uuid4())
+    child_node = nodes.grade_answer.__name__ + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    log_tree = {}
+
+    if not LOGGING_SETTINGS['grade_answer']:
+        child_node = parent_node  
+        
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+
+    output_state = {
+        "answer_generation_retries": answer_generation_retries + 1 ,
+        "insufficiency_reason" : insufficiency_reason,
+        "is_answer_sufficient" : is_answer_sufficient,
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
+    }
+
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    return output_state 
+
 
 class WebAnswerGrader(BaseModel):
     """Grader assesses whether an answer addresses a question with a binary score and reasoning."""
@@ -141,12 +179,45 @@ def grade_web_answer(state: state.InternalRAGState):
     rag_answer = state.get("doc_generated_answer", "")
     web_answer = state.get("web_generated_answer", "")
 
+    # id = str(uuid.uuid4())
+    # child_node = nodes.grade_web_answer.__name__ + "//" + id
+    # parent_node = state.get("prev_node" , "START")
+    # log_tree = {}
+    # log_tree[parent_node] = [child_node]
+
     if rag_answer == "":
+
+        id = str(uuid.uuid4())
+        child_node = nodes.grade_web_answer.__name__ + "//" + id
+        parent_node = state.get("prev_node" , "START")
+        log_tree = {}
+
+        if not LOGGING_SETTINGS['grade_web_answer']:
+            child_node = parent_node 
+
+        log_tree[parent_node] = [child_node]
+
         log_message(
             "------NO RAG ANSWER FOUND : RETURNING WEB GENERATED ANSWER------",
             f"question_group{question_group_id}",
         )
-        return {"answer" : web_answer}
+
+        
+
+        output_state = {
+            "answer" : web_answer,
+            "prev_node" : child_node,
+            "log_tree" : log_tree ,
+        }
+        send_logs(
+            parent_node = parent_node , 
+            curr_node= child_node , 
+            child_node=None , 
+            input_state=state , 
+            output_state=output_state , 
+            text=child_node.split("//")[0] ,
+        )   
+        return output_state
 
 
     res = web_answer_grader.invoke({"question" : question  , "rag_answer" : rag_answer , "web_answer": web_answer} )
@@ -162,19 +233,46 @@ def grade_web_answer(state: state.InternalRAGState):
 
         # Select the answer with the higher score
         if rag_score == "1":
-            state['answer'] = rag_answer
+            answer = rag_answer
         else:
-            state['answer'] = web_answer
+            answer = web_answer
 
     except Exception as e:
         log_message(f"Error grading answers: {str(e)}", f"question_group{question_group_id}")
-        state['answer'] = state.get("answer" , "")
+        answer = state.get("answer" , "")
 
-    # ##### log_tree part
-    # curr_node = nodes.grade_web_answer.__name__
-    # prev_node = state.get("prev_node" , "START")
-    # state["log_tree"][prev_node] = [{"node" : curr_node , "state" : state}]
-    # state["prev_node"] = curr_node
-    # #####
+    ###### log_tree part
+    id = str(uuid.uuid4())
+    child_node = nodes.grade_web_answer.__name__ + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    log_tree = {}
 
-    return state
+    if not LOGGING_SETTINGS['grade_web_answer']:
+        child_node = parent_node  
+
+    log_tree[parent_node] = [child_node]
+    ######
+    
+    ##### Server Logging part
+
+    
+
+    output_state = {
+        "answer" : answer,
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
+    }
+
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    return output_state 

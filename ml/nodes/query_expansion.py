@@ -7,6 +7,10 @@ from database import FinancialDatabase
 
 import state , nodes
 from llm import llm
+import uuid
+
+from utils import send_logs
+from config import LOGGING_SETTINGS
 
 
 class ExpandedQuestions(BaseModel):
@@ -102,20 +106,50 @@ def expand_question(state: state.OverallState):
     db = FinancialDatabase()
     db_state = db.get_all_reports()
     state["db_state"] = db_state
-    expanded_questions = question_expander.invoke(
+    # res = question_expander.invoke(
+   
+    res = question_expander.invoke(
         {"structure": _10k_structure, "question": question , "db_state":db_state}
     )
     # expanded_questions = decomposed_questions.decomposed_questions
 
-    log_message(f"Expanded question: {expanded_questions}")
+    log_message(f"Expanded question: {res}")
 
-    state["expanded_question"] = expanded_questions.elaborated_questions
+    expanded_question = res.elaborated_questions
 
-    # ##### log_tree part
-    # curr_node = nodes.expand_question.__name__
-    # prev_node = state.get("prev_node" , "START")
-    # state["log_tree"][prev_node] = [{"node" : curr_node , "state" : state}]
 
-    # state["prev_node"] = curr_node
-    # #####
-    return state
+    ###### log_tree part
+    # import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = nodes.expand_question.__name__ + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    log_tree = {}
+
+    if not LOGGING_SETTINGS['expand_question']:
+        child_node = parent_node 
+         
+    log_tree[parent_node] = [child_node]
+    ######
+
+    
+    ##### Server Logging part
+
+    output_state = {
+        "expanded_question" : expanded_question , 
+        "db_state" : db_state , 
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
+    }
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    return output_state 

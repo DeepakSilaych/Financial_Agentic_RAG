@@ -45,7 +45,7 @@ def ask_follow_up_questions(state: state.OverallState):
     query = state.get("question", "")
     messages = state.get("messages", [])
     decomposed_answers = state.get("decomposed_answers", [])
-    final_answer = state.get("answer", "")
+    final_answer = state.get("final_answer", "")
 
     followup_output = follow_up_question_generator.invoke(
         {

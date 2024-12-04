@@ -1,14 +1,40 @@
 from pydantic import BaseModel, Field, root_validator
 from typing import Optional
-from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate
+from langchain.prompts import ChatPromptTemplate
+from langchain_core.documents import Document
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.messages import AIMessage
-from langchain.agents import AgentExecutor, create_openai_tools_agent
 from langchain_core.messages import SystemMessage, HumanMessage
 
-import state, config
+import state, config , nodes
 from llm import llm
-from utils import log_message
+import uuid
+from utils import log_message , send_logs
+from config import LOGGING_SETTINGS
+
+
+
+def remove_unnecessary_metadata_for_generation(docs: list[Document]) -> list[Document]:
+    """
+    Remove unnecessary metadata from the document for generation.
+    """
+    for doc in docs:
+        for key in config.WORKFLOW_SETTINGS[
+            "field_to_ignore_from_metadata_for_generation"
+        ]:
+            doc.metadata.pop(key, None)
+    return docs
+
+
+def remove_unnecessary_metadata_for_generation(docs: list[Document]) -> list[Document]:
+    """
+    Remove unnecessary metadata from the document for generation.
+    """
+    for doc in docs:
+        for key in config.WORKFLOW_SETTINGS[
+            "field_to_ignore_from_metadata_for_generation"
+        ]:
+            doc.metadata.pop(key, None)
+    return docs
 
 
 basic_citation_prompt = """
@@ -27,40 +53,34 @@ Make sure to include the actual filename , filepath , page number and not just t
 
 """
 
-
-
-
-
-
 def generate_answer(state: state.InternalRAGState):
     """
     Generates the answer based on the documents and the question present in the state.
     """
 
     log_message("---GENERATE---")
-    question = state["original_question"]
+    question = state.get("original_question",state["question"])
     documents = state["documents"]
     image_url = state.get("image_url", "")
 
     chat_prompt_template = ChatPromptTemplate.from_messages(
-        messages = [
+        messages=[
             SystemMessage(content=basic_citation_prompt),
-            HumanMessage(content=[
-                {
-                    "type": "text",
-                    "text": f"Context: {documents}",
-                },
-                {
-                    "type": "text",
-                    "text": f"Question: {question}"
-                }
-            ])
+            HumanMessage(
+                content=[
+                    {
+                        "type": "text",
+                        "text": f"Context: {remove_unnecessary_metadata_for_generation(documents)}",
+                    },
+                    {"type": "text", "text": f"Question: {question}"},
+                ]
+            ),
         ]
     )
-    
-    print(chat_prompt_template)
+
+    # print(chat_prompt_template)
     rag_chain_basic = chat_prompt_template | llm | StrOutputParser()
-    print(rag_chain_basic)
+    # print(rag_chain_basic)
     # RAG generation
     answer: str = rag_chain_basic.invoke({"context": documents, "question": question})
     return {"answer": answer, "citation": []}
@@ -126,7 +146,7 @@ class WebAnswerOutput(BaseModel):
     )
 
 
-prompt = """You are an assistant for question-answering tasks, and you can refer to the following pieces of retrieved context to answer the question. Please provide a well-reasoned answer and support it with citations from the context. If you don't know the answer, just say that you don't know. You are also provided an image which the user has uploaded and may or may not be relevant to the question.
+ans_with_structured_citations_prompt = """You are an assistant for question-answering tasks, and you can refer to the following pieces of retrieved context to answer the question. Please provide a well-reasoned answer and support it with citations from the context. If you don't know the answer, just say that you don't know. You are also provided an image which the user has uploaded and may or may not be relevant to the question.
 
 **Instructions:**
 - Make sure the information in the answer generated are based on factual information from the context and should not be artificially generated.  
@@ -137,7 +157,8 @@ prompt = """You are an assistant for question-answering tasks, and you can refer
     - "file_name" : Exact Name of the PDF file or document. ( Never create hypothetical or artificial name )
     - "file_path": Exact Path of the PDF file or document.  ( Never create hypothetical or artificial file name )
 3. Do not hallucinate. 
-4. If the query cannot be answered with the provided context make sure to output : "The query cannot be answered with the provided context"
+4. Never use relative terms for year reference like last year , next year in answer . Use absolute year number references. 
+5. If the query cannot be answered with the provided context make sure to output : "The query cannot be answered with the provided context"
 **Output Format:**
 {{
   "main_answer": "<Main Answer>",
@@ -155,26 +176,23 @@ prompt = """You are an assistant for question-answering tasks, and you can refer
 """
 
 
-
-
-
 def generate_answer_with_citation_state(state: state.InternalRAGState):
     """
     Generates the answer based on the documents and the question present in the state.
     Returns structured output.
     """
-    question = state["original_question"]
+    question = state.get("original_question",state["question"])
     documents = state["documents"]
     image_url = state.get("image_url", "")
 
     if image_url == "":
         chat_prompt_template = ChatPromptTemplate.from_messages(
             messages = [
-                SystemMessage(content=basic_citation_prompt),
+                SystemMessage(content=ans_with_structured_citations_prompt),
                 HumanMessage(content=[
                     {
                         "type": "text",
-                        "text": f"Context: {documents}",
+                        "text": f"Context: {remove_unnecessary_metadata_for_generation(documents)}",
                     },
                     {
                         "type": "text",
@@ -187,11 +205,11 @@ def generate_answer_with_citation_state(state: state.InternalRAGState):
         image_url = f"data:image/jpeg;base64,{image_url}"
         chat_prompt_template = ChatPromptTemplate.from_messages(
             messages = [
-                SystemMessage(content=basic_citation_prompt),
+                SystemMessage(content=ans_with_structured_citations_prompt),
                 HumanMessage(content=[
                     {
                         "type": "text",
-                        "text": f"Context: {documents} \nImage being shared may or may not be relevant to the question.",
+                        "text": f"Context: {remove_unnecessary_metadata_for_generation(documents)} \nImage being shared may or may not be relevant to the question.",
                     },
                     {
                         "type": "image_url",
@@ -207,19 +225,52 @@ def generate_answer_with_citation_state(state: state.InternalRAGState):
     rag_chain = chat_prompt_template | llm.with_structured_output(GeneratedAnswerOutput)
     res: GeneratedAnswerOutput = rag_chain.invoke({})  # type: ignore
 
-    state["doc_generated_answer"] = res.main_answer
-    state["answer"] = res.main_answer
+    doc_generated_answer = res.main_answer
+    answer = res.main_answer
     # if res.citations :
     if res.citations:
-        state["citations"] = [
+        citations = [
             citation.model_dump() for citation in res.citations
         ]  # Convert Citation objects to dictionaries
     else:
-        state["citations"] = []
-    # else :
-    #     state["citations"] = None
+        citations = []
 
-    return state
+
+    ###### log_tree part
+    # import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = nodes.generate_answer_with_citation_state.__name__ + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    log_tree = {}
+
+    if not LOGGING_SETTINGS['generate_answer_with_citation_state']:
+        child_node = parent_node 
+    
+    log_tree[parent_node] = [child_node]
+    ######
+
+    
+    ##### Server Logging part
+    output_state = {
+        "answer" : answer ,
+        "doc_generated_answer" : doc_generated_answer ,
+        "citations" : citations ,
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
+    }
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    return output_state
 
 
 class AnswerWithCitationOutput(BaseModel):
@@ -279,8 +330,8 @@ Example 2 :
 
  [If there is a url in the citation then use format_for_web_sources]
  [Use format_from_document_sources: If there is no url in the citation which means the citation is from the ]
- \n Format_for_web_sources  : {format1} \n 
- \n Format_for_document_sources : {format2} \n
+ Format_for_web_sources  : {format1}
+ Format_for_document_sources : {format2}
 
 Ensure:
 - Inline citations are correctly numbered.
@@ -311,7 +362,6 @@ def append_citations(state: state.OverallState):
     """
     combined_citations = state["combined_citations"]
     final_answer = state["final_answer"]
-    
 
     # for citation in combined_citations:
     #     if citation
@@ -334,10 +384,39 @@ def append_citations(state: state.OverallState):
 
     # Invoke the LLM with the prompt
     result = citation_adder.invoke(input_data)
+    final_answer_with_citations = result.final_answer
 
-    state["final_answer_with_citations"] = result.final_answer
-    log_message(f"Final answer with citations: {result.final_answer}", 1)
-    return state
+    ###### log_tree part
+    # import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = nodes.append_citations.__name__ + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    log_tree = {}
+    if not LOGGING_SETTINGS['append_citations']:
+        child_node = parent_node  
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+
+    output_state = { 
+        "final_answer_with_citations" : final_answer_with_citations ,
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
+    }
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    return output_state
 
 
 ## WEB ANSWER TEMPLATE
@@ -387,26 +466,74 @@ def generate_web_answer(state: state.InternalRAGState):
     question_group_id = state.get("question_group_id", 1)
 
     # log_message("---GENERATE---",f"question_group{question_group_id}")
-    question = state["original_question"]
+    question = state.get("original_question",state["question"])
     documents = state["documents"]
 
-    if (config.WORKFLOW_SETTINGS["with_site_blocker"]):
+    if config.WORKFLOW_SETTINGS["with_site_blocker"]:
         for doc in documents:
             url = doc.metadata["url"]
             if sum([allowed_url in url for allowed_url in state.get("urls", [])]) == 0:
                 documents.remove(doc)
 
     log_message(f"web_documents: {documents}", f"question_group{question_group_id}")
-    answer: str = rag_chain_web.invoke({"context": documents, "question": question})
+    res: WebAnswerOutput = rag_chain_web.invoke(
+        {
+            "context": remove_unnecessary_metadata_for_generation(documents),
+            "question": question,
+        }
+    )  # type: ignore
+
+    web_generated_answer = res.main_answer
+    answer = res.main_answer
+    citations = res.citations
+    res_citations = []
+    for cite in citations:
+        res_citations.append({"citation_content" : cite.citation_content , "title" : cite.title , "website" : cite.website})
     log_message(
-        f"-------FINAL ANSWER GENERATION--------\n------ {answer}",
+        f"-------FINAL ANSWER GENERATION--------\n------ {res}",
         f"question_group{question_group_id}",
     )
 
-    state["web_generated_answer"] = answer.main_answer
-    state["answer"] = answer.main_answer
-    state["citations"] = answer.citations
+    web_generated_answer = res.main_answer
+    answer = res.main_answer
+    citations = res.citations
 
-    # TODO : Adding web answer grader to compare tavily's answer and generated answer 
-    # TODO : ADD web answer grader after every web search node otherwise there would be an error
-    return state
+    ###### log_tree part
+    # import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = nodes.generate_web_answer.__name__ + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    log_tree = {}
+
+    if not LOGGING_SETTINGS['generate_web_answer']:
+        child_node = parent_node  
+        
+    log_tree[parent_node] = [child_node]
+    ######
+
+    
+    ##### Server Logging part
+
+
+
+    output_state = {
+        "web_generated_answer" : web_generated_answer , 
+        "answer" : answer ,
+        "citations" : citations ,
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
+    }
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+
+    ######
+
+    return output_state

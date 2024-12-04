@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 
-async def process_message(chat_id: int, message_text: str, websocket, db: Session):
+async def process_message(chat_id: int, space_id: int, message_text: str, websocket, db: Session):
 
     try: 
         if not message_text or not message_text.strip():
@@ -51,15 +51,29 @@ async def process_message(chat_id: int, message_text: str, websocket, db: Sessio
           'message': message_text
         })
 
+        try:
+            if len(db.query(models.Message).filter(models.Message.chat_id == chat_id).all()) == 1:
+                chat = db.query(models.Chat).filter(models.Chat.id == chat_id).first()
+                chat.title = message_text
+                db.commit()
+                db.refresh(chat)
+        except Exception as e:
+            logger.error(f"Error updating chat title: {str(e)}")
+
         await asyncio.sleep(.1)
 
         thread = {"configurable": {"thread_id": "1"}}
 
         clarifications = []
 
-        for event in app.stream({
-          "question": message_text
-        }, thread, stream_mode="values"): pass
+        input_dict = {
+          "question": message_text,
+          "chat_id": chat_id,
+          "message_id": user_message.id,
+          "space_id": space_id
+        }
+
+        for event in app.stream(input_dict, thread, stream_mode="values"): pass
 
         log_message("---ASKING USER FOR CLARIFICATION---")
 
@@ -199,7 +213,7 @@ async def process_message(chat_id: int, message_text: str, websocket, db: Sessio
         db.refresh(bot_response)
         
         await websocket.send_json({
-            'type': 'response',
+            'type': 'bot_response',
             'message_id': bot_response.id,
             'content': response
         })

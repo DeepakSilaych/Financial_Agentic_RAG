@@ -91,7 +91,7 @@ const FileTable = () => {
     }
   };
 
-  const filteredFiles = files.filter(file => 
+  const filteredFiles = files.filter(file =>
     file.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     file.tag.toLowerCase().includes(searchQuery.toLowerCase()) ||
     file.owner.toLowerCase().includes(searchQuery.toLowerCase())
@@ -130,7 +130,7 @@ const FileTable = () => {
             </div>
             <input
               type="text"
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-offset-2 focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-offset-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               placeholder="Search files, tags, or owners..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -138,7 +138,7 @@ const FileTable = () => {
           </div>
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+            className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             <Upload className="h-5 w-5 mr-2" />
             Upload
@@ -154,18 +154,17 @@ const FileTable = () => {
       </div>
 
       <div
-        className={`overflow-x-auto bg-white rounded-lg shadow transition-all ${
-          isDragging ? 'border-2 border-pink-500 border-dashed' : ''
-        }`}
+        className={`overflow-x-auto bg-white rounded-lg shadow transition-all ${isDragging ? 'border-2 border-blue-500 border-dashed' : ''
+          }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
         {isDragging && (
-          <div className="absolute inset-0 bg-pink-50 bg-opacity-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-blue-50 bg-opacity-50 flex items-center justify-center">
             <div className="text-center">
-              <Plus className="h-12 w-12 text-pink-500 mx-auto" />
-              <p className="mt-2 text-sm text-pink-600">Drop files here to upload</p>
+              <Plus className="h-12 w-12 text-blue-500 mx-auto" />
+              <p className="mt-2 text-sm text-blue-600">Drop files here to upload</p>
             </div>
           </div>
         )}
@@ -195,7 +194,7 @@ const FileTable = () => {
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
-                          className="bg-pink-600 h-2 rounded-full transition-all duration-300"
+                          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                           style={{ width: `${progress}%` }}
                         ></div>
                       </div>

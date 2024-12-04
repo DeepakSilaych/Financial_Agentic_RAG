@@ -105,7 +105,7 @@ def rag3(state: state.InternalRAGState):
 
 # fmt: off
 graph = StateGraph(state.OverallState)
-graph.add_node(nodes.process_query.__name__, nodes.process_query)
+graph.add_node(nodes.combine_conversation_history.__name__, nodes.combine_conversation_history)
 graph.add_node(nodes.check_safety.__name__, nodes.check_safety)
 graph.add_node(nodes.decompose_question_v2.__name__, nodes.decompose_question_v2)
 graph.add_node(nodes.ask_clarifying_questions.__name__, nodes.ask_clarifying_questions)
@@ -118,9 +118,9 @@ graph.add_node(nodes.combine_answers.__name__, nodes.combine_answers)
 graph.add_node(nodes.ask_follow_up_questions.__name__, nodes.ask_follow_up_questions)
 
 graph.add_edge(START, nodes.check_safety.__name__)
-graph.add_edge(nodes.check_safety.__name__, nodes.process_query.__name__)
+graph.add_edge(nodes.check_safety.__name__, nodes.combine_conversation_history.__name__)
 graph.add_conditional_edges(
-    nodes.process_query.__name__,
+    nodes.combine_conversation_history.__name__,
     edges.route_initial_query,
     {
         nodes.ask_clarifying_questions.__name__: nodes.ask_clarifying_questions.__name__,
@@ -129,9 +129,9 @@ graph.add_conditional_edges(
 )
 graph.add_conditional_edges(
     nodes.check_safety.__name__,
-    edges.query_modified_or_not,
+    edges.query_safe_or_not,
     {
-        nodes.process_query.__name__: nodes.process_query.__name__,
+        nodes.combine_conversation_history.__name__: nodes.combine_conversation_history.__name__,
         END:END
     }
 )

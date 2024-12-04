@@ -6,7 +6,8 @@ from langchain_core.prompts import ChatPromptTemplate
 
 import state
 from llm import llm
-from utils import log_message
+from utils import log_message , send_logs
+from config import LOGGING_SETTINGS
 
 with open("experiments/kpis/kpis.json") as f:
     data = json.load(f)
@@ -41,7 +42,7 @@ class ClarifyingQuestion(BaseModel):
 
 
 # System prompt for generating clarifying questions based on the initial query
-_system_prompt_for_clarify = """
+_system_prompt_for_clarify_strict = """
 
 You are an advanced query evaluator specializing in financial analysis of 10-K reports. Your primary goal is to determine whether a user query requires clarification to ensure accurate and relevant retrieval of information.
 
@@ -49,8 +50,8 @@ You are an advanced query evaluator specializing in financial analysis of 10-K r
 
 ### Strict Instructions:
 
-1. Ask questions ONLY when essential to resolve ambiguity or fill critical gaps that would lead to incomplete or incorrect information retrieval.
-2. If the query is sufficiently clear and actionable as it stands, respond with:
+1. If there is any potential ambiguity or missing detail, PROACTIVELY ASK clarifying questions. Ensure questions resolve ambiguity or fill gaps critical for accurate and complete information retrieval.
+2. If the query is sufficiently clear and actionable, respond with:
   
    {{
        "question_type": "none",
@@ -59,26 +60,32 @@ You are an advanced query evaluator specializing in financial analysis of 10-K r
    }}
    
 3. If clarification is needed, select the most suitable question type:
-   - Direct Answer: For open-ended clarifications (e.g., *"What time frame should the analysis cover?"*).
-   - Single Choice: When a specific option must be selected (e.g., *"Which year's filing should be analyzed?"*).
-   - Multiple Choice: When there are multiple valid options (e.g., *"What aspects of the 10-K report should the analysis focus on?"*).
+   - Direct Answer: For open-ended and user-specific clarifications (e.g., *"What time frame should the analysis cover?"*).
+   - Single Choice: When only one relevant option must be selected (e.g., *"Which year's filing should be analyzed?"*).
+   - Multiple Choice: For queries with multiple valid options (e.g., *"What aspects of the 10-K report should the analysis focus on?"*).
 
 ---
 
 ### Guidelines for Question Generation:
-
-- Necessity Check: Do not ask a question unless it is absolutely required to complete the retrieval task accurately.
+- Necessity Check: Do not ask a question unless it is absolutely required to complete the retrieval task accurately. Every question must address a specific gap in the query.
+- Address Ambiguities Proactively: If any part of the query could be interpreted differently or leaves room for detail, ASK a question to refine the understanding.
 - Relevance: Ensure the question is directly tied to the context of financial analysis of 10-K reports.
-- Data-Aware: Use the available list of companies and years of data to guide question generation. Avoid asking for information that is clearly irrelevant or unavailable.
+- Contextual Awareness: Consider available data (e.g., companies, years) to generate realistic options. 
 - Clarity & Precision: Frame questions in a manner that is specific, concise, and unambiguous, resembling how a financial expert would inquire.
-- Avoid Redundancy: Do not ask generic or trivial questions. Every question must address a specific gap in the query.
+- Avoid Repetition: Do not repeat any question which has been clarified already. 
+
+### Guidelines for Option Creation (if the question is Single Choice or Multiple Choice):
+- Options: Ensure at least two options for Single Choice and at least three for Multiple Choice.
+- Relevance: Tailor options to the query's context to make them actionable.
+- Logical Organization: Arrange options in a logical sequence, such as by importance, chronological order, or category.
+- Avoid Generic Filler: Avoid generic options unless the context justifies it and it adds clarity.
 
 ---
 
 ### Examples:
 
 #### Example 1:
-User Query: *"What were the major risks highlighted in Tesla's 10-K filing?"*  
+User Query: *"What was Net income of Tesla in 2021 based on their 10-K filing?"*  
 Response:  
 {{
     "question_type": "none",
@@ -88,12 +95,12 @@ Response:
 ---
 
 #### Example 2:
-User Query: *"Can you provide insights on Apple's revenue?"*  
+User Query: *"Provide insights on the latest 10-K filing."*  
 Response:  
 {{
-    "question_type": "single-choice",
-    "question": "Which year's revenue for Apple should be analyzed?",
-    "options": ["2023", "2022", "2021"]
+    "question_type": "direct-answer",
+    "question": "Could you specify the company for which you need the latest 10-K filing analyzed?",
+    "options": null
 }}
 ---
 
@@ -102,23 +109,23 @@ User Query: *"Explain the risk factors in latest financial report of Meta."*
 Response:  
 {{
     "question_type": "multiple-choice",
-    "question": "Which type of risks are you most interested in?",
+    "question": "Which categories of risks in Meta's latest financial report are you most interested in?",
     "options": ["Financial risks (e.g., revenue volatility)", "Technological risks (e.g., innovation or data security)", "Legal and regulatory risks (e.g., antitrust or privacy laws)", "Market competition risks (e.g., new entrants, competitors)"]
 }}
 ---
 
 #### Example 4:
-User Query: *"Tell me about Google's financial highlights."*  
+User Query: *"What are the key governance practices in Apple's filings?""*  
 Response:  
 {{
     "question_type": "multiple-choice",
-    "question": "What aspects of Google's financial highlights should be analyzed?",
-    "options": ["Revenue", "Profit margins", "Expenses", "All key financial metrics"]
+    "question": "Which specific governance practices in Apple's filings would you like to explore?",
+    "options": ["Board structure and composition", "Executive compensation and incentives", "Shareholder rights and voting mechanisms", "Diversity, equity, and inclusion initiatives"]
 }}
 ---
 
 #### Example 5:
-User Query: *"Compare Meta and Google's revenue for the year 2021."*  
+User Query: *"Compare revenues of Meta and Google for the year 2020."*  
 Response:  
 {{
     "question_type": "none",
@@ -128,52 +135,159 @@ Response:
 ---
 
 #### Example 6:
-User Query: *"What governance practices are covered in Meta Platforms' reports?"*  
+User Query: *"Can you provide details about Meta's profitability for 2021?"*  
 Response:  
 {{
-    "question_type": "multiple-choice",
-    "question": "Which specific governance practices should the analysis focus on?",
-    "options": ["Board structure", "Executive compensation", "Shareholder rights"]
+    "question_type": "single-choice",
+    "question": "Which metric of profitability are you most interested in?",
+    "options": ["Net income", "Operating margin", "Gross margin", "Return on equity (ROE)"]
 }}
 ---
 
 #### Example 7:
-User Query: *"Can you analyze 10-K filings?"*  
+User Query: *"What are Microsoft's key achievements in their 10-K?"*  
 Response:  
 {{
-    "question_type": "direct-answer",
-    "question": "Could you specify the company or year for the 10-K filings you need analyzed?",
-    "options": null
+    "question_type": "single-choice",
+    "question": "Which year's achievements would you like to focus on?",
+    "options": ["2020", "2021", "2022", "2023"]
 }}
+
 ---
 
+#### Example 8:
+User Query: *"What are the takeaways from Google's latest filings?"*  
+Response:  
+{{
+    "question_type": "multiple-choice",
+    "question": "Which key takeaways from Google's filings would you like to focus on?",
+    "options": ["Financial performance (e.g., revenue, profit)", "Risk factors", "Market position and competition", "Governance practices"]
+}}
+
+---
 
     Now, given the following user query, generate clarifying question as needed:"""
 
-clarify_prompt = ChatPromptTemplate.from_messages(
+
+_system_prompt_for_clarify_relaxed = """
+You are an advanced query evaluator specializing in financial analysis of 10-K reports. Your goal is to refine user queries by asking clarifying questions that enhance the accuracy, relevance, and depth of the final response. Your questioning approach reflects the thoughtful inquiry process of a professional financial analyst.
+
+---
+### Guidelines for Clarifying Questions:
+
+1. **Enhance Context**:  
+   If there are any ambiguities or missing details in the query, proactively ask a clarifying question that adds significant value to the query's context or ensures accurate retrieval. Avoid redundant or trivial questions. Examples of valuable clarifications include:
+   - Determining the scope of analysis (e.g., timeframe, company, specific metrics).
+   - Identifying focus areas (e.g., risk factors, revenue trends, governance practices).
+   - Understanding the type of analysis required (e.g., which liquidity or profitability metrics).
+
+2. **Research-Oriented Inquiry**:  
+   Frame questions that uncover key details a financial analyst would typically explore. For instance:
+   - Which specific time period should the analysis cover?
+   - Are there particular metrics or comparisons of interest?
+   - Should the focus be on a section of the 10-K (e.g., risk factors, financial highlights)?
+
+3. **Clarity & Relevance**:  
+   Questions must be concise, directly tied to the query, and focused on financial analysis. Do not ask general or unrelated questions.
+
+4. **Contextual Awareness**:  
+   - If the query involves vague terms like "latest," resolve ambiguity using today's date.
+   - Tailor your questions to align with the context of the query (e.g., known companies or available datasets).
+   - You would be provided a list of clarifying questions already clarified by the user, DO NOT REPEAT THEM.
+
+5. **Logical Options**:  
+   For Single Choice or Multiple Choice questions, ensure options are:
+   - Realistic and relevant (e.g., years, metrics, focus areas).
+   - Organized logically (e.g., by chronological order or importance).
+
+---
+
+### Types of Questions:
+- **Direct Answer**: For open-ended clarifications (e.g., "What time period should the analysis focus on?").  
+- **Single Choice**: When a single option needs to be specified (e.g., "Which company's 10-K filing should be analyzed?").  
+- **Multiple Choice**: For queries involving multiple valid options (e.g., "What aspects of the 10-K filing are of interest?").
+
+---
+
+### Examples:
+**Example 1:**
+**User Query:** *"What are the key insights from Tesla's latest 10-K?"*
+**Response:**
+{{
+    "question_type": "multiple-choice",
+    "question": "Which aspects of Tesla's latest 10-K are you most interested in?",
+    "options": ["Financial performance (e.g., revenue, profit)", "Risk factors", "Governance practices", "Market trends"]
+}}
+**Example 2:**
+**User Query:** *"Explain Apple's governance practices in their 10-K filings."*
+**Response:**
+{{
+    "question_type": "single-choice",
+    "question": "Which governance practices of Apple are you interested in?",
+    "options": ["Board structure", "Executive compensation", "Shareholder rights", "Diversity and inclusion initiatives"]
+}}
+**Example 3:**
+**User Query:** *"What was the net income of Meta in 2021?"*
+**Response:**
+{{
+    "question_type": "none",
+    "question": null,
+    "options": null
+}}
+**Example 4:**
+**User Query:** *"Compare revenue trends for Meta and Google."*
+**Response:**
+{{
+    "question_type": "direct-answer",
+    "question": "Could you specify the time period for the revenue comparison?",
+    "options": null
+}}
+**Example 5:**
+**User Query:** *"Provide insights on risk factors in the latest filings of Microsoft."*
+**Response:**
+{{
+    "question_type": "multiple-choice",
+    "question": "Which categories of risks in Microsoft's latest filings would you like to focus on?",
+    "options": ["Financial risks (e.g., revenue volatility)", "Technological risks (e.g., innovation or cybersecurity)", "Legal and regulatory risks (e.g., privacy laws)", "Market competition risks"]
+}}
+Now, given the user query, generate a clarifying question (if needed) by adhering to the above guidelines. """
+clarify_prompt_strict = ChatPromptTemplate.from_messages(
     [
-        ("system", _system_prompt_for_clarify),
-        ("human", "**User Query:** *{query}\n**Data Available**: {company_year_data}"),
+        ("system", _system_prompt_for_clarify_strict),
+        ("human", "**User Query:** *{query}*\n**Available Data**: {company_year_data}\n**Clarified Questions and User Responses:** {clarified}"),
     ]
 )
-clarifying_question_generator = clarify_prompt | llm.with_structured_output(
+clarify_prompt_relaxed = ChatPromptTemplate.from_messages(
+    [
+        ("system", _system_prompt_for_clarify_relaxed),
+        ("human", "**User Query:** *{query}*\n**Available Data**: {company_year_data}\n**Clarified Questions and User Responses:** {clarified}")
+    ]
+)
+clarifying_question_generator_strict = clarify_prompt_strict | llm.with_structured_output(
+    ClarifyingQuestion
+)
+clarifying_question_generator_relaxed = clarify_prompt_relaxed | llm.with_structured_output(
     ClarifyingQuestion
 )
 
-
 def ask_clarifying_questions(state: state.OverallState):
-    """
-    A Human-in-the-Loop function that:
-    1. Generates clarifying questions based on the user's initial query.
-    2. Interacts with the user to collect responses to these questions.
-    3. Uses an LLM to combine the original query, clarifying questions, and user responses into a refined final query.
-    """
     log_message("---GENERATING CLARIFYING QUESTIONS BASED ON USER QUERY---")
     query = state["question"]
-    clarifying_output = clarifying_question_generator.invoke(
-        {"query": query, "company_year_data": company_year_data}
+    clarifying_questions = state.get("clarifying_questions",[])
+    clarifications = state.get("clarifications", [])
+    combined_clarifications = " | ".join(
+        f"Q: {q['question']}   A: {a}"
+        for q, a in zip(clarifying_questions, clarifications)
     )
-    analysis_suggestions = None
+    if state["fast_vs_slow"]=="fast":
+        clarifying_output = clarifying_question_generator_strict.invoke(
+            {"query": query, "company_year_data": company_year_data, "clarified": combined_clarifications}
+        )
+    else:
+        clarifying_output = clarifying_question_generator_relaxed.invoke(
+            {"query": query, "company_year_data": company_year_data, "clarified": combined_clarifications}
+        )
+
     clar_out = {
         "question": getattr(clarifying_output, "question", None),
         "question_type": getattr(clarifying_output, "question_type", None),
@@ -190,10 +304,45 @@ def ask_clarifying_questions(state: state.OverallState):
         analysis_suggestions = analysis_suggestion_generator.invoke(
             {"query": query}
         ).analysis_suggestions
-    return {
+
+    ###### log_tree part
+    import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = nodes.ask_clarifying_questions.__name__ + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    log_tree = {}
+
+    if not LOGGING_SETTINGS['ask_clarifying_questions']:
+            child_node = parent_node  
+
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+
+    # if not LOGGING_SETTINGS['ask_clarifying_questions']:
+    #         child_node = parent_node  
+
+
+    output_state = {
         "clarifying_questions": [clar_out],
         "analysis_suggestions": analysis_suggestions,
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
     }
+    
+    send_logs(
+            parent_node = parent_node , 
+            curr_node= child_node , 
+            child_node=None , 
+            input_state=state , 
+            output_state=output_state , 
+            text=child_node.split("//")[0] ,
+        )
+    
+    ######
+
+    return output_state
 
 
 class AnalysisSuggestion(BaseModel):

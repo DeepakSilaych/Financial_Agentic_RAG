@@ -5,9 +5,14 @@ load_dotenv()
 
 from utils import log_message
 import config
-from workflows.repeater_with_HITL import repeater_with_HITL as app
+# from workflows.repeater_with_HITL import repeater_with_HITL as app
+from workflows.e2e import e2e as app
 
-ques = input("User: ") 
+# ques = "if i had 3 firearms and you had 4 firearms, how many firearms would we have in total? "
+# ques = "jp morgan ceo? " #input("User: ") 
+# ques = "Analyse google's revenue in 2021"
+ques = "What is google's total revenue progression year by year from 2021 to 2023? Only consider google."
+# ques = "What is Apple's total revenue for the fourth quarter of 2022 in USD?"
 initial_input = {
     "question": ques,
 }  
@@ -52,7 +57,7 @@ while True:
         log_message("No further clarifications required.")
         break
 
-    # Run the graph to generate subsequent clarifying questions
+    # Run the graph to geenerate subsequent clarifying questions
     for event in app.stream(None, thread, stream_mode="values", subgraphs=True):
         print(event)
 
@@ -60,7 +65,8 @@ for event in app.stream(None, thread, stream_mode="values", subgraphs=True):
     print(event)
 
 state = app.get_state(thread).values
-print("FINAL ANSWER:", state["final_answer"])
+print(state)
+print("FINAL ANSWER:", state.get("final_answer",state.get("answer",None)))
 
 with open("pipeline_log.txt", "w") as file:
     pass

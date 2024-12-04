@@ -69,8 +69,10 @@ class MultiDocumentServer():
 
         async with aiohttp.ClientSession(connector=aiohttp.TCPConnector()) as session:
             # Send the request to the remote URL using the same method
-            async with session.request(request.method, remote_url) as resp:
+            body = await request.read()
+            async with session.request(request.method, remote_url, headers=request.headers, data=body) as resp:
                 if resp.content_type == 'application/json':
+                    print("JSON response")
                     response_json = await resp.json()  # Parse JSON response
                     return aiohttp.web.Response(
                         status=resp.status,
@@ -80,11 +82,28 @@ class MultiDocumentServer():
                 else:
                     # Handle non-JSON responses (like text, html, etc.)
                     text = await resp.text()
+                    print("Non-JSON response")
                     return aiohttp.web.Response(
                         status=resp.status,
                         text=text,
                         headers=resp.headers
                     )
+                
+    async def handle_health_check(self, request):
+        server1_url = f"http://{self.host}:{self.server1_port}"
+        server2_url = f"http://{self.host}:{self.server2_port}"
+
+        server1_status = self.check_server_status(server1_url)
+        server2_status = self.check_server_status(server2_url)
+
+        if server1_status and server2_status:
+            return aiohttp.web.Response(status=200, text="both")
+        elif server1_status:
+            return aiohttp.web.Response(status=200, text="server1")
+        elif server2_status:
+            return aiohttp.web.Response(status=200, text="server2")
+        else:
+            return aiohttp.web.Response(status=500, text="none")
                 
     def run_server1(self):
         # Running server1 with its own cache backend in a separate process
@@ -117,6 +136,9 @@ class MultiDocumentServer():
 
         app = aiohttp.web.Application()
         app.router.add_route('*', '/v1/statistics', self.handle_request)
+        app.router.add_route('*', '/v1/retrieve', self.handle_request)
+        app.router.add_route('*', '/v1/inputs', self.handle_request)
+        app.router.add_route('*', '/v1/health', self.handle_health_check)
 
         aiohttp_cors.setup(app)
         aiohttp.web.run_app(app, host=self.host, port=self.proxy_port)

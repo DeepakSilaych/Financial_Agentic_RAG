@@ -12,28 +12,13 @@ from nodes.question_decomposer import (
     check_sufficient,
 )
 from .rag_e2e import rag_e2e
-
-
-# Define the QuestionNode class
-class QuestionNode:
-    def __init__(self, parent_question: Optional[str], question: str, layer: int):
-        self.parent_question = parent_question  # The question that led to this one
-        self.question = question  # The current question
-        self.layer = layer  # The depth of this question in the tree
-        self.answer = None
-        self.child_answers = []
-        self.children = []
-        self.citations = []
-        self.child_citations = []
-
-    def add_child(self, child):
-        self.children.append(child)
+from state import QuestionNode
 
 def write_cache(query,answer):
     id=str(uuid.uuid4())
     #combined_answer=answer+' '+citations
-    entry={"record_id":id,"query":query,"answer":answer}
-    with open("./data2/answers.jsonlines", "a") as f:
+    entry={"record_id":id,"query":query,"answer":answer,"type":"cache"}
+    with open("./data_cache/answers.jsonlines", "a") as f:
         f.write(json.dumps(entry) + "\n")
 
 # Function to build the question tree
@@ -118,7 +103,7 @@ def decomposer_node_1(state: state.OverallState):
     tree = build_question_tree(question)
     subquestion_store = [i.question for i in tree.children]
     return {
-        "question_tree_1": tree,
+        "question_tree_1": tree.to_dict(),
         "question_store": [question],
         "subquestion_store": subquestion_store,
     }
@@ -131,7 +116,7 @@ def decomposer_node_2(state: state.OverallState):
     combined_citations = state.get("combined_citations",[])
     tree = build_question_tree(question, 0, 1, None, True,subquestion_store)
     new_subquestion_store = [i.question for i in tree.children]
-    return {"question_tree_2": tree, "subquestion_store": new_subquestion_store}
+    return {"question_tree_2": tree.to_dict(), "subquestion_store": new_subquestion_store}
 
 
 def decomposer_node_3(state: state.OverallState):
@@ -141,7 +126,7 @@ def decomposer_node_3(state: state.OverallState):
     combined_citations = state.get("combined_citations",[])
     tree = build_question_tree(question, 0, 1, None, True, subquestion_store)
     new_subquestion_store = [i.question for i in tree.children]
-    return {"question_tree_3": tree, "subquestion_store": new_subquestion_store}
+    return {"question_tree_3": tree.to_dict(), "subquestion_store": new_subquestion_store}
 
 
 def rag_1_time(state: state.InternalRAGState):
@@ -157,7 +142,7 @@ def rag_1_time(state: state.InternalRAGState):
                 "question_group_id": question_group_id,
             }
         )
-        question_tree = state["question_tree_1"]
+        question_tree = QuestionNode.from_dict(state["question_tree_1"])
         question_node = search_question_in_tree(question_tree, question)
         question_node.answer = res["answer"]
         question_node.citations = res["citations"]
@@ -166,18 +151,18 @@ def rag_1_time(state: state.InternalRAGState):
 
         return {
             # "decomposed_questions": [prev_question],
-            "question_tree_1": question_tree,
+            "question_tree_1": question_tree.to_dict(),
             "combined_documents": documents,
             # "question_group": [state["question_group"]],
             # "number_of_question" : [len(state["question_group"])]
         }
     else:
-        question_tree = state["question_tree_1"]
+        question_tree = QuestionNode.from_dict(state["question_tree_1"])
         question_node = search_question_in_tree(question_tree, question)
         question_node.answer = cache_output['answer']
         
         return {
-            "question_tree_1": question_tree,
+            "question_tree_1": question_tree.to_dict(),
         }
 
     
@@ -196,7 +181,7 @@ def rag_2_time(state: state.InternalRAGState):
                 "question_group_id": question_group_id,
             }
         )
-        question_tree = state["question_tree_2"]
+        question_tree = QuestionNode.from_dict(state["question_tree_2"])
         question_node = search_question_in_tree(question_tree, question)
         question_node.answer = res["answer"]
         question_node.citations = res["citations"]
@@ -205,18 +190,18 @@ def rag_2_time(state: state.InternalRAGState):
 
         return {
             # "decomposed_questions": [prev_question],
-            "question_tree_2": question_tree,
+            "question_tree_2": question_tree.to_dict(),
             "combined_documents": documents,
             # "question_group": [state["question_group"]],
             # "number_of_question" : [len(state["question_group"])]
         }
     else:
-        question_tree = state["question_tree_2"]
+        question_tree = QuestionNode.from_dict(state["question_tree_2"])
         question_node = search_question_in_tree(question_tree, question)
         question_node.answer = cache_output['answer']
         
         return {
-            "question_tree_2": question_tree,
+            "question_tree_2": question_tree.to_dict(),
         }
 
 
@@ -233,7 +218,7 @@ def rag_3_time(state: state.InternalRAGState):
                 "question_group_id": question_group_id,
             }
         )
-        question_tree = state["question_tree_3"]
+        question_tree = QuestionNode.from_dict(state["question_tree_3"])
         question_node = search_question_in_tree(question_tree, question)
         question_node.answer = res["answer"]
         question_node.citations = res["citations"]
@@ -242,24 +227,24 @@ def rag_3_time(state: state.InternalRAGState):
 
         return {
             # "decomposed_questions": [prev_question],
-            "question_tree_3": question_tree,
+            "question_tree_3": question_tree.to_dict(),
             "combined_documents": documents,
             # "question_group": [state["question_group"]],
             # "number_of_question" : [len(state["question_group"])]
         }
     else:
-        question_tree = state["question_tree_3"]
+        question_tree = QuestionNode.from_dict(state["question_tree_3"])
         question_node = search_question_in_tree(question_tree, question)
         question_node.answer = cache_output['answer']
         
         return {
-            "question_tree_3": question_tree,
+            "question_tree_3": question_tree.to_dict(),
         }
 
 
 def aggregate1(state: state.OverallState):
     main_question = state["question"]
-    question_tree = state["question_tree_1"]
+    question_tree = QuestionNode.from_dict(state["question_tree_1"])
     combined_citations = state["combined_citations"]
     qa_pairs=state['qa_pairs']
     # combined_citations = state
@@ -283,13 +268,12 @@ def aggregate1(state: state.OverallState):
         "qa_pairs": new_qa_pairs,
         "sufficient": answered,
         "combined_citations" : combined_citations
-        #    'question_tree_store':[question_tree]
     }
 
 
 def aggregate2(state: state.OverallState):
     main_question = state["question"]
-    question_tree = state["question_tree_2"]
+    question_tree = QuestionNode.from_dict(state["question_tree_2"])
     combined_citations = state["combined_citations"]
     qa_pairs=state['qa_pairs']
     # question_node=workflows.search_question_in_tree()
@@ -313,13 +297,12 @@ def aggregate2(state: state.OverallState):
         "qa_pairs": new_qa_pairs,
         "sufficient": answered,
         "combined_citations" : combined_citations,
-        #    'question_tree_store':[question_tree]
     }
 
 
 def aggregate3(state: state.OverallState):
     main_question = state["question_store"][0]
-    question_tree = state["question_tree_3"]
+    question_tree = QuestionNode.from_dict(state["question_tree_3"])
     # question_node=workflows.search_question_in_tree()
     combined_citations = state["combined_citations"]
     qa_pairs=state['qa_pairs']
@@ -337,7 +320,6 @@ def aggregate3(state: state.OverallState):
     return {
         "qa_pairs":new_qa_pairs,
         "combined_citations" : combined_citations
-        #   'question_tree_store':[question_tree]
     }
 
 

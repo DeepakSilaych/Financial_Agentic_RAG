@@ -3,6 +3,7 @@ from utils import log_message
 
 import state
 from llm import llm
+from utils import send_logs
 
 # System prompt for LLM to refine the final query, using the original query, clarifying questions, and responses
 _system_prompt_for_final_query = """You are a query refiner who takes an initial query, clarifying questions, and user responses to create a final, well-structured query.\n
@@ -38,4 +39,29 @@ def refine_query(state: state.OverallState):
     log_message("----FINAL REFINED QUERY FOR RETRIEVAL---")
     log_message("----" + final_query.content)
 
-    return {"question": final_query.content}
+    ###### log_tree part
+    import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = nodes.refine_query.__name__ + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    log_tree = {}
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+
+    output_state = {
+        "question": final_query.content,
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
+    }
+    send_logs(
+        parent_node , 
+        child_node , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+    return output_state

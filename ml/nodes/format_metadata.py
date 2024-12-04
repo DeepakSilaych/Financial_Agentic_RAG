@@ -131,11 +131,11 @@ def convert_metadata_to_jmespath(metadata: dict[str, str | list[str]], metadata_
 
 # Input 
 # metadata = {
-#     "company_name": ["Tesla Inc", "Tesla Motors"],
+#     "company_name": "Tesla Inc",
 #     "year": "2023",
 #     "topics": ["revenue", "profits", "growth"]
 # }
 
 # Output string format 
-#  "contains(company_name, `tesla`) && contains(company_name, `motors`) && year == `2023` && (contains(topics, `revenue`) || contains(topics, `profits`) || contains(topics, `growth`))"
+#  "company_name == `tesla`) && contains(company_name, `motors`) && year == `2023` && (contains(topics, `revenue`) || contains(topics, `profits`) || contains(topics, `growth`))"
 

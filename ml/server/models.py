@@ -10,8 +10,10 @@ class Chat(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, default="New Chat")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    space_id = Column(Integer, ForeignKey("spaces.id"), nullable=False)
     
     messages = relationship("Message", back_populates="chat", cascade="all, delete-orphan")
+    space = relationship("Space", back_populates="chats")
 
 class Message(Base):
     __tablename__ = "messages"
@@ -26,6 +28,8 @@ class Message(Base):
 
     chat = relationship("Chat", back_populates="messages")
     intermediate_questions = relationship("IntermediateQuestion", back_populates="message", cascade="all, delete-orphan")
+    charts = relationship("Chart", back_populates="message", cascade="all, delete-orphan")
+    nodes = relationship("Nodes", back_populates="message", cascade="all, delete-orphan")
 
 class IntermediateQuestion(Base):
     __tablename__ = "intermediate_questions"
@@ -39,13 +43,65 @@ class IntermediateQuestion(Base):
 
     message = relationship("Message", back_populates="intermediate_questions")
 
+class Chart(Base):
+    __tablename__ = "charts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    message_id = Column(Integer, ForeignKey("messages.id"))
+    chart_type = Column(String, nullable=False)  # bar/line/pie
+    title = Column(String, nullable=False)
+    data = Column(Text, nullable=False)  # JSON string of chart data
+    description = Column(Text, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    message = relationship("Message", back_populates="charts")
+
+class Nodes(Base):
+    __tablename__ = "nodes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    parent_node = Column(String, nullable=True)
+    current_node = Column(String, nullable=False)
+    child_node = Column(String, nullable=True)
+    text = Column(String, nullable=False)
+    message_id = Column(Integer, ForeignKey("messages.id"))
+
+    message = relationship("Message", back_populates="nodes")
+
 class File(Base):
     __tablename__ = "files"
 
     id = Column(Integer, primary_key=True, index=True)
-    filename = Column(String, unique=True, index=True)
+    filename = Column(String, index=True)
     file_size = Column(Integer)
     upload_time = Column(DateTime(timezone=True), server_default=func.now())
-    chat_id = Column(Integer, ForeignKey("chats.id"), nullable=True)
+    space_id = Column(Integer, ForeignKey("spaces.id"), nullable=False)
+    folder_id = Column(Integer, ForeignKey("folders.id"), nullable=True)
+    physical_path = Column(String, nullable=False)  # Actual file location
 
-    chat = relationship("Chat")
+    space = relationship("Space", back_populates="files")
+    folder = relationship("Folder", back_populates="files")
+
+class Folder(Base):
+    __tablename__ = "folders"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    space_id = Column(Integer, ForeignKey("spaces.id"), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    space = relationship("Space", back_populates="folders")
+    files = relationship("File", back_populates="folder")
+
+class Space(Base):
+    __tablename__ = "spaces"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=True)
+    
+    chats = relationship("Chat", back_populates="space", cascade="all, delete-orphan")
+    files = relationship("File", back_populates="space", cascade="all, delete-orphan")
+    folders = relationship("Folder", back_populates="space", cascade="all, delete-orphan")
+

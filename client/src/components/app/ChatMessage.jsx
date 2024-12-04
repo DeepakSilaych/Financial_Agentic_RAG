@@ -1,220 +1,300 @@
-  import { Bot, BotMessageSquare, BotMessageSquareIcon, CheckSquare, KeyboardMusicIcon } from 'lucide-react';
-import { ArrowUp, Check, Square, ExternalLink, FileText } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import { BotMessageSquareIcon, CheckSquare, Square, ExternalLink, FileText, Check, User, BarChart2, LineChart, PieChart } from 'lucide-react';
+import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Bar, Line, Pie } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 
-const ChatMessage = ({ content, isUser, mode, intermediate_questions = [], onAnswerSubmit }) => {
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+// Avatar Component
+export const Avatar = ({ isUser }) => (
+  <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${isUser ? 'bg-blue-500' : 'bg-purple-500'}`}>
+    {isUser ? (
+      <User size={18} className="text-white" />
+    ) : (
+      <BotMessageSquareIcon size={18} className="text-white" />
+    )}
+  </div>
+);
+
+// Message Content Component
+const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, isLastInGroup }) => {
+  const { text, citations } = processBotMessage();
+  
+  return (
+    <div className="space-y-2 p-4">
+      <div className="prose prose-sm max-w-none">
+        <ReactMarkdown>{text}</ReactMarkdown>
+      </div>
+      {citations.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-2">
+          {citations.map((citation, index) => {
+            const [_, id, rest] = citation.match(/^(\d+)\/(.*)/) || [];
+            const isUrl = rest && rest.includes('://');
+            
+            return isUrl ? (
+              <motion.a
+                key={index}
+                href={rest}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-2 py-1 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <ExternalLink size={14} className="mr-1" />
+                Source {id}
+              </motion.a>
+            ) : (
+              <motion.span
+                key={index}
+                className="inline-flex items-center px-2 py-1 text-sm bg-gray-50 text-gray-600 rounded-md"
+                whileHover={{ scale: 1.02 }}
+              >
+                <FileText size={14} className="mr-1" />
+                Source {id}
+              </motion.span>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Intermediate Question Component
+const IntermediateQuestion = ({ question, onAnswerSubmit }) => {
   const [answer, setAnswer] = useState('');
   const [selectedOptions, setSelectedOptions] = useState([]);
+  const isMultipleChoice = Array.isArray(question.options) && question.options.length > 0;
+  const isAnswered = question.answer !== undefined;
 
-  useEffect(() => {
-    console.log({
-      "questions" : intermediate_questions
-    })
-  }, [intermediate_questions]);
+  const handleOptionClick = (option) => {
+    setSelectedOptions(prev => 
+      prev.includes(option) ? prev.filter(item => item !== option) : [...prev, option]
+    );
+  };
 
-  const handleSubmitAnswer = (e, questionId) => {
+  const handleSubmitAnswer = (e) => {
     e.preventDefault();
     if (answer.trim() || selectedOptions.length > 0) {
-      onAnswerSubmit(questionId, answer.trim() || selectedOptions);
+      onAnswerSubmit(question.id, answer.trim() || selectedOptions);
       setAnswer('');
       setSelectedOptions([]);
     }
   };
 
-  const handleOptionClick = (option, questionId) => {
-    if (selectedOptions.includes(option)) {
-      setSelectedOptions(prev => prev.filter(item => item !== option));
-    } else {
-      setSelectedOptions(prev => [...prev, option]);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="mt-4 bg-white border border-gray-200 rounded-lg overflow-hidden"
+    >
+      <div className="flex items-start p-4">
+        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+          <BotMessageSquareIcon size={18} className="text-blue-600" />
+        </div>
+        <div className="flex-1">
+          <h4 className="text-gray-700 mb-3">{question.question}</h4>
+          
+          {isAnswered ? (
+            <div className="bg-gray-50 p-3 rounded-md border border-gray-200">
+              <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                <Check size={16} className="text-green-500" />
+                <span>Answered</span>
+              </div>
+              <div className="text-gray-700">
+                {Array.isArray(question.answer) 
+                  ? question.answer.join(', ')
+                  : question.answer
+                }
+              </div>
+            </div>
+          ) : isMultipleChoice ? (
+            <div className="space-y-2">
+              {question.options.map((option, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleOptionClick(option)}
+                  className="flex items-center w-full p-3 text-left border rounded-md hover:bg-gray-50 transition-colors"
+                >
+                  {selectedOptions.includes(option) ? (
+                    <CheckSquare size={18} className="text-blue-500 mr-2" />
+                  ) : (
+                    <Square size={18} className="text-gray-400 mr-2" />
+                  )}
+                  {option}
+                </button>
+              ))}
+              {selectedOptions.length > 0 && (
+                <button
+                  onClick={handleSubmitAnswer}
+                  className="mt-3 w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                >
+                  Submit Answer
+                </button>
+              )}
+            </div>
+          ) : (
+            <form onSubmit={handleSubmitAnswer} className="space-y-3">
+              <input
+                type="text"
+                value={answer}
+                onChange={(e) => setAnswer(e.target.value)}
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                placeholder="Type your answer..."
+              />
+              <button
+                type="submit"
+                className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                disabled={!answer.trim()}
+              >
+                Submit Answer
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// Chart Component
+const ChartComponent = ({ chart }) => {
+  const chartIcons = {
+    'bar': <BarChart2 size={18} className="text-blue-600" />,
+    'line': <LineChart size={18} className="text-blue-600" />,
+    'pie': <PieChart size={18} className="text-blue-600" />
+  };
+
+  const getChartOptions = () => ({
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: false,
+      },
+    },
+    animation: {
+      duration: 1000,
+      easing: 'easeInOutQuart'
+    }
+  });
+
+  const getChartComponent = () => {
+    const commonProps = {
+      options: getChartOptions(),
+      data: chart.data
+    };
+
+    switch (chart.chart_type) {
+      case 'bar':
+        return <Bar {...commonProps} />;
+      case 'line':
+        return <Line {...commonProps} />;
+      case 'pie':
+        return <Pie {...commonProps} />;
+      default:
+        return null;
     }
   };
 
-  // Extract citations from content if it's a bot message
+  return (
+    <div className="w-full max-w-xl mx-auto p-2 bg-gray-50 rounded-md">
+      <div className="aspect-[4/3] w-full max-h-[300px]">
+        {getChartComponent()}
+      </div>
+    </div>
+  );
+};
+
+// Main ChatMessage Component
+const ChatMessage = ({ 
+  content, 
+  isUser, 
+  intermediate_questions = [], 
+  charts = [], 
+  onAnswerSubmit,
+  isFirstInGroup,
+  isLastInGroup
+}) => {
   const processBotMessage = () => {
-    if (isUser) return { text: content, citations: [] };
+    if (!content) return { text: '', citations: [] };
 
     const citations = [];
-    // Split content into text and citations while preserving order
     const segments = content.split(/(\[\[.+?\]\])/g);
-    const processedSegments = segments.map(segment => {
+    const text = segments.map(segment => {
       if (segment.startsWith('[[') && segment.endsWith(']]')) {
         const citation = segment.slice(2, -2);
         citations.push(citation);
-        
-        // First, get the ID
-        const idMatch = citation.match(/^(\d+)\/(.*)/);
-        if (!idMatch) return segment; // Invalid citation format
-        
-        const [_, id, rest] = idMatch;
-        const isUrl = rest.includes('://');
-        
-        if (isUrl) {
-          return (
-            <a
-              key={id}
-              href={rest}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:underline inline-flex items-center"
-            >
-              <ExternalLink size={16} className="mr-1" />
-              Source {id}
-            </a>
-          );
-        } else {
-          return (
-            <span key={id} className="inline-flex items-center text-gray-600">
-              <FileText size={16} className="mr-1" />
-              Source {id}
-            </span>
-          );
-        }
+        return '';
       }
-      return <ReactMarkdown className="prose dark:prose-invert max-w-none">{segment}</ReactMarkdown>;
-    });
-
-    return { text: processedSegments, citations };
+      return segment;
+    }).join('');
+    
+    return { text, citations };
   };
 
-  const { text, citations } = processBotMessage();
-
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-6`}>
-      <div 
-        className={`max-w-[80%] ${
-          isUser 
-            ? 'bg-pink-600 text-white rounded-tr-none' 
-            : 'bg-gray-100 rounded-tl-none'
-        } rounded-2xl px-6 py-4 shadow-sm hover:shadow-md transition-shadow duration-200`}
-      >
-        <div className="flex items-center gap-2 mb-2">
-          {!isUser && (
-            <BotMessageSquareIcon size={20} className="text-pink-600" />
-          )}
-          <span className="text-sm font-medium">
-            {isUser ? 'You' : 'Pathway AI'}
-          </span>
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className={`flex flex-col ${isUser ? 'text-gray-800' : 'text-gray-800'} w-full`}
+    >
+      <MessageContent 
+        content={content} 
+        isUser={isUser} 
+        processBotMessage={processBotMessage}
+        isFirstInGroup={isFirstInGroup}
+        isLastInGroup={isLastInGroup}
+      />
+      
+      {charts && charts.length > 0 && (
+        <div className="px-4 pb-4 space-y-3">
+          {charts.map((chart, index) => (
+            <ChartComponent key={index} chart={chart} />
+          ))}
         </div>
-        
-        <div className={`text-md ${isUser ? 'text-white' : 'text-gray-800'}`}>
-          {Array.isArray(text) ? text : text}
+      )}
+      
+      {intermediate_questions && intermediate_questions.length > 0 && (
+        <div className="px-4 pb-4">
+          {intermediate_questions.map((question, index) => (
+            <IntermediateQuestion
+              key={index}
+              question={question}
+              onAnswerSubmit={onAnswerSubmit}
+            />
+          ))}
         </div>
-
-        {!isUser && citations.length > 0 && (
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <p className="text-sm font-medium mb-2 text-gray-700">Sources:</p>
-            <div className="space-y-2">
-              {citations.map((citation, index) => {
-                // Parse citation with regex to handle URLs properly
-                const match = citation.match(/^(\d+)\/(.*?)(?:\/(\d+))?$/);
-                if (!match) return null;
-                
-                const [_, id, link, page] = match;
-                const isUrl = link.includes('://');
-                
-                return (
-                  <div 
-                    key={index}
-                    onClick={() => isUrl && window.open(link, '_blank')}
-                    className={`flex items-center space-x-2 text-sm ${isUrl ? 'cursor-pointer hover:text-blue-600' : ''}`}
-                  >
-                    {isUrl ? (
-                      <ExternalLink size={16} className="text-gray-500" />
-                    ) : (
-                      <FileText size={16} className="text-gray-500" />
-                    )}
-                    <span>
-                      [{id}] {isUrl ? link : `${link} (Page ${page})`}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {intermediate_questions && intermediate_questions.length > 0 && (
-          intermediate_questions.map((question, index) => (
-            <div key={index} className="mb-4">
-              {!question.answer ? (
-                question.type === 'single-choice' || question.type === 'multiple-choice' ? (
-                  <form onSubmit={(e) => handleSubmitAnswer(e, question.id)} className="mt-3 border border-blackcolor rounded-lg p-6 h-full">
-                    <p className="text-sm mb-2">Please select {question.type === 'single-choice' ? 'one option' : 'at least one option'}</p>
-                    <p className="text-sm mb-4 font-medium">{question.question}</p>
-                    <div className="space-y-2">
-                      {question.options.map((option, optionIndex) => (
-                        <button
-                          type="button"
-                          key={optionIndex}
-                          onClick={() => handleOptionClick(option, question.id)}
-                          className={`w-full p-2 text-left rounded-lg ${
-                            selectedOptions.includes(option) ? 'bg-gray-300' : 'bg-gray-200'
-                          } text-blackcolor transition-colors flex justify-between items-center`}
-                        >
-                          <span>{option}</span>
-                          {selectedOptions.includes(option) ? (
-                            <CheckSquare size={20} className="text-blackcolor" />
-                          ) : (
-                            <Square size={20} className="text-blackcolor" />
-                          )}
-                        </button>
-                      ))}
-                      <input 
-                        type="text"
-                        value={selectedOptions}
-                        onChange={(e) => setSelectedOptions(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                        placeholder="If none of the above, type your answer here..."
-                      />
-                    </div>
-                    <button
-                      type="submit"
-                      className="mt-4 p-2 bg-blackcolor text-white rounded-lg hover:bg-black transition-colors w-full"
-                      disabled={selectedOptions.length === 0}
-                    >
-                      Submit
-                    </button>
-                  </form>
-                ) : (
-                  <form onSubmit={(e) => handleSubmitAnswer(e, question.id)} className="mt-3 border border-blackcolor rounded-lg p-6">
-                    <p className="text-sm mb-4 font-medium">{question.question}</p>
-                    <input
-                      type="text"
-                      value={answer}
-                      onChange={(e) => setAnswer(e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                      placeholder="Type your answer here..."
-                    />
-                    <button
-                      type="submit"
-                      className="w-full p-2 bg-blackcolor text-white rounded-lg hover:bg-black transition-colors"
-                      disabled={!answer.trim()}
-                    >
-                      Submit
-                    </button>
-                  </form>
-                )
-              ) : (
-                <div className="mt-3 border border-blackcolor rounded-lg p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <p className="text-sm font-medium">{question.question}</p>
-                    <Check size={20} className="text-green-500 ml-2 flex-shrink-0" />
-                  </div>
-                  <div className="mt-2 p-3 bg-gray-100 rounded-lg">
-                    <p className="text-sm text-gray-700">
-                      {Array.isArray(question.answer) 
-                        ? question.answer.join(', ') 
-                        : question.answer}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))
-        )}
-      </div>
-    </div>
+      )}
+    </motion.div>
   );
 };
 

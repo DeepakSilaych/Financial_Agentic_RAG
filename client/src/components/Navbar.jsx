@@ -1,12 +1,55 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import { BotMessageSquare } from 'lucide-react';
+import {
+  BotMessageSquare,
+  LogIn,
+  UserPlus,
+  LayoutDashboard,
+  LogOut
+} from 'lucide-react';
+
+const NavButton = ({
+  children,
+  onClick,
+  variant = 'default',
+  className = '',
+  icon: Icon
+}) => {
+  const variants = {
+    default: 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg',
+    primary: 'bg-blue-600 text-white hover:bg-blue-700 rounded-lg',
+    secondary: 'bg-gray-900 text-white hover:bg-gray-800 rounded-lg',
+    outline: 'border border-gray-300 text-gray-700 hover:bg-gray-100 rounded-lg'
+  };
+
+  return (
+    <button
+      onClick={onClick}
+      className={`
+        flex items-center gap-2 px-3 py-2 text-sm font-medium 
+        transition-all duration-200 ease-in-out
+        focus:outline-none focus:ring-2 focus:ring-blue-500
+        ${variants[variant]}
+        ${className}
+      `}
+    >
+      {Icon && <Icon size={18} />}
+      {children}
+    </button>
+  );
+};
 
 const Navbar = () => {
   const { user, logout } = useUser();
   const location = useLocation();
+  const navigate = useNavigate();
   const isLandingPage = location.pathname === '/';
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-200">
@@ -14,8 +57,8 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="p-1 rounded-lg group-hover:bg-pink-50 transition-colors">
-              <BotMessageSquare size={32} className="text-pink-600" />
+            <div className="p-1 rounded-lg group-hover:bg-blue-50 transition-colors">
+              <BotMessageSquare size={32} className="text-blue-600" />
             </div>
             <span className="text-xl font-bold text-gray-900">Pathway</span>
           </Link>
@@ -24,37 +67,35 @@ const Navbar = () => {
           <div className="flex items-center gap-4">
             {user ? (
               <>
-                <Link
-                  to="/app"
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                <NavButton
+                  icon={LayoutDashboard}
+                  onClick={() => navigate('/app')}
                 >
                   Dashboard
-                </Link>
-                <button
-                  onClick={logout}
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                </NavButton>
+                <NavButton
+                  icon={LogOut}
+                  onClick={handleLogout}
+                  variant="outline"
                 >
                   Logout
-                </button>
+                </NavButton>
               </>
             ) : (
               <>
-                <Link
-                  to="/login"
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                <NavButton
+                  icon={LogIn}
+                  onClick={() => navigate('/login')}
                 >
                   Login
-                </Link>
-                <Link
-                  to="/signup"
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                    isLandingPage
-                      ? 'bg-pink-600 text-white hover:bg-pink-700'
-                      : 'bg-gray-900 text-white hover:bg-gray-800'
-                  }`}
+                </NavButton>
+                <NavButton
+                  icon={UserPlus}
+                  onClick={() => navigate('/signup')}
+                  variant={isLandingPage ? 'primary' : 'secondary'}
                 >
                   Sign Up
-                </Link>
+                </NavButton>
               </>
             )}
           </div>

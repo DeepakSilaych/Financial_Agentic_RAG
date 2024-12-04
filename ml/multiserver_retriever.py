@@ -2,21 +2,25 @@ from typing import Optional
 
 # in order to allow timoouts, we use a temporary fix
 from pathway.xpacks.llm.vector_store import VectorStoreClient
+from typing import Any, Optional
 
 import requests
 import json
 import config
+import logging
+from langchain_core.documents import Document
+from retriever import PathwayVectorStoreClient
 
 
-class PathwayVectorStoreClient():
+class CustomPathwayVectorStoreClient():
     def __init__(
         self,
         server1_url: Optional[str] = None,
         server2_url: Optional[str] = None,
         timeout: int = config.VECTOR_STORE_TIMEOUT,
     ):
-        self.client1 = VectorStoreClient(host=None, port=None, url=server1_url, timeout=timeout)
-        self.client2 = VectorStoreClient(host=None, port=None, url=server2_url, timeout=timeout)
+        self.client1 = PathwayVectorStoreClient(host=None, port=None, url=server1_url, timeout=timeout)
+        self.client2 = PathwayVectorStoreClient(host=None, port=None, url=server2_url, timeout=timeout)
         self.url1 = server1_url
         self.url2 = server2_url
         self.timeout = timeout
@@ -84,6 +88,42 @@ class PathwayVectorStoreClient():
 
         responses = response.json()
         return sorted(responses, key=lambda x: x["dist"])
+    
+    def similarity_search(self, query: str, k: int = 4, **kwargs: Any):
+        try:
+            response = requests.post(
+                self.url1 + "/v1/health",
+                json={},
+                headers={"Content-Type": "application/json"},
+                timeout=5,
+            )
+            text = response.text
+            print(f"Server 1: {text}")
+        except Exception as e:
+            print(f"Error: {e}")
+            text = "none"
+
+        try:
+            if text != "none":
+                ret1 = self.client1.similarity_search(query, k, **kwargs)
+            else:
+                ret1 = []
+        except Exception as e:
+            print(f"Error: {e}")
+            ret1 = []
+
+        try:
+            if text != "both":
+                ret2 = self.client2.similarity_search(query, k, **kwargs)
+            else:
+                ret2 = []
+        except Exception as e:
+            print(f"Error: {e}")
+            ret2 = []
+
+        return ret1 + ret2
+
+
 
     # Make an alias
     __call__ = query
@@ -135,7 +175,7 @@ class PathwayVectorStoreClient():
         return request_headers
 
 
-retriever = PathwayVectorStoreClient(
+retriever = CustomPathwayVectorStoreClient(
     server1_url=f"http://{config.MULTI_SERVER_HOST}:{config.MULTI_SERVER_PORT}",
     server2_url=f"http://{config.FAST_VECTOR_STORE_HOST}:{config.FAST_VECTOR_STORE_PORT}",
     timeout=5,

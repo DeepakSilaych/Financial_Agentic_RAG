@@ -18,4 +18,4 @@ graph.add_edge(kpis_nodes.calculate_kpis.__name__, kpis_nodes.generate_answer_fr
 graph.add_edge(kpis_nodes.generate_answer_from_kpis.__name__, END)
 # fmt: on
 
-kpi_workflow = graph.compile()
+kpi_workflow = graph.compile(interrupt_before=[kpis_nodes.get_required_kpis.__name__])

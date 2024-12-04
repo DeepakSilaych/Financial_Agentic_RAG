@@ -3,16 +3,23 @@ import { useParams } from 'react-router-dom';
 import ChatContainer from '../components/app/ChatContainer';
 import Sidebar from '../components/app/Sidebar';
 import { chatApi } from '../utils/api';
+import { useUser } from '../context/UserContext';
 
 const Chat = () => {
   const { id } = useParams();
+  const { currentSpace } = useUser();
   const [chat, setChat] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadChat = async () => {
       try {
-        const chatData = await chatApi.getChat(id);
+        if (!currentSpace?.id || !id) {
+          // Don't show error, just wait for space and chat id
+          return;
+        }
+        const chatData = await chatApi.getChat(currentSpace.id, id);
+        console.log('Loaded chat:', chatData);
         setChat(chatData);
       } catch (err) {
         setError('Failed to load chat');
@@ -20,10 +27,8 @@ const Chat = () => {
       }
     };
 
-    if (id) {
-      loadChat();
-    }
-  }, [id]);
+    loadChat();
+  }, [id, currentSpace]);
 
   if (error) {
     return (
@@ -35,7 +40,7 @@ const Chat = () => {
 
   return (
     <>
-      <ChatContainer chatId={id} />
+      {id && <ChatContainer chatId={id} />}
     </>
   );
 };

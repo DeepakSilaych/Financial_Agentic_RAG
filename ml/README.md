@@ -104,3 +104,19 @@ The logs will be automatically grouped in the dashboard based on:
 2. Track (if provided)
 3. Component (if provided)
 4. System logs (default)
+
+## server_manager.py \<insert this at appropriate place\>
+
+`server_manager.py` handles 1 fast indexing server and 2 slow indexing servers. The script is supposed to be kept running alongside the aforementioned 3 servers.
+
+### Configuration Changes
+Script has variables related to paths of data directories and cache directories of the 3 servers it manages. It loads values of these variables from `config.py`. Set the appropriate directory paths for all the servers in `config.py` for the server manager script to work properly.
+
+### Running Instructions
+
+```
+python3 server_manager.py
+```
+Preferably run this script in a detached terminal session.
+
+

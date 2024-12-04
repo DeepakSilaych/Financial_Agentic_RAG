@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Users, UserPlus, Mail } from 'lucide-react';
-import { useTeam } from '../../context/TeamContext';
+import { useUser } from '../../context/UserContext';
 
 const TeamMembers = () => {
-  const { currentTeam, teamMembers } = useTeam();
+  const { currentTeam, teamMembers } = useUser();
   const [isOpen, setIsOpen] = useState(false);
   const [isInviting, setIsInviting] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
@@ -21,7 +21,7 @@ const TeamMembers = () => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="text-gray-500 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-pink-500 p-2 rounded-md relative"
+        className="text-gray-500 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 rounded-md relative"
       >
         <Users size={20} />
         {teamMembers.filter(m => m.status === 'online').length > 0 && (
@@ -97,7 +97,7 @@ const TeamMembers = () => {
                 </button>
                 <button
                   onClick={handleInvite}
-                  className="px-2 py-1 text-xs text-pink-600 hover:text-pink-800"
+                  className="px-2 py-1 text-xs text-blue-600 hover:text-blue-800"
                 >
                   Send Invite
                 </button>
@@ -106,7 +106,7 @@ const TeamMembers = () => {
           ) : (
             <button
               onClick={() => setIsInviting(true)}
-              className="w-full text-left px-4 py-2 text-sm text-pink-600 hover:bg-gray-100 flex items-center space-x-2"
+              className="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-gray-100 flex items-center space-x-2"
             >
               <UserPlus size={16} />
               <span>Invite Team Member</span>

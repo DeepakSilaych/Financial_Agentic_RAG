@@ -107,12 +107,12 @@ def get_max_depth(root: QuestionNode) -> int:
 
 def send_2_layer_decomposed_questions(state: state.InternalRAGState):
     log_message(f"----RUNNING RAG AGENT ON SECOND LAYER SUBQUERIES----")
-    question_tree = state["question_tree"]
+    question_tree = QuestionNode.from_dict(state["question_tree"])
     x_layer_questions = get_nodes_by_layer(question_tree, 2)
     return [
         Send(
             f"rag_2_layer",
-            {"question": question.question, "question_tree": question_tree},
+            {"question": question.question, "question_tree": question_tree.to_dict()},
         )
         for question in x_layer_questions
     ]
@@ -120,24 +120,24 @@ def send_2_layer_decomposed_questions(state: state.InternalRAGState):
 
 def send_1_layer_decomposed_questions(state: state.InternalRAGState):
     log_message(f"----RUNNING RAG AGENT ON FIRST LAYER SUBQUERIES----")
-    question_tree = state["question_tree"]
+    question_tree =  QuestionNode.from_dict(state["question_tree"])
     x_layer_questions = get_nodes_by_layer(question_tree, 1)
     return [
         Send(
             f"rag_1_layer",
-            {"question": question.question, "question_tree": question_tree},
+            {"question": question.question, "question_tree": question_tree.to_dict()},
         )
         for question in x_layer_questions
     ]
 
 def send_first_set_of_decomposed_questions(state: state.OverallState):
-    question_tree = state["question_tree"]
+    question_tree =  QuestionNode.from_dict(state["question_tree"])
     depth = get_max_depth(question_tree)
     x_layer_questions = get_nodes_by_layer(question_tree, depth)
     return [
         Send(
             f"rag_{depth}_layer",
-            {"question": question.question, "question_tree": question_tree},
+            {"question": question.question, "question_tree": question_tree.to_dict()},
         )
         for question in x_layer_questions
     ]
@@ -158,19 +158,19 @@ def aggregate_child_answers(root):
             root.child_answers.append(child.answer)
 
 def repeat_1(state:state.OverallState):
-    question_tree=state["question_tree_1"]
+    question_tree=QuestionNode.from_dict(state["question_tree_1"])
     x_layer_questions=get_nodes_by_layer(question_tree,1)
-    return [Send(f"rag_1_time",{"question":question.question, "question_tree_1":question_tree}) for question in x_layer_questions]
+    return [Send(f"rag_1_time",{"question":question.question, "question_tree_1":question_tree.to_dict()}) for question in x_layer_questions]
 
 def repeat_2(state:state.OverallState):
-    question_tree=state["question_tree_2"]
+    question_tree=QuestionNode.from_dict(state["question_tree_2"])
     x_layer_questions=get_nodes_by_layer(question_tree,1)
-    return [Send(f"rag_2_time",{"question":question.question, "question_tree_2":question_tree}) for question in x_layer_questions]
+    return [Send(f"rag_2_time",{"question":question.question, "question_tree_2":question_tree.to_dict()}) for question in x_layer_questions]
 
 def repeat_3(state:state.OverallState):
-    question_tree=state["question_tree_3"]
+    question_tree=QuestionNode.from_dict(state["question_tree_3"])
     x_layer_questions=get_nodes_by_layer(question_tree,1)
-    return [Send(f"rag_3_time",{"question":question.question, "question_tree_3":question_tree}) for question in x_layer_questions]
+    return [Send(f"rag_3_time",{"question":question.question, "question_tree_3":question_tree.to_dict()}) for question in x_layer_questions]
 
 
 def check_answer_fit_1(state: state.OverallState):

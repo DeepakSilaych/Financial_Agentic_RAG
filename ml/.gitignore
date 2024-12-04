@@ -82,6 +82,9 @@ target/
 profile_default/
 ipython_config.py
 
+# Testing
+test.py
+
 # pyenv
 #   For a library or package, you might want to ignore these files since the code is
 #   intended to run in multiple environments; otherwise, check them in:
@@ -186,3 +189,5 @@ exposekeys.sh
 hub/
 testing2.py
 main_testing.py
+output_log.txt
+output_log2.txt
