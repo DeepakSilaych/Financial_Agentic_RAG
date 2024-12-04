@@ -317,4 +317,4 @@ const ChatInput = ({ setError: setParentError, chatId, messages, onSendMessage }
   );
 };
 
-export default ChatInput;
+export default ChatInput; 
