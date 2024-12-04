@@ -393,20 +393,15 @@ const ChatContainer = ({ chatId }) => {
     }
   };
 
-  const handleSendMessage = async (message, mode = 'chat', researchMode = false, selectedFiles = []) => {
-    if (!currentSpace?.id) {
-      setError('Please select a space first');
-      return;
-    }
-
-    const messageData = {
-      message,
-      mode,
-      research_mode: researchMode,
-      selected_files: selectedFiles
-    };
-
+  const handleSendMessage = async (messageData, newChatId = null) => {
     try {
+      const targetChatId = newChatId || chatId;
+      
+      // If this is a new chat, navigate to it
+      if (newChatId) {
+        navigate(`/spaces/${currentSpace.id}/chats/${newChatId}`);
+      }
+      
       // If there's no active chat, create one and send the message
       if (!chatId) {
         setLoading(true);

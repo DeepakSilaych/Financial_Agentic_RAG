@@ -15,6 +15,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { notesApi } from '../../utils/api';
 
 ChartJS.register(
   CategoryScale,
@@ -46,6 +47,7 @@ const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, is
   const [textSelection, setTextSelection] = useState('');
   const [showAddToNote, setShowAddToNote] = useState(false);
   const [noteButtonPosition, setNoteButtonPosition] = useState({ top: 0, left: 0 });
+  const [showFileDialog, setShowFileDialog] = useState(false);
   const contentRef = useRef(null);
 
   useEffect(() => {
@@ -102,6 +104,24 @@ const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, is
     const contentLength = text.length;
     return Math.min(Math.max(baseWidth, contentLength * charWidth), 800);
   }, [text]);
+
+  const handleAddToNote = () => {
+    setShowFileDialog(true);
+    setShowAddToNote(false);
+  };
+
+  const handleFileSelect = (file) => {
+    const filename = file.split('/')[0];
+    notesApi.createNote(filename, textSelection)
+      .then(() => {
+        console.log('Note added successfully to:', filename);
+        setShowFileDialog(false);
+      })
+      .catch((error) => {
+        console.error('Failed to add note:', error);
+        // You might want to show an error message to the user here
+      });
+  };
   
   return (
     <motion.div 
@@ -122,16 +142,38 @@ const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, is
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            onClick={() => {
-              console.log("Add to note:", textSelection);
-              setShowAddToNote(false);
-            }}
+            onClick={handleAddToNote}
           >
             <FileText size={14} className="mr-1" />
             Add to Note
           </motion.button>
         )}
       </AnimatePresence>
+      {showFileDialog && (
+        <div className="fixed left-0 -top-10 h-[110vh] w-[110vw] inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-4 rounded-md">
+            <h3 className="text-lg font-semibold mb-2">Select a file to add the note:</h3>
+            {citations.map((citation, index) => {
+              const [_, id, rest] = citation.match(/^(\d+)\/(.*)/) || [];
+              return (
+                <button
+                  key={index}
+                  className="block w-full text-left px-2 py-1 hover:bg-gray-100 rounded-md"
+                  onClick={() => handleFileSelect(rest)}
+                >
+                  Source {id}: {rest}
+                </button>
+              );
+            })}
+            <button
+              className="mt-4 bg-red-500 text-white px-2 py-1 rounded-md"
+              onClick={() => setShowFileDialog(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
       {!isTyping && citations.length > 0 && (
         <motion.div 
           className="flex flex-wrap gap-2 mt-2"

@@ -226,8 +226,12 @@ export const fileApi = {
 // Notes related API calls
 export const notesApi = {
   // Create a new note
-  createNote: async (noteData) => {
+  createNote: async (filename, text) => {
     try {
+      const noteData = {
+        filename,
+        text
+      };
       return await api.post('/notes/', noteData);
     } catch (error) {
       console.error('Error creating note:', error);

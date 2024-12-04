@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, useLocation, useNavigate, Link } from 'react-router-dom';
 import {
   Menu,
@@ -14,12 +14,14 @@ import {
   Plus,
   X
 } from 'lucide-react';
+import * as Dialog from '@radix-ui/react-dialog';
 import Sidebar from './app/Sidebar';
 import SpaceSwitcher from './space/SpaceSwitcher';
 import SpaceMembers from './space/SpaceMembers';
 import { useUser } from '../context/UserContext';
 import { spaceApi } from '../utils/api';
 import { motion } from 'framer-motion';
+import ChatInput from './app/ChatInput';
 
 const getBreadcrumbs = (pathname) => {
   const parts = pathname.split('/').filter(Boolean);
@@ -37,6 +39,7 @@ const getBreadcrumbs = (pathname) => {
 
 const Layout = () => {
   const [isCreateSpaceOpen, setIsCreateSpaceOpen] = useState(false);
+  const [isNewChatDialogOpen, setIsNewChatDialogOpen] = useState(false);
   const [newSpaceName, setNewSpaceName] = useState('');
   const [newSpaceDescription, setNewSpaceDescription] = useState('');
   const [isCreatingSpace, setIsCreatingSpace] = useState(false);
@@ -49,6 +52,17 @@ const Layout = () => {
 
   const breadcrumbs = getBreadcrumbs(location.pathname);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.key === 'k') {
+        e.preventDefault();
+        setIsNewChatDialogOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   if (!user) {
     navigate('/login');
@@ -271,6 +285,26 @@ const Layout = () => {
           </div>
         </div>
       )}
+
+      <Dialog.Root open={isNewChatDialogOpen} onOpenChange={setIsNewChatDialogOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-black/50" />
+          <Dialog.Content className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-white rounded-lg p-6 w-[90vw] max-w-[500px] shadow-xl">
+            <Dialog.Title className="text-lg font-semibold mb-4">New Chat</Dialog.Title>
+            <ChatInput 
+              isDialog={true} 
+              onSend={() => setIsNewChatDialogOpen(false)}
+            />
+            <Dialog.Close asChild>
+              <button
+                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              >
+                <X size={20} />
+              </button>
+            </Dialog.Close>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </motion.div>
   );
 };

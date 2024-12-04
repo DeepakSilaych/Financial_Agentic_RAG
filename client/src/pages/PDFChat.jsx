@@ -23,7 +23,7 @@ export default function PDFChat () {
 			<div className='w-3/5'>
 			</div>
 			<div className='w-2/5 h-full'>
-				<PDFRenderer pdf={pdfBlob} />
+				<PDFRenderer pdf={pdfBlob} setPage={5} />
 			</div>
 		</div>
 	) : <></>;

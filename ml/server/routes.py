@@ -72,7 +72,14 @@ def delete_space(space_id: int, db: Session = Depends(get_db)):
 # Notes routes
 @notes_router.post("/", response_model=schemas.NotesResponse)
 def create_note(note: schemas.NotesCreate, db: Session = Depends(get_db)):
-    db_note = models.Notes(**note.model_dump())
+    from datetime import datetime
+    current_time = datetime.utcnow()
+    
+    db_note = models.Notes(
+        **note.model_dump(),
+        created_at=current_time,
+        updated_at=current_time
+    )
     db.add(db_note)
     db.commit()
     db.refresh(db_note)
@@ -303,3 +310,6 @@ async def download_file(space_id: int, path: str):
     except Exception as e:
         logger.error(f"Error downloading file: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+# Make sure all routers are exported
+__all__ = ['chat_router', 'file_router', 'ws_router', 'space_router', 'notes_router']

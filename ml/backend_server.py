@@ -12,7 +12,7 @@ from auto_completion import auto_completion
 
 from server.database import engine
 from server import models
-from server.routes import chat_router, file_router, ws_router, space_router
+from server.routes import chat_router, file_router, ws_router, space_router, notes_router
 
 from fastapi.websockets import WebSocket, WebSocketDisconnect
 
@@ -141,6 +141,7 @@ app.include_router(chat_router)
 app.include_router(file_router)
 app.include_router(ws_router)
 app.include_router(space_router)
+app.include_router(notes_router)
 
 @app.post("/api/auto-complete")
 async def get_auto_complete_suggestions(request: Request):
@@ -172,4 +173,4 @@ async def get_auto_complete_suggestions(request: Request):
         )
 
 if __name__ == "__main__":
-    uvicorn.run("backend_server:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("backend_server:app", host="0.0.0.0", port=8000, reload=False)

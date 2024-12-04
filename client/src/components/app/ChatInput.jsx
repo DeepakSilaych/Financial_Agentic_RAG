@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Paperclip, ArrowUp, Zap, Sparkles, Target, X } from 'lucide-react';
+import { Paperclip, ArrowUp, Zap, Sparkles, Target, X, Loader2, Image, File, FileText, Music, Video, Archive } from 'lucide-react';
 import { chatApi, fileApi, autoCompleteApi } from '../../utils/api';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useUser } from '../../context/UserContext';
@@ -50,8 +50,14 @@ const formatDate = (dateString) => {
   return format(new Date(dateString), 'MMM d, yyyy HH:mm');
 };
 
-const ChatInput = ({ setError: setParentError, chatId, messages, onSendMessage }) => {
-  const { currentSpace } = useUser();
+const ChatInput = ({ 
+  setError: setParentError, 
+  chatId, 
+  messages, 
+  onSendMessage,
+  isDialog = false,
+  onSend
+}) => {
   const [message, setMessage] = useState('');
   const [mode, setMode] = useState('fast');
   const [researchMode, setResearchMode] = useState(false);
@@ -65,6 +71,7 @@ const ChatInput = ({ setError: setParentError, chatId, messages, onSendMessage }
   const componentRef = useRef(null);
   const textareaRef = useRef(null);
   const debounceTimerRef = useRef(null);
+  const { currentSpace } = useUser();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -85,21 +92,32 @@ const ChatInput = ({ setError: setParentError, chatId, messages, onSendMessage }
     }
   }, [isExpanded]);
 
-  const handleSendMessage = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (message.trim()) {
-      try {
-        setIsLoading(true);
-        await onSendMessage(message.trim(), mode, researchMode, selectedFiles);
-        setMessage('');
-        setSelectedFiles([]);
-        setIsExpanded(false);
-      } catch (error) {
-        setParentError('Failed to send message');
-        console.error('Error sending message:', error);
-      } finally {
-        setIsLoading(false);
+    if (!message.trim()) return;
+
+    try {
+      if (isDialog) {
+        const newChat = await chatApi.createChat(currentSpace.id);
+        await onSendMessage({
+          content: message,
+          mode,
+          research_mode: researchMode,
+          is_user: true
+        }, newChat.id);
+        onSend?.();
+      } else {
+        await onSendMessage({
+          content: message,
+          mode,
+          research_mode: researchMode,
+          is_user: true
+        });
       }
+      setMessage('');
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setParentError?.(error.message);
     }
   };
 
@@ -141,12 +159,10 @@ const ChatInput = ({ setError: setParentError, chatId, messages, onSendMessage }
     setMessage(newMessage);
     setIsTyping(newMessage.length > 0);
     
-    // Clear previous timer
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
     }
     
-    // Set new timer for 300ms
     debounceTimerRef.current = setTimeout(() => {
       fetchSuggestions(newMessage);
     }, 300);
@@ -209,7 +225,7 @@ const ChatInput = ({ setError: setParentError, chatId, messages, onSendMessage }
         className={`w-full relative mb-4 transition-all duration-500 ease-in-out ${isExpanded ? 'h-48' : selectedFiles.length > 0 ? 'h-28' : 'h-16'}`}
         onClick={() => setIsExpanded(true)}
       >
-        <form onSubmit={handleSendMessage} className="p-3 max-w-5xl mx-auto bg-white border-2 border-gray-300 rounded-2xl shadow-sm hover:shadow-md transition-all duration-500 h-full">
+        <form onSubmit={handleSubmit} className="p-3 max-w-5xl mx-auto bg-white border-2 border-gray-300 rounded-2xl shadow-sm hover:shadow-md transition-all duration-500 h-full">
           <div className="w-full flex flex-col space-y-2 h-full">
             {selectedFiles.length > 0 && (
               <div className="flex flex-wrap gap-2 px-2">
@@ -242,7 +258,7 @@ const ChatInput = ({ setError: setParentError, chatId, messages, onSendMessage }
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
-                  handleSendMessage(e);
+                  handleSubmit(e);
                 }
               }}
             />

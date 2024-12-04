@@ -10,7 +10,8 @@ import {
   History,
   Loader2,
   AlertTriangle,
-  User
+  User,
+  Keyboard
 } from 'lucide-react';
 import { chatApi } from '../../utils/api';
 import { useUser } from '../../context/UserContext';
@@ -165,21 +166,32 @@ const Sidebar = ({ isCollapsed }) => {
             className={`
               flex items-center px-3 py-2 rounded-lg
               transition-all duration-200 ease-in-out
-              ${isActiveRoute('/app/history')
+              ${isActiveRoute('/app/chats')
                 ? 'bg-blue-300 bg-opacity-80 text-blue-600'
                 : 'text-gray-600 hover:bg-gray-100 hover:text-blue-600'
               }
               ${isCollapsed ? 'pl-2 pr-0' : 'space-x-2'}
             `}
           >
+            <MessageSquare size={20} className={`
+              transition-transform duration-200
+              ${isCollapsed ? 'transform scale-110' : ''}
+            `} />
             <span className={`
               transition-all duration-300 ease-in-out
               ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100'}
             `}>
-              Past Chats
+              Chats
+            </span>
+            <span className={`
+              ml-auto text-xs text-gray-500
+              transition-all duration-300 ease-in-out
+              ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100'}
+            `}>
+              <Keyboard size={14} className="inline mr-1" />
+              CTRL + K
             </span>
           </div>
-          
         </div>
 
         {!isCollapsed && (
@@ -206,8 +218,8 @@ const Sidebar = ({ isCollapsed }) => {
                     }
                   `}
                 >
-            <History size={15} className={`transition-transform duration-200 transform scale-110`} />                  
-            <span className="truncate">{renderChatTitle(chat)}</span>
+                  <History size={15} className={`transition-transform duration-200 transform scale-110`} />                  
+                  <span className="truncate">{renderChatTitle(chat)}</span>
                 </Link>
               ))
             )}

@@ -8,12 +8,14 @@ from llm import llm
 # ----------------- prompts -----------------#
 
 auto_completion_prompt = """
-You are an Auto-Completion Agent responsible for completing user queries based on financial information and dataset given to you. Your task is to analyze the user’s query, infer the specific information requested (such as financial metrics, events, or trends), and auto-complete it using our database of company names and corresponding years.
+You are an Auto-Completion Agent responsible for completing user queries based on financial information and dataset given to you. Your task is to analyze the user’s query, infer the specific information requested (such as financial metrics, events, or trends), and auto-complete it using our database of company names and corresponding years. Always give diverse results instead of same company and different year.
 
 #### Important ####
 Data Source: Use only company names and years from the provided database. Do not invent or include data not present in the user's query.
-You will be penalised if you generate a lot of suggestions which are not helpful for a financial analyst. If you can't generate a good suggestion for user return {{Suggestions:""]}}
-Avoid: Unnecessary or unhelpful text. Do not compare between same companies.
+Always give diverse results like different company name whenever possible. If user has specified one company then don't show multiple company.
+You will be penalised if you generate a lot of suggestions which are not helpful for a financial analyst. If you can't generate a good suggestion for user return {{Suggestions:[""]}}
+Avoid: Unnecessary or unhelpful text. 
+Whenever there is a comparision question. Do not compare between same companies for the same year.
 DO NOT create similar suggestions for the user.
 Note: Do not retrieve data from examples; they are solely for understanding.
 #####################
@@ -24,43 +26,23 @@ Database:
 Examples:
 
 Example 1:
-Input: "Compare the net income of Microsoft and" <Assume dataset has Microsoft and Apple data for 2022>
-Output: {{
-    Suggestions: [
-        "Compare the net income of Microsoft and Apple in 2022",
-        "Compare the net income of Microsoft and Google in 2022",
-        "Compare the net income of Microsoft and Amazon in 2022"
-    ]
-}}
+Input: "What was the revenue for Apple in" <Assume in dataset for apple we have data of year 2023, 2022, 2021>
+Output: ["What was the revenue for Apple in 2023?", "What was the revenue for Apple in 2022?", ""What was the revenue for Apple in 2021?"] 
 
 Example 2:
-Input: "What was the operating margin for Tesla in" <Assume dataset has Tesla data for 2021, 2022, 2023>
-Output: {{
-    Suggestions: [
-        "What was the operating margin for Tesla in 2023?",
-        "What was the operating margin for Tesla in 2022?",
-        "What was the operating margin for Tesla in 2021?"
-    ]
-}}
+Input: "What were the sales figures for" <Assume the data in output is available in database>
+Output: ["What were the sales figures for Amazon in 2023?", "What were the sales figures for Google in 2023?", "What were the sales figures for Google in 2021?"]
 
-Example 3:
-Input: "Analyze the debt-to-equity ratio of" <Assume dataset has various companies>
-Output: {{
-    Suggestions: [
-        "Analyze the debt-to-equity ratio of Amazon for 2023",
-        "Analyze the debt-to-equity ratio of Facebook for 2022",
-        "Analyze the debt-to-equity ratio of Netflix for 2021"
-    ]
-}}
 Task: Analyze the input query and auto-complete it based on the database. Ensure the query is clear and specific.
 
-Output Format: Always return the output in the following format:yy
+Output Format: Always return the output in the following format:
 
 {{
     Suggestions: ["<Completed query 1>", "<Completed query 2>", "<Completed query 3>"]
 }}
 
 """
+
 # ----------------- llm -----------------#
 
 class Auto_Complete(BaseModel):
@@ -108,4 +90,8 @@ def auto_completion(query : str):
 # query = ["Compare google and "]
 # query = ["I want to know about my home in "]
 
-print(auto_completion("Compare google and "))
+##Debugging
+# query = ""
+# while True:
+#     query += " " + input("Enter: ")
+#     print("Suggestions: ", auto_completion(query))

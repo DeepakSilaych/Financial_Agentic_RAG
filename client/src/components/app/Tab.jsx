@@ -143,7 +143,7 @@ const HierarchicalGraph = () => {
       networkRef.current.fit();
     });
 
-    const socket = new WebSocket('ws://192.168.156.15:8000/ws/graph');
+    const socket = new WebSocket('ws://localhost:8000/ws/graph');
 
     socket.onopen = () => {
       console.log('Connected to graph WebSocket');
