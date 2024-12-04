@@ -223,6 +223,59 @@ export const fileApi = {
   }
 };
 
+// Notes related API calls
+export const notesApi = {
+  // Create a new note
+  createNote: async (noteData) => {
+    try {
+      return await api.post('/notes/', noteData);
+    } catch (error) {
+      console.error('Error creating note:', error);
+      throw error;
+    }
+  },
+
+  // Get all notes
+  getAllNotes: async () => {
+    try {
+      return await api.get('/notes/');
+    } catch (error) {
+      console.error('Error fetching notes:', error);
+      throw error;
+    }
+  },
+
+  // Get a specific note
+  getNote: async (noteId) => {
+    try {
+      return await api.get(`/notes/${noteId}`);
+    } catch (error) {
+      console.error('Error fetching note:', error);
+      throw error;
+    }
+  },
+
+  // Update a note
+  updateNote: async (noteId, noteData) => {
+    try {
+      return await api.patch(`/notes/${noteId}`, noteData);
+    } catch (error) {
+      console.error('Error updating note:', error);
+      throw error;
+    }
+  },
+
+  // Delete a note
+  deleteNote: async (noteId) => {
+    try {
+      return await api.delete(`/notes/${noteId}`);
+    } catch (error) {
+      console.error('Error deleting note:', error);
+      throw error;
+    }
+  },
+};
+
 // Auto-completion related API calls
 export const autoCompleteApi = {
   // Get auto-completion suggestions

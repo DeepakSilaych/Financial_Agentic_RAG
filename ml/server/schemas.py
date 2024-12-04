@@ -125,5 +125,23 @@ class SpaceResponse(SpaceBase):
     
     model_config = ConfigDict(from_attributes=True)
 
+class NotesBase(BaseModel):
+    filename: str
+    text: str
+
+class NotesCreate(NotesBase):
+    pass
+
+class NotesUpdate(BaseModel):
+    filename: Optional[str] = None
+    text: Optional[str] = None
+
+class NotesResponse(NotesBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+    
+    model_config = ConfigDict(from_attributes=True)
+
 # This is how we handle forward references in Pydantic v2
 MessageResponse.model_rebuild()

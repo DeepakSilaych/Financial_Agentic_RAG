@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 space_router = APIRouter(prefix="/spaces", tags=["space"])
 chat_router = APIRouter(prefix="/spaces/{space_id}/chats", tags=["chat"])
 file_router = APIRouter(prefix="/spaces", tags=["files"])
+notes_router = APIRouter(prefix="/notes", tags=["notes"])
 ws_router = APIRouter(tags=["websocket"])
 
 # Space routes
@@ -67,6 +68,51 @@ def delete_space(space_id: int, db: Session = Depends(get_db)):
     db.delete(db_space)
     db.commit()
     return {"message": "Space deleted successfully"}
+
+# Notes routes
+@notes_router.post("/", response_model=schemas.NotesResponse)
+def create_note(note: schemas.NotesCreate, db: Session = Depends(get_db)):
+    db_note = models.Notes(**note.model_dump())
+    db.add(db_note)
+    db.commit()
+    db.refresh(db_note)
+    return db_note
+
+@notes_router.get("/", response_model=List[schemas.NotesResponse])
+def get_notes(db: Session = Depends(get_db)):
+    notes = db.query(models.Notes).all()
+    return notes
+
+@notes_router.get("/{note_id}", response_model=schemas.NotesResponse)
+def get_note(note_id: int, db: Session = Depends(get_db)):
+    note = db.query(models.Notes).filter(models.Notes.id == note_id).first()
+    if note is None:
+        raise HTTPException(status_code=404, detail="Note not found")
+    return note
+
+@notes_router.patch("/{note_id}", response_model=schemas.NotesResponse)
+def update_note(note_id: int, note: schemas.NotesUpdate, db: Session = Depends(get_db)):
+    db_note = db.query(models.Notes).filter(models.Notes.id == note_id).first()
+    if db_note is None:
+        raise HTTPException(status_code=404, detail="Note not found")
+    
+    note_data = note.model_dump(exclude_unset=True)
+    for key, value in note_data.items():
+        setattr(db_note, key, value)
+    
+    db.commit()
+    db.refresh(db_note)
+    return db_note
+
+@notes_router.delete("/{note_id}")
+def delete_note(note_id: int, db: Session = Depends(get_db)):
+    db_note = db.query(models.Notes).filter(models.Notes.id == note_id).first()
+    if db_note is None:
+        raise HTTPException(status_code=404, detail="Note not found")
+    
+    db.delete(db_note)
+    db.commit()
+    return {"message": "Note deleted successfully"}
 
 # WebSocket routes
 @ws_router.websocket("/ws/{space_id}/{chat_id}")
