@@ -202,3 +202,25 @@ def get_file(space_id: int, path: str, filename: str) -> FileResponse:
     except Exception as e:
         logger.error(f"Error getting file: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+def handle_note_creation(filename: str, text: str) -> Dict:
+    """Handle the creation of a new note"""
+    try:
+        return {
+            "filename": filename,
+            "text": text,
+        }
+    except Exception as e:
+        logger.error(f"Error creating note: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error creating note: {str(e)}")
+
+def handle_note_update(filename: str, text: str) -> Dict:
+    """Handle updating an existing note"""
+    try:
+        return {
+            "filename": filename,
+            "text": text,
+        }
+    except Exception as e:
+        logger.error(f"Error updating note: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error updating note: {str(e)}")
