@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { File, Image, FileText, Music, Video, Archive, Search, Upload, Folder, ArrowLeft, Trash2, Download, X } from 'lucide-react';
 import { format } from 'date-fns';
 import * as Dialog from '@radix-ui/react-dialog';
+import PDFRenderer from './PDFRenderer';
 
 // Inline Button component
 const Button = ({ children, onClick, variant = 'primary', className = '', ...props }) => {
@@ -118,6 +119,8 @@ const FileTable = ({
   const [uploadProgress, setUploadProgress] = useState({});
   const [currentPath, setCurrentPath] = useState('');
   const fileInputRef = useRef(null);
+
+	const [pdfBlob, setPdfBlob] = useState(null);
 
   const loadItems = async () => {
     if (!spaceId) return;
@@ -262,8 +265,7 @@ const FileTable = ({
 		}
 
 		const blob = await response.blob();
-		const url = window.URL.createObjectURL(blob);
-		window.open(url, '_blank');
+		setPdfBlob(blob);
   };
 
   // Drag and drop handlers
@@ -296,6 +298,7 @@ const FileTable = ({
   if (error) return <div className="text-center py-4 text-red-500">{error}</div>;
 
   return (
+		<>
     <div
       className={`p-6 bg-gray-50 rounded-lg shadow-sm ${isDragging ? 'bg-blue-100 border-2 border-dashed border-blue-400' : ''}`}
       onDragEnter={handleDragEnter}
@@ -412,6 +415,9 @@ const FileTable = ({
         </table>
       </div>
     </div>
+		
+		{pdfBlob && <PDFRenderer pdf={pdfBlob} />}
+		</>
   );
 };
 
