@@ -231,12 +231,13 @@ const FileTable = ({
 
   const handleDownload = async (filename) => {
     try {
-      const response = await fetch(`http://localhost:8000/spaces/${spaceId}/files/${currentPath}/download/${filename}`);
+			const full_path = currentPath==='' ? filename : `${currentPath}/${filename}`;
+			const response = await fetch(`http://localhost:8000/spaces/${spaceId}/file/download?path=${full_path}`);
       
       if (!response.ok) {
         throw new Error(`Download failed with status: ${response.status}`);
       }
-      
+
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');

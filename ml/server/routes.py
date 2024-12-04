@@ -239,19 +239,20 @@ async def serve_file(space_id: int, filename: str):
         logger.error(f"Error serving file: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@file_router.get("/{space_id}/files/{filename}/download")
-async def download_file(space_id: int, filename: str):
+@file_router.get("/{space_id}/file/download")
+async def download_file(space_id: int, path: str):
     """Download a file with attachment disposition"""
     try:
         space_dir = file_handler.get_space_dir(space_id)
-        file_path = os.path.join(space_dir, filename)
+        file_path = os.path.join(space_dir, path)
+        file_name = os.path.basename(file_path)
         
         if not os.path.exists(file_path):
             raise HTTPException(status_code=404, detail="File not found")
             
         return FileResponse(
             file_path,
-            headers={"Content-Disposition": f"attachment; filename={filename}"}
+            headers={"Content-Disposition": f"attachment; filename={file_name}"},
         )
     except Exception as e:
         logger.error(f"Error downloading file: {e}")
