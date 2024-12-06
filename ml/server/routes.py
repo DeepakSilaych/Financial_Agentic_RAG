@@ -10,7 +10,7 @@ from . import schemas
 from .database import get_db, SessionLocal
 from .websocket import manager
 from . import chat_handler, file_handler
-from . import process, process2, process3
+from . import process, process4
 from . import models
 
 # Configure logging
@@ -21,7 +21,6 @@ logger = logging.getLogger(__name__)
 space_router = APIRouter(prefix="/spaces", tags=["space"])
 chat_router = APIRouter(prefix="/spaces/{space_id}/chats", tags=["chat"])
 file_router = APIRouter(prefix="/spaces", tags=["files"])
-notes_router = APIRouter(prefix="/notes", tags=["notes"])
 ws_router = APIRouter(tags=["websocket"])
 
 # Space routes
@@ -69,58 +68,6 @@ def delete_space(space_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Space deleted successfully"}
 
-# Notes routes
-@notes_router.post("/", response_model=schemas.NotesResponse)
-def create_note(note: schemas.NotesCreate, db: Session = Depends(get_db)):
-    from datetime import datetime
-    current_time = datetime.utcnow()
-    
-    db_note = models.Notes(
-        **note.model_dump(),
-        created_at=current_time,
-        updated_at=current_time
-    )
-    db.add(db_note)
-    db.commit()
-    db.refresh(db_note)
-    return db_note
-
-@notes_router.get("/", response_model=List[schemas.NotesResponse])
-def get_notes(db: Session = Depends(get_db)):
-    notes = db.query(models.Notes).all()
-    return notes
-
-@notes_router.get("/{note_id}", response_model=schemas.NotesResponse)
-def get_note(note_id: int, db: Session = Depends(get_db)):
-    note = db.query(models.Notes).filter(models.Notes.id == note_id).first()
-    if note is None:
-        raise HTTPException(status_code=404, detail="Note not found")
-    return note
-
-@notes_router.patch("/{note_id}", response_model=schemas.NotesResponse)
-def update_note(note_id: int, note: schemas.NotesUpdate, db: Session = Depends(get_db)):
-    db_note = db.query(models.Notes).filter(models.Notes.id == note_id).first()
-    if db_note is None:
-        raise HTTPException(status_code=404, detail="Note not found")
-    
-    note_data = note.model_dump(exclude_unset=True)
-    for key, value in note_data.items():
-        setattr(db_note, key, value)
-    
-    db.commit()
-    db.refresh(db_note)
-    return db_note
-
-@notes_router.delete("/{note_id}")
-def delete_note(note_id: int, db: Session = Depends(get_db)):
-    db_note = db.query(models.Notes).filter(models.Notes.id == note_id).first()
-    if db_note is None:
-        raise HTTPException(status_code=404, detail="Note not found")
-    
-    db.delete(db_note)
-    db.commit()
-    return {"message": "Note deleted successfully"}
-
 # WebSocket routes
 @ws_router.websocket("/ws/{space_id}/{chat_id}")
 async def websocket_endpoint(websocket: WebSocket, space_id: int, chat_id: int):
@@ -147,13 +94,13 @@ async def websocket_endpoint(websocket: WebSocket, space_id: int, chat_id: int):
                 logger.info(f"Extracted message: {message_text}")  
                 
                 try:
-                    if data.get("mode") == "fast":
+                    if data.get("mode") == "yalalalafda":
                         await process.process_message(chat_id, space_id, message_text, websocket, db)
-                    elif data.get("mode") == "creative":
-                        await process2.process_message(chat_id,space_id, message_text, websocket, db)
-                    else: 
-                        await process3.process_message(chat_id,space_id, message_text, websocket, db)
-                except Exception as e:
+                    else:   
+                        processor = process4.MessageProcessor(data.get("mode"))
+                        await processor.run(chat_id=chat_id, space_id=space_id, message_text=message_text, websocket=websocket, db=db)
+
+                except Exception as e:  
                     logger.error(f"Error processing message: {str(e)}")
                     await websocket.send_json({
                         "type": "error",
@@ -267,11 +214,16 @@ async def delete_item(
 async def upload_file(
     space_id: int,
     path: str,
-    file: UploadFile
+    file: UploadFile = File(..., description="File to upload")
 ):
     """Upload a file to the specified path"""
     try:
-        file_info = await file_handler.save_upload_file(file, space_id, path)
+        # Normalize the path
+        normalized_path = path.rstrip('/')
+        if normalized_path == "":
+            normalized_path = "/"
+            
+        file_info = await file_handler.save_upload_file(file, space_id, normalized_path)
         return file_info
     except Exception as e:
         logger.error(f"Error uploading file: {e}")
@@ -310,6 +262,3 @@ async def download_file(space_id: int, path: str):
     except Exception as e:
         logger.error(f"Error downloading file: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-
-# Make sure all routers are exported
-__all__ = ['chat_router', 'file_router', 'ws_router', 'space_router', 'notes_router']

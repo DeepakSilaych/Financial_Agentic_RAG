@@ -37,15 +37,13 @@
 # - Ensure the `company_list.txt` file is comprehensive to improve fallback accuracy.
 # - Configure the `pdfkit` installation for your operating system to ensure successful PDF conversion.
 
-
-
-
-
 import os
 import requests
 from bs4 import BeautifulSoup
 import spacy
 import pdfkit
+
+from utils import log_message
 
 # Load spaCy's NLP model
 nlp = spacy.load("en_core_web_sm")
@@ -53,7 +51,7 @@ nlp = spacy.load("en_core_web_sm")
 # Load the list of companies from a file
 def load_company_list(file_path="company_list.txt"):
     if not os.path.exists(file_path):
-        print(f"Company list file not found: {file_path}")
+        log_message(f"Company list file not found: {file_path}")
         return []
     with open(file_path, "r") as f:
         companies = [line.strip() for line in f]
@@ -82,14 +80,14 @@ def extract_company_and_year(prompt):
 
     # Fallback: Use COMPANY_LIST if NER fails
     if not company_name:
-        print("NER failed to detect the company name. Checking against the company list...")
+        log_message("NER failed to detect the company name. Checking against the company list...")
         # Convert prompt to lowercase for comparison
         lowercase_prompt = prompt.lower()
         for company in COMPANY_LIST:
             # Match only whole words in the prompt
             if f" {company} " in f" {lowercase_prompt} ":
                 company_name = company.capitalize()
-                print(f"Company detected using fallback: {company_name}")
+                log_message(f"Company detected using fallback: {company_name}")
                 break
 
     return company_name, year
@@ -107,7 +105,7 @@ def google_search(query, num_results=5):
     # Send the HTTP request to Google
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
-        print("Failed to fetch search results.")
+        log_message("Failed to fetch search results.")
         return None
     
     # Parse the HTML content
@@ -119,10 +117,10 @@ def google_search(query, num_results=5):
         if "sec.gov/Archives/edgar/data" in href and href.endswith(".htm"):
             if href.startswith("/url?q="):
                 href = href.split("/url?q=")[1].split("&")[0]
-            print(f"Found SEC link: {href}")
+            log_message(f"Found SEC link: {href}")
             return href
     
-    print("No valid SEC link found.")
+    log_message("No valid SEC link found.")
     return None
 
 # Function to directly convert an online HTML page to a PDF using pdfkit
@@ -140,10 +138,10 @@ def convert_url_to_pdf(url, company, year):
         # Convert URL directly to PDF
         pdfkit.from_url(url, filepath)
         
-        print(f"Document saved at: {filepath}")
+        log_message(f"Document saved at: {filepath}")
         return filepath
     except Exception as e:
-        print(f"Error converting URL to PDF: {e}")
+        log_message(f"Error converting URL to PDF: {e}")
         return None
 
 # Main agent function to handle the process
@@ -152,26 +150,23 @@ def financial_report_agent(prompt):
     company, year = extract_company_and_year(prompt)
     
     if not company or not year:
-        print("Error: Could not extract company name or year from the prompt.")
+        log_message("Error: Could not extract company name or year from the prompt.")
         return
-    
-    print(f"Extracted Company: {company}")
-    print(f"Extracted Year: {year}")
     
     # Search for SEC 10-K reports
     query = f"{company} 10k {year} site:sec.gov/Archives/edgar/data"
     url = google_search(query)
     
     if not url:
-        print("No valid links found in search results.")
+        log_message("No valid links found in search results.")
         return
     
     # Attempt to convert the first valid document to PDF
     file_path = convert_url_to_pdf(url, company, year)
     if file_path:
-        print(f"Successfully completed the process. File saved at {file_path}.")
+        log_message(f"Successfully completed the process. File saved at {file_path}.")
     else:
-        print("Failed to complete the process. No document downloaded.")
+        log_message("Failed to complete the process. No document downloaded.")
 
 # Example usage
 if __name__ == "__main__":

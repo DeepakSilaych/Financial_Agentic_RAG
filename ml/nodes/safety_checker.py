@@ -73,6 +73,8 @@ def check_safety(state: state.OverallState):
     id = str(uuid.uuid4())
     child_node = nodes.check_safety.__name__ + "//" + id
     parent_node = state.get("prev_node" , "START")
+    # if parent_node == "":
+
     log_tree = {}
 
     if not LOGGING_SETTINGS['check_safety']:

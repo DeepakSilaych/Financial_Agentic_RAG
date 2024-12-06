@@ -1,20 +1,10 @@
-import { BotMessageSquareIcon, CheckSquare, Square, ExternalLink, FileText, Check, User, BarChart2, LineChart, PieChart } from 'lucide-react';
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { BotMessageSquareIcon, CheckSquare, Square, ExternalLink, FileText, Check, User, BarChart2, LineChart, PieChart, BookmarkPlus } from 'lucide-react';
+import React, { useState, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bar, Line, Pie } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
+import { Dialog } from '@headlessui/react';
 import { notesApi } from '../../utils/api';
 
 ChartJS.register(
@@ -40,179 +30,146 @@ export const Avatar = ({ isUser }) => (
   </div>
 );
 
-const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, isLastInGroup, isWebSocketResponse }) => {
+// Message Content Component
+const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, isLastInGroup }) => {
   const { text, citations } = processBotMessage();
-  const [displayedText, setDisplayedText] = useState('');
-  const [isTyping, setIsTyping] = useState(isWebSocketResponse);
-  const [textSelection, setTextSelection] = useState('');
-  const [showAddToNote, setShowAddToNote] = useState(false);
-  const [noteButtonPosition, setNoteButtonPosition] = useState({ top: 0, left: 0 });
-  const [showFileDialog, setShowFileDialog] = useState(false);
-  const contentRef = useRef(null);
+  const [selectedText, setSelectedText] = useState('');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  useEffect(() => {
-    const handleSelectionChange = () => {
-      const selection = window.getSelection();
-      const selectedText = selection?.toString().trim();
-      setTextSelection(selectedText);
-
-      if (selectedText && contentRef.current) {
-        const range = selection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
-        const contentRect = contentRef.current.getBoundingClientRect();
-
-        setNoteButtonPosition({
-          top: rect.bottom - contentRect.top + 5,
-          left: rect.left + (rect.width / 2) - contentRect.left
-        });
-        setShowAddToNote(true);
-      } else {
-        setShowAddToNote(false);
-      }
-    };
-
-    document.addEventListener('selectionchange', handleSelectionChange);
-    return () => {
-      document.removeEventListener('selectionchange', handleSelectionChange);
-    };
+  const handleMouseUp = useCallback(() => {
+    const selection = window.getSelection();
+    if (selection && selection.toString().trim().length > 0) {
+      setSelectedText(selection.toString().trim());
+    }
   }, []);
 
-  useEffect(() => {
-    if (!isWebSocketResponse) {
-      setDisplayedText(text);
-      setIsTyping(false);
-      return;
-    }
+  const handleAddToNotes = useCallback(() => {
+    setIsDialogOpen(true);
+  }, []);
 
-    let currentIndex = 0;
-    const typingInterval = setInterval(() => {
-      if (currentIndex < text.length) {
-        setDisplayedText(prevText => prevText + text[currentIndex]);
-        currentIndex++;
-      } else {
-        setIsTyping(false);
-        clearInterval(typingInterval);
+  const handleSaveNote = useCallback(async () => {
+    if (selectedFile) {
+      try {
+        await notesApi.createNote(selectedFile, selectedText);
+        setIsDialogOpen(false);
+        setSelectedText('');
+        setSelectedFile(null);
+      } catch (error) {
+        console.error('Error saving note:', error);
       }
-    }, 20);
+    }
+  }, [selectedFile, selectedText]);
 
-    return () => clearInterval(typingInterval);
-  }, [text, isWebSocketResponse]);
-
-  const containerWidth = useMemo(() => {
-    const baseWidth = 300;
-    const charWidth = 8;
-    const contentLength = text.length;
-    return Math.min(Math.max(baseWidth, contentLength * charWidth), 800);
-  }, [text]);
-
-  const handleAddToNote = () => {
-    setShowFileDialog(true);
-    setShowAddToNote(false);
-  };
-
-  const handleFileSelect = (file) => {
-    const filename = file.split('/')[0];
-    notesApi.createNote(filename, textSelection)
-      .then(() => {
-        console.log('Note added successfully to:', filename);
-        setShowFileDialog(false);
-      })
-      .catch((error) => {
-        console.error('Failed to add note:', error);
-        // You might want to show an error message to the user here
-      });
-  };
-  
   return (
-    <motion.div 
-      className="space-y-2 p-4 relative"
-      initial={isWebSocketResponse ? { width: 0, opacity: 0 } : false}
-      animate={{ width: isWebSocketResponse ? containerWidth : '100%', opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      ref={contentRef}
-    >
-      <div className="prose prose-sm max-w-none">
-        <ReactMarkdown>{displayedText}</ReactMarkdown>
-      </div>
-      <AnimatePresence>
-        {showAddToNote && (
+    <div className="space-y-2 p-4" onMouseUp={handleMouseUp}>
+      <div className="prose prose-sm max-w-none relative">
+        <ReactMarkdown>{text}</ReactMarkdown>
+        {selectedText && (
           <motion.button
-            className="absolute bg-blue-500 text-white px-2 py-1 rounded-md text-sm z-10 flex items-center shadow-md hover:bg-blue-600 transition-colors"
-            style={{ top: noteButtonPosition.top, left: noteButtonPosition.left, transform: 'translateX(-50%)' }}
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            onClick={handleAddToNote}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="absolute top-0 right-0 p-2 bg-blue-500 text-white rounded-md flex items-center"
+            onClick={handleAddToNotes}
           >
-            <FileText size={14} className="mr-1" />
-            Add to Note
+            <BookmarkPlus size={16} className="mr-1" />
+            Add to Notes
           </motion.button>
         )}
-      </AnimatePresence>
-      {showFileDialog && (
-        <div className="fixed left-0 -top-10 h-[110vh] w-[110vw] inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-4 rounded-md">
-            <h3 className="text-lg font-semibold mb-2">Select a file to add the note:</h3>
-            {citations.map((citation, index) => {
-              const [_, id, rest] = citation.match(/^(\d+)\/(.*)/) || [];
-              return (
-                <button
-                  key={index}
-                  className="block w-full text-left px-2 py-1 hover:bg-gray-100 rounded-md"
-                  onClick={() => handleFileSelect(rest)}
-                >
-                  Source {id}: {rest}
-                </button>
-              );
-            })}
-            <button
-              className="mt-4 bg-red-500 text-white px-2 py-1 rounded-md"
-              onClick={() => setShowFileDialog(false)}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-      {!isTyping && citations.length > 0 && (
-        <motion.div 
-          className="flex flex-wrap gap-2 mt-2"
-          initial={isWebSocketResponse ? { opacity: 0, y: 20 } : false}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
+      </div>
+      {citations.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-2">
           {citations.map((citation, index) => {
             const [_, id, rest] = citation.match(/^(\d+)\/(.*)/) || [];
             const isUrl = rest && rest.includes('://');
             
-            const CitationComponent = isUrl ? motion.a : motion.span;
-            const props = isUrl ? {
-              href: rest,
-              target: "_blank",
-              rel: "noopener noreferrer",
-              className: "inline-flex items-center px-2 py-1 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
-            } : {
-              className: "inline-flex items-center px-2 py-1 text-sm bg-gray-50 text-gray-600 rounded-md"
-            };
-
-            return (
-              <CitationComponent
+            return isUrl ? (
+              <motion.a
                 key={index}
-                {...props}
-                initial={isWebSocketResponse ? { opacity: 0, x: -20 } : false}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 + index * 0.1 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                href={rest}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-2 py-1 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                {isUrl ? <ExternalLink size={14} className="mr-1" /> : <FileText size={14} className="mr-1" />}
+                <ExternalLink size={14} className="mr-1" />
                 Source {id}
-              </CitationComponent>
+              </motion.a>
+            ) : (
+              <motion.span
+                key={index}
+                className="inline-flex items-center px-2 py-1 text-sm bg-gray-50 text-gray-600 rounded-md cursor-pointer"
+                whileHover={{ scale: 1.02 }}
+                onClick={() => setSelectedFile(rest)}
+              >
+                <FileText size={14} className="mr-1" />
+                Source {id}
+              </motion.span>
             );
           })}
-        </motion.div>
+        </div>
       )}
-    </motion.div>
+
+      {/* <Dialog
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        className="fixed inset-0 z-10 overflow-y-auto"
+      >
+        <div className="flex items-center justify-center min-h-screen">
+          <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+          <div className="relative bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <Dialog.Title className="text-lg font-medium mb-4">
+              Add to Notes
+            </Dialog.Title>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Select Citation File
+                </label>
+                <div className="space-y-2">
+                  {citations.map((citation, index) => {
+                    const [_, id, rest] = citation.match(/^(\d+)\/(.*)/) || [];
+                    if (!rest?.includes('://')) {
+                      return (
+                        <div
+                          key={index}
+                          className={`p-2 rounded-md cursor-pointer ${
+                            selectedFile === rest
+                              ? 'bg-blue-50 border border-blue-500'
+                              : 'bg-gray-50 hover:bg-gray-100'
+                          }`}
+                          onClick={() => setSelectedFile(rest)}
+                        >
+                          <FileText size={14} className="inline mr-2" />
+                          Source {id}
+                        </div>
+                      );
+                    }
+                    return null;
+                  })}
+                </div>
+              </div>
+              <div className="flex justify-end space-x-3">
+                <button
+                  className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-md"
+                  onClick={() => setIsDialogOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="px-4 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50"
+                  onClick={handleSaveNote}
+                  disabled={!selectedFile}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Dialog> */}
+    </div>
   );
 };
 
@@ -246,7 +203,7 @@ const IntermediateQuestion = ({ question, onAnswerSubmit }) => {
       className="mt-4 bg-white border border-gray-200 rounded-lg overflow-hidden"
     >
       <div className="flex items-start p-4">
-        <div className="flex-shrink-0 w-s interesting patterns. Th8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
           <BotMessageSquareIcon size={18} className="text-blue-600" />
         </div>
         <div className="flex-1">
@@ -315,48 +272,179 @@ const IntermediateQuestion = ({ question, onAnswerSubmit }) => {
 };
 
 // Chart Component
-const ChartComponent = ({ chart, index, isWebSocketResponse }) => {
-  const [isVisible, setIsVisible] = useState(!isWebSocketResponse);
-
-  useEffect(() => {
-    if (!isWebSocketResponse) {
-      setIsVisible(true);
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, index * 500);
-
-    return () => clearTimeout(timer);
-  }, [index, isWebSocketResponse]);
-
+const ChartComponent = ({ chart }) => {
   const chartIcons = {
     'bar': <BarChart2 size={18} className="text-blue-600" />,
     'line': <LineChart size={18} className="text-blue-600" />,
     'pie': <PieChart size={18} className="text-blue-600" />
   };
 
-  const getChartOptions = () => ({
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
+  const getChartOptions = (type) => {
+    const baseOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'top',
+          align: 'center',
+          labels: {
+            padding: 8,
+            usePointStyle: true,
+            pointStyle: 'circle',
+            boxWidth: 6,
+            boxHeight: 6,
+            font: {
+              size: 10,
+              family: "'Inter', sans-serif"
+            }
+          }
+        },
+        title: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          titleColor: '#1f2937',
+          bodyColor: '#4b5563',
+          borderColor: 'rgba(0, 0, 0, 0.1)',
+          borderWidth: 1,
+          padding: 8,
+          boxPadding: 3,
+          usePointStyle: true,
+          bodyFont: {
+            size: 10,
+            family: "'Inter', sans-serif"
+          },
+          titleFont: {
+            size: 11,
+            family: "'Inter', sans-serif",
+            weight: '600'
+          }
+        }
       },
-      title: {
-        display: false,
-      },
-    },
-    animation: {
-      duration: 1000,
-      easing: 'easeInOutQuart'
+      animation: {
+        duration: 500,
+        easing: 'easeOutQuart'
+      }
+    };
+
+    if (type === 'bar' || type === 'line') {
+      return {
+        ...baseOptions,
+        scales: {
+          x: {
+            grid: {
+              display: false
+            },
+            ticks: {
+              maxRotation: 45,
+              minRotation: 45,
+              padding: 5,
+              font: {
+                size: 10,
+                family: "'Inter', sans-serif"
+              }
+            }
+          },
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(0, 0, 0, 0.06)',
+              drawBorder: false
+            },
+            ticks: {
+              padding: 5,
+              font: {
+                size: 10,
+                family: "'Inter', sans-serif"
+              }
+            }
+          }
+        }
+      };
     }
-  });
+
+    if (type === 'pie') {
+      return {
+        ...baseOptions,
+        plugins: {
+          ...baseOptions.plugins,
+          legend: {
+            ...baseOptions.plugins.legend,
+            position: 'right',
+            labels: {
+              ...baseOptions.plugins.legend.labels,
+              padding: 10
+            }
+          }
+        }
+      };
+    }
+
+    return baseOptions;
+  };
+
+  const getDatasetStyle = (index, type) => {
+    const colors = [
+      'rgba(66, 133, 244, 0.8)',   // Google Blue
+      'rgba(234, 67, 53, 0.8)',    // Google Red
+      'rgba(251, 188, 4, 0.8)',    // Google Yellow
+      'rgba(52, 168, 83, 0.8)',    // Google Green
+      'rgba(103, 58, 183, 0.8)',   // Purple
+      'rgba(255, 152, 0, 0.8)',    // Orange
+    ];
+
+    const baseStyle = {
+      backgroundColor: colors[index % colors.length],
+      borderColor: colors[index % colors.length].replace('0.8', '1'),
+      borderWidth: 1.5,
+      hoverBackgroundColor: colors[index % colors.length].replace('0.8', '0.9'),
+      hoverBorderColor: colors[index % colors.length].replace('0.8', '1'),
+      hoverBorderWidth: 2
+    };
+
+    if (type === 'line') {
+      return {
+        ...baseStyle,
+        fill: false,
+        tension: 0.3,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+        pointBackgroundColor: colors[index % colors.length].replace('0.8', '1'),
+        pointBorderColor: '#fff',
+        pointBorderWidth: 1.5,
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: colors[index % colors.length].replace('0.8', '1')
+      };
+    }
+
+    if (type === 'pie') {
+      return {
+        backgroundColor: colors.map(color => color.replace('0.8', '0.75')),
+        borderColor: colors.map(color => color.replace('0.8', '1')),
+        borderWidth: 1,
+        hoverBackgroundColor: colors.map(color => color.replace('0.8', '0.85')),
+        hoverBorderColor: colors.map(color => color.replace('0.8', '1')),
+        hoverBorderWidth: 2,
+        hoverOffset: 4
+      };
+    }
+
+    return baseStyle;
+  };
 
   const getChartComponent = () => {
+    const chartData = {
+      ...chart.data,
+      datasets: chart.data.datasets.map((dataset, index) => ({
+        ...dataset,
+        ...getDatasetStyle(index, chart.chart_type)
+      }))
+    };
+
     const commonProps = {
-      options: getChartOptions(),
-      data: chart.data
+      options: getChartOptions(chart.chart_type),
+      data: chartData
     };
 
     switch (chart.chart_type) {
@@ -373,13 +461,18 @@ const ChartComponent = ({ chart, index, isWebSocketResponse }) => {
 
   return (
     <motion.div 
-      className="w-full max-w-xl mx-auto p-2 bg-gray-50 rounded-md"
-      initial={isWebSocketResponse ? { opacity: 0, y: 20 } : false}
-      animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
-      transition={{ duration: 0.5 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="w-full max-w-lg mx-auto my-2 bg-white rounded-lg shadow-sm overflow-hidden"
     >
-      <div className="aspect-[4/3] w-full max-h-[300px]">
-        {isVisible && getChartComponent()}
+      <div className="p-2 border-b flex items-center gap-2">
+        {chartIcons[chart.chart_type]}
+        <span className="font-medium text-gray-700 text-xs">{chart.title || `${chart.chart_type.charAt(0).toUpperCase() + chart.chart_type.slice(1)} Chart`}</span>
+      </div>
+      <div className="p-2">
+        <div className="aspect-[16/9] w-full" style={{ height: '200px' }}>
+          {getChartComponent()}
+        </div>
       </div>
     </motion.div>
   );
@@ -393,8 +486,7 @@ const ChatMessage = ({
   charts = [], 
   onAnswerSubmit,
   isFirstInGroup,
-  isLastInGroup,
-  isWebSocketResponse = false
+  isLastInGroup
 }) => {
   const processBotMessage = () => {
     if (!content) return { text: '', citations: [] };
@@ -420,28 +512,21 @@ const ChatMessage = ({
       transition={{ duration: 0.3 }}
       className={`flex flex-col ${isUser ? 'text-gray-800' : 'text-gray-800'} w-full`}
     >
-      {/* Show charts above text */}
-      {charts && charts.length > 0 && (
-        <div className="px-4 pb-4 space-y-3">
-          {charts.map((chart, index) => (
-            <ChartComponent 
-              key={index} 
-              chart={chart} 
-              index={index}
-              isWebSocketResponse={isWebSocketResponse}
-            />
-          ))}
-        </div>
-      )}
-      
       <MessageContent 
         content={content} 
         isUser={isUser} 
         processBotMessage={processBotMessage}
         isFirstInGroup={isFirstInGroup}
         isLastInGroup={isLastInGroup}
-        isWebSocketResponse={isWebSocketResponse}
       />
+      
+      {charts && charts.length > 0 && (
+        <div className="px-4 pb-4 space-y-3">
+          {charts.map((chart, index) => (
+            <ChartComponent key={index} chart={chart} />
+          ))}
+        </div>
+      )}
       
       {intermediate_questions && intermediate_questions.length > 0 && (
         <div className="px-4 pb-4">

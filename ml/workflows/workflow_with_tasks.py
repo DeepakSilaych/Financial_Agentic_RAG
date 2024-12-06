@@ -113,7 +113,7 @@ graph.add_node("rag", _rag_subgraph)
 graph.add_node("standalone_rag", _standalone_rag_subgraph)
 # graph.add_node("naive_rag", _naive_rag_subgraph)
 graph.add_node("web_path", _web_subgraph)
-graph.add_node(nodes.combine_answers.__name__, nodes.combine_answers)
+graph.add_node(nodes.combine_answer_v1.__name__, nodes.combine_answer_v1)
 graph.add_node(nodes.general_llm.__name__,nodes.general_llm)
 graph.add_node("KPI_analyst", dummy_KPI)
 graph.add_node("persona", dummy_persona)
@@ -177,12 +177,12 @@ graph.add_conditional_edges(
     }
 )
 graph.add_conditional_edges(nodes.decompose_question_v2.__name__, edges.send_decomposed_question_groups, ["rag"]) # type: ignore
-graph.add_edge("rag", nodes.combine_answers.__name__)
+graph.add_edge("rag", nodes.combine_answer_v1.__name__)
 graph.add_edge("standalone_rag", rag_done.__name__)
 # graph.add_edge("naive_rag", END)
 graph.add_edge(nodes.general_llm.__name__,rag_done.__name__)
 graph.add_edge("web_path", rag_done.__name__)
-graph.add_edge(nodes.combine_answers.__name__, rag_done.__name__)
+graph.add_edge(nodes.combine_answer_v1.__name__, rag_done.__name__)
 graph.add_edge("KPI_analyst", rag_done.__name__)
 graph.add_edge("persona", rag_done.__name__)
 

@@ -8,7 +8,6 @@ import state, nodes, edges
 from state import add_child_to_node
 from utils import log_message
 from nodes.question_decomposer import (
-    question_decomposer_v4,
     question_decomposer_v5,
     question_decomposer_v6,
     question_combiner,
@@ -16,7 +15,7 @@ from nodes.question_decomposer import (
     check_sufficient,
 )
 from .rag_e2e import rag_e2e
-from nodes.question_decomposer import question_combiner_v2
+
 from state import QuestionNode
 from utils import send_logs
 from config import LOGGING_SETTINGS

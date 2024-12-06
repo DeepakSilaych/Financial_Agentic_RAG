@@ -5,7 +5,9 @@ from langchain_core.prompts import ChatPromptTemplate
 
 import state
 from llm import llm
-from utils import log_message
+from utils import log_message , send_logs
+from config import LOGGING_SETTINGS
+import uuid
 
 
 class FollowUpQuestion(BaseModel):
@@ -55,5 +57,38 @@ def ask_follow_up_questions(state: state.OverallState):
             "final_answer": final_answer,
         }
     )
+
+        ###### log_tree part
+    # import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = "ask_follow_up_questions" + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    log_tree = {}
+    # tree_log(f"send_Log_tree_logs : {state['send_log_tree_logs']}",1)
+    if not LOGGING_SETTINGS['ask_follow_up_questions'] or state.get("send_log_tree_logs" , "") == "False":
+        child_node = parent_node 
+
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+    output_state =  {
+        "follow_up_questions": followup_output.follow_up_questions ,
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
+    }
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    return output_state 
 
     return {"follow_up_questions": followup_output.follow_up_questions}

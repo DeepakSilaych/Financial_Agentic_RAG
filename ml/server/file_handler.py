@@ -98,21 +98,30 @@ def get_file_url(space_id: int, filename: str) -> str:
 async def save_upload_file(file: UploadFile, space_id: int, path: str) -> Dict:
     """Save an uploaded file to the specified path"""
     try:
-        space_dir = get_space_dir(space_id)
-        # Store files directly in the space directory
-        file_path = os.path.join(space_dir, file.filename)
+        # Get the target directory based on the path
+        target_dir = get_absolute_path(space_id, path)
+        os.makedirs(target_dir, exist_ok=True)
         
+        # Create full file path
+        file_path = os.path.join(target_dir, file.filename)
+        
+        # Save the file
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
         
         file_stat = os.stat(file_path)
         
+        # Calculate relative path for URL
+        rel_path = os.path.relpath(file_path, get_space_dir(space_id))
+        
         return {
             "name": file.filename,
             "size": file_stat.st_size,
             "type": get_file_type(file.filename),
-            "url": get_file_url(space_id, file.filename),  # URL without additional path
-            "modified": datetime.fromtimestamp(file_stat.st_mtime).isoformat()
+            "url": get_file_url(space_id, rel_path),
+            "created": datetime.fromtimestamp(file_stat.st_ctime).isoformat(),
+            "lastModified": datetime.fromtimestamp(file_stat.st_mtime).isoformat(),
+            "owner": "Current User"
         }
     except Exception as e:
         logger.error(f"Error saving file: {e}")
@@ -202,25 +211,3 @@ def get_file(space_id: int, path: str, filename: str) -> FileResponse:
     except Exception as e:
         logger.error(f"Error getting file: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-
-def handle_note_creation(filename: str, text: str) -> Dict:
-    """Handle the creation of a new note"""
-    try:
-        return {
-            "filename": filename,
-            "text": text,
-        }
-    except Exception as e:
-        logger.error(f"Error creating note: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error creating note: {str(e)}")
-
-def handle_note_update(filename: str, text: str) -> Dict:
-    """Handle updating an existing note"""
-    try:
-        return {
-            "filename": filename,
-            "text": text,
-        }
-    except Exception as e:
-        logger.error(f"Error updating note: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error updating note: {str(e)}")

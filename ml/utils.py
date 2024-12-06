@@ -6,12 +6,12 @@ import openai
 import base64
 import requests
 import config
+import json
 
 from langgraph.graph.graph import CompiledGraph
 from langchain_core.runnables.graph import MermaidDrawMethod
 
 import config
-
 
 def visualize_workflow(graph: CompiledGraph, filename="graph.png"):
     img = graph.get_graph(xray=True).draw_mermaid_png(
@@ -39,20 +39,14 @@ async def _send_log(message, component="main"):
             print(f"Failed to send log: {str(e)}")
 
 
-def log_message(message, component="main"):
-    if config.LOG_FILE_NAME == "stdout":
-        print(message)
-    elif config.LOG_FILE_NAME == "server":
-        # Run the async function
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        try:
-            return loop.run_until_complete(_send_log(message, component))
-        finally:
-            loop.close()
-    else:
-        with open(f"logs/{config.LOG_FILE_NAME}", "a") as log_file:
-            log_file.write(message + "\n")
+def log_message(text, level=0):
+    """Log a message to both file and websocket."""
+    # # Format the message with timestamp
+    # timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    # formatted_msg = f"[{timestamp}] {'  ' * int(level)}{text}"
+    
+    # log_queue.put(formatted_msg)
+
 
 def tree_log(message, component="main"):
     if config.LOG_FILE_NAME == "stdout":
@@ -69,57 +63,82 @@ def tree_log(message, component="main"):
         with open(f"logs/tree_log.txt", "a") as log_file:
             log_file.write(message + "\n")
 
-def send_logs(parent_node= None, curr_node= None, child_node=None, text=None , input_state=None , output_state = None, endpoint = config.LOGGING_ENDPOINT):
+def hover_text_func(curr_node , output_state , input_state):
+    if curr_node.split("//")[0] == "extract_metadata":
+        return f"Decomposed_Question : {output_state.get('question' , '')} \n Metadata : {output_state.get('metadata', '')}"
+    elif curr_node.split("//")[0] == "generate_answer_with_citation_state":
+        return f"Answer : {output_state.get('answer', '')}"
+    elif curr_node.split("//")[0] == "generate_web_answer":
+        return f"Web answer : {output_state.get('answer', '')}"
+    elif curr_node.split("//")[0] == "combine_answer_analysis":
+        return f"Final Answer : {output_state.get('final_answer', '')}"
+    elif curr_node.split("//")[0] == "rag_tool_node":
+        if output_state.get('final_answer', '') != '':
+            return f"Question : {input_state.get("question", "")} , Final Answer : {output_state.get('final_answer', '')}"
+            # return f"Final Answer : {output_state.get('final_answer', '')}"
+    elif curr_node.split("//")[0] == "agent":
+        if input_state.get("persona", {}) != '':
+            if input_state != {}:
+                return f"Persona : {input_state.get("persona", {})}"
+        else:
+            return ""
+    # elif curr_node.split("//")[0] == "":
+    else : 
+        return ""
+
+def send_logs(parent_node=None, curr_node=None, child_node=None, text=None, input_state=None, output_state=None):
     # Construct the JSON payload
     payload = {
         "parent_node": parent_node,
         "current_node": curr_node,
-        "child_node" : child_node , 
+        "child_node": child_node,
         "text": text,
-        # "input_state": input_state,
-        # "output_state": output_state,
+        "text_state": hover_text_func(curr_node , output_state, input_state),
     }
-    
-    # Send the POST request with the JSON payload
+
+    print(f"text_state: {hover_text_func(curr_node , output_state , input_state)}")
+
+
+    print(f"payload: {payload}")
+    # Send to WebSocket via queue
+    # log_queue.put(json.dumps(payload))
+
     try:
-        response = requests.post(endpoint, json=payload)
-        
-        # Check if the request was successful
-        tree_log(f"{{'parent_node': {payload['parent_node']} \n 'current_node' : {payload['current_node']} \n 'child_node' : {payload['child_node']} \n 'text' : {payload['text']}\n\n }}" , 1)
-        if response.status_code == 200:
-            tree_log(f"{curr_node}  : Request successful." , 1)
-            return response.json()  # Return the JSON response from the server
-        else:
-            tree_log(f"{curr_node} : Request failed with status code: {response.status_code}"  ,1)
-            return None
-        
-        # tree_log()
+        response = requests.post( "http://localhost:6969/receive_nodes"
+            , json=payload)
+    #     if response.status_code == 200:
+    #         return response.json()  # Return the JSON response from the server
+    #     else:
+    #         print(f"ERROR: Request failed with status code: {response.status_code}")
+    #         return None
     except requests.exceptions.RequestException as e:
         print(f"An error occurred: {e}")
         return None
 
+
 from functools import lru_cache
 
-####
-# Internal facing functions for exact 
 
 @lru_cache
-def get_from_analysts(name,lst):
+def get_from_analysts(name, lst):
     for analyst in lst:
         if analyst.role == name:
             return analyst
     return None
+
+
 @lru_cache
-def get_from_tools(name,lst):
+def get_from_tools(name, lst):
     for tool in lst:
         if tool.tool_name == name:
             return tool
     return None
 
+
 ## check semantic similarity with roles
 def get_closest_from_analysts(name, lst):
     """TODO: perhaps just do a soft search over roles"""
-    return 
+    return
 
 
 def image_to_description(image_path):
@@ -186,6 +205,7 @@ def image_to_description(image_path):
     # print(f"Desription: {description}")
     return base64_image, description
 
+
 def block_urls(urls, block_list, allow_list):
     """
     Block urls based on block_list and allow_list
@@ -207,5 +227,5 @@ def block_urls(urls, block_list, allow_list):
             new_urls.append(urls[i])
         else:
             query_urls.append(urls[i])
-            
+
     return query_urls, new_urls

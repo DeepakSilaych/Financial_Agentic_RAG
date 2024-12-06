@@ -3,6 +3,7 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 from database import FinancialDatabase
 from langchain_core.prompts import ChatPromptTemplate
+import datetime
 
 import state
 from llm import llm
@@ -23,6 +24,8 @@ company_year_data = ", ".join(
     ]
 )
 
+today = datetime.date.today()
+today = today.strftime("%B %d, %Y")
 
 class ClarifyingQuestion(BaseModel):
     """Generates a single clarifying question based on the initial user query, strictly ensuring the question is essential."""
@@ -250,17 +253,18 @@ You are an advanced query evaluator specializing in financial analysis of 10-K r
     "question": "Which categories of risks in Microsoft's latest filings would you like to focus on?",
     "options": ["Financial risks (e.g., revenue volatility)", "Technological risks (e.g., innovation or cybersecurity)", "Legal and regulatory risks (e.g., privacy laws)", "Market competition risks"]
 }}
-Now, given the user query, generate a clarifying question (if needed) by adhering to the above guidelines. """
+Now, given the user query, generate a clarifying question (if needed) by adhering to the above guidelines. 
+You must respect the time of the user, and hence not ask questions that are too trivial, i.e that can be inferred from the original query and previous responses."""
 clarify_prompt_strict = ChatPromptTemplate.from_messages(
     [
         ("system", _system_prompt_for_clarify_strict),
-        ("human", "**User Query:** *{query}*\n**Available Data**: {company_year_data}\n**Clarified Questions and User Responses:** {clarified}"),
+        ("human", "**User Query:** *{query}*\n**Available Data**: {company_year_data}\n**Clarified Questions and User Responses:** {clarified}\nToday's date is {today}"),
     ]
 )
 clarify_prompt_relaxed = ChatPromptTemplate.from_messages(
     [
         ("system", _system_prompt_for_clarify_relaxed),
-        ("human", "**User Query:** *{query}*\n**Available Data**: {company_year_data}\n**Clarified Questions and User Responses:** {clarified}")
+        ("human", "**User Query:** *{query}*\n**Available Data**: {company_year_data}\n**Clarified Questions and User Responses:** {clarified}\nToday's date is {today}")
     ]
 )
 clarifying_question_generator_strict = clarify_prompt_strict | llm.with_structured_output(
@@ -281,11 +285,11 @@ def ask_clarifying_questions(state: state.OverallState):
     )
     if state["fast_vs_slow"]=="fast":
         clarifying_output = clarifying_question_generator_strict.invoke(
-            {"query": query, "company_year_data": company_year_data, "clarified": combined_clarifications}
+            {"query": query, "company_year_data": company_year_data, "clarified": combined_clarifications, "today": today}
         )
     else:
         clarifying_output = clarifying_question_generator_relaxed.invoke(
-            {"query": query, "company_year_data": company_year_data, "clarified": combined_clarifications}
+            {"query": query, "company_year_data": company_year_data, "clarified": combined_clarifications, "today":  today}
         )
 
     clar_out = {
@@ -304,6 +308,8 @@ def ask_clarifying_questions(state: state.OverallState):
         analysis_suggestions = analysis_suggestion_generator.invoke(
             {"query": query}
         ).analysis_suggestions
+    else:
+        analysis_suggestions = []
 
     ###### log_tree part
     import uuid , nodes 

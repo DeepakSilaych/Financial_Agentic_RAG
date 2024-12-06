@@ -91,7 +91,7 @@ if WORKFLOW_SETTINGS["reranking"]:
 
     graph.add_edge(nodes.rerank_documents.__name__, nodes.generate_answer_with_citation_state.__name__)
 
-if not WORKFLOW_SETTINGS["reranking"] and not WORKFLOW_SETTINGS["grade_documents"]:
+if not WORKFLOW_SETTINGS["reranking"] and not WORKFLOW_SETTINGS["grade_documents"] and not WORKFLOW_SETTINGS["assess_metadata_filters"]:
     graph.add_edge("retriever", nodes.generate_answer_with_citation_state.__name__)
 
 if WORKFLOW_SETTINGS["grade_answer"]:

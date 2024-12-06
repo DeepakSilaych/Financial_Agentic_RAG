@@ -1,8 +1,9 @@
 from pydantic import BaseModel, Field
 import cohere
 
-import state
-from utils import log_message
+import state , nodes
+from utils import log_message , send_logs 
+from config import LOGGING_SETTINGS
 
 cohere_client = cohere.Client()
 
@@ -38,4 +39,42 @@ def rerank_documents(state: state.InternalRAGState):
     # Sort documents by relevance score (highest first)
     reranked_docs = sorted(reranked_docs, key=lambda x: x[1], reverse=True)
     reranked = [doc for doc, score in reranked_docs]
+
+    ###### log_tree part
+    # import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = nodes.rerank_documents.__name__ + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    if parent_node == "":
+        parent_node = "START"
+    log_tree = {}
+
+    if not LOGGING_SETTINGS['rerank_documents'] or state.get("send_log_tree_logs" , "") == "False":
+        child_node = parent_node  
+    
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+
+    output_state = {
+        "documents": reranked , 
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
+    }
+
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    return output_state 
+
     return {"documents": reranked}

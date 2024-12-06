@@ -14,7 +14,8 @@ def send_decomposed_questions(state: state.OverallState):
     log_message("---SEND DECOMPOSED QUESTIONS---")
     image_url = state.get("image_url", "")
     questions = state["decomposed_questions"]
-    return [Send("rag", {"question": question, "image_url": image_url}) for question in questions]
+    image_desc=state.get("image_desc","")
+    return [Send("rag", {"question": question, "image_url": image_url, "image_desc":image_desc}) for question in questions]
 
 
 def send_decomposed_question_groups(state: state.OverallState):
@@ -25,7 +26,8 @@ def send_decomposed_question_groups(state: state.OverallState):
     log_message("---SEND DECOMPOSED QUESTION GROUPS---")
     image_url = state.get("image_url", "")
     question_groups = state["decomposed_question_groups"]
-    return [Send("rag", {"question_group": group, "image_url": image_url}) for group in question_groups] 
+    image_desc=state.get("image_desc","")
+    return [Send("rag", {"question_group": group, "image_url": image_url,"image_desc":image_desc}) for group in question_groups] 
 
 
 def send_decomposed_question_groups_with_serial_hack(state: state.OverallState):
@@ -36,7 +38,9 @@ def send_decomposed_question_groups_with_serial_hack(state: state.OverallState):
     log_message("---RUNNING RAG AGENT ON ALL QUERIES IN PARALLEL---")
 
     question_groups = state["decomposed_question_groups"]
-    return [Send("rag1", {"question_group": [group]}) for group in question_groups]
+    image_desc=state.get("image_desc","")
+    image_url=state.get("image_url","")
+    return [Send("rag1", {"question_group": [group],"image_url":state.get("image_url",""),"image_desc":state.get("image_desc","")}) for group in question_groups]
 
 
 def critic_check(state: state.OverallState):
@@ -54,29 +58,6 @@ def critic_check(state: state.OverallState):
         # return 
     else:
         return "decompose"
-
-
-# TODO - Delete this function
-def send_further_decompose(state: state.QuestionDecomposer):
-    """
-    Sends the decomposition back into the decomposition
-    """
-    subquestions = state["subquestions"]
-    if state["decompose_further"]:
-        return [
-            Send(
-                "decompose_question_v3",
-                {
-                    "question": question,
-                    "collection": state["collection"],
-                    "counter": state["counter"],
-                },
-            )
-            for question in subquestions
-        ]
-
-    else:
-        return nodes.answer_v3.__name__
 
 
 def get_nodes_by_layer(root: QuestionNode, target_layer: int) -> List[QuestionNode]:
@@ -112,7 +93,7 @@ def send_2_layer_decomposed_questions(state: state.InternalRAGState):
     return [
         Send(
             f"rag_2_layer",
-            {"question": question.question, "question_tree": question_tree.to_dict()},
+            {"question": question.question, "question_tree": question_tree.to_dict(),"image_url":state.get("image_url",""),"image_desc":state.get("image_desc","")},
         )
         for question in x_layer_questions
     ]
@@ -125,7 +106,7 @@ def send_1_layer_decomposed_questions(state: state.InternalRAGState):
     return [
         Send(
             f"rag_1_layer",
-            {"question": question.question, "question_tree": question_tree.to_dict()},
+            {"question": question.question, "question_tree": question_tree.to_dict(),"image_url":state.get("image_url",""),"image_desc":state.get("image_desc","")},
         )
         for question in x_layer_questions
     ]
@@ -137,7 +118,7 @@ def send_first_set_of_decomposed_questions(state: state.OverallState):
     return [
         Send(
             f"rag_{depth}_layer",
-            {"question": question.question, "question_tree": question_tree.to_dict()},
+            {"question": question.question, "question_tree": question_tree.to_dict(),"image_url":state.get("image_url",""),"image_desc":state.get("image_desc","")},
         )
         for question in x_layer_questions
     ]
@@ -160,17 +141,17 @@ def aggregate_child_answers(root):
 def repeat_1(state:state.OverallState):
     question_tree=QuestionNode.from_dict(state["question_tree_1"])
     x_layer_questions=get_nodes_by_layer(question_tree,1)
-    return [Send(f"rag_1_time",{"question":question.question, "question_tree_1":question_tree.to_dict()}) for question in x_layer_questions]
+    return [Send(f"rag_1_time",{"question":question.question, "question_tree_1":question_tree.to_dict(),"image_url":state.get("image_url",""),"image_desc":state.get("image_desc","")}) for question in x_layer_questions]
 
 def repeat_2(state:state.OverallState):
     question_tree=QuestionNode.from_dict(state["question_tree_2"])
     x_layer_questions=get_nodes_by_layer(question_tree,1)
-    return [Send(f"rag_2_time",{"question":question.question, "question_tree_2":question_tree.to_dict()}) for question in x_layer_questions]
+    return [Send(f"rag_2_time",{"question":question.question, "question_tree_2":question_tree.to_dict(),"image_url":state.get("image_url",""),"image_desc":state.get("image_desc","")}) for question in x_layer_questions]
 
 def repeat_3(state:state.OverallState):
     question_tree=QuestionNode.from_dict(state["question_tree_3"])
     x_layer_questions=get_nodes_by_layer(question_tree,1)
-    return [Send(f"rag_3_time",{"question":question.question, "question_tree_3":question_tree.to_dict()}) for question in x_layer_questions]
+    return [Send(f"rag_3_time",{"question":question.question, "question_tree_3":question_tree.to_dict(),"image_url":state.get("image_url",""),"image_desc":state.get("image_desc","")}) for question in x_layer_questions]
 
 
 def check_answer_fit_1(state: state.OverallState):

@@ -12,7 +12,7 @@ def should_continue(state: state.OverallState):
     current_persona = state["current_persona"]
     if current_persona is not None:
         return "generate_question"
-    return "combine_answers"
+    return "combine_answer_v1"
 
 
 def rag_tool_node(state: state.OverallState):
@@ -36,7 +36,7 @@ graph.add_edge(persona_nodes.create_persona.__name__, persona_nodes.select_next_
 graph.add_conditional_edges(persona_nodes.select_next_persona.__name__, should_continue,
                             {
                                 "generate_question": persona_nodes.generate_question_using_persona_with_supervisor.__name__,
-                                "combine_answers": persona_nodes.combine_persona_with_supervisor_generated_answers.__name__
+                                "combine_answer_v1": persona_nodes.combine_persona_with_supervisor_generated_answers.__name__
                             })
 graph.add_edge(persona_nodes.generate_question_using_persona_with_supervisor.__name__, "rag_tool")
 graph.add_edge("rag_tool", persona_nodes.select_next_persona.__name__)

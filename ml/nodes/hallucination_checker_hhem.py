@@ -1,8 +1,10 @@
 from transformers import pipeline, AutoTokenizer
 
-import state
-from utils import log_message
+import state , nodes
+from utils import log_message , send_logs
 import config
+from config import LOGGING_SETTINGS
+import uuid
 
 
 def check_hallucination_hhem(state: state.InternalRAGState):
@@ -71,9 +73,43 @@ def check_hallucination_hhem(state: state.InternalRAGState):
         log_message(
             f"Error evaluating hallucination: {e}", f"question_group{question_group_id}"
         )
-        return {
-            "answer_contains_hallucinations":None
+
+         ###### log_tree part
+        # import uuid , nodes 
+        id = str(uuid.uuid4())
+        child_node = nodes.check_hallucination_hhem.__name__ + "//" + id
+        parent_node = state.get("prev_node" , "START")
+        if parent_node == "":
+            parent_node = "START"
+        log_tree = {}
+
+        if not LOGGING_SETTINGS['check_hallucination_hhem'] or state.get("send_log_tree_logs" , "") == "False":
+            child_node = parent_node  
+        
+        log_tree[parent_node] = [child_node]
+        ######
+
+        ##### Server Logging part
+
+        output_state = {
+            "answer_contains_hallucinations":None ,
+            "prev_node" : child_node,
+            "log_tree" : log_tree ,
         }
+
+
+        send_logs(
+            parent_node = parent_node , 
+            curr_node= child_node , 
+            child_node=None , 
+            input_state=state , 
+            output_state=output_state , 
+            text=child_node.split("//")[0] ,
+        )
+        
+        ######
+
+        return output_state 
 
     # Determine hallucination flag
     hallucination_flag = "yes" if score < 0.5 else "no"
@@ -95,8 +131,41 @@ def check_hallucination_hhem(state: state.InternalRAGState):
     hallucination_retries=state.get("hallucinations_retries", 0)
     hallucination_retries+=1
     
+     ###### log_tree part
+    # import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = nodes.check_hallucination_hhem.__name__ + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    if parent_node == "":
+        parent_node = "START"
+    log_tree = {}
 
-    return {
+    if not LOGGING_SETTINGS['check_hallucination_hhem'] or state.get("send_log_tree_logs" , "") == "False":
+        child_node = parent_node  
+    
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+
+    output_state = {
         "answer_contains_hallucinations":answer_contains_hallucinations,
-        "hallucinations_retries":hallucination_retries
+        "hallucinations_retries":hallucination_retries ,
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
     }
+
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    return output_state 
+

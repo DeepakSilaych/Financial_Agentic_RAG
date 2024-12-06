@@ -24,7 +24,7 @@ def refine_query(state: state.OverallState):
     # Fetch clarifying questions and responses from the state
     clarifying_questions = state["clarifying_questions"]
     query = state["question"]
-    clarifications = state["clarifications"]
+    clarifications = state.get("clarifications", [])
 
     # Process clarifying questions and responses into a structured format
     combined_clarifications = " | ".join(

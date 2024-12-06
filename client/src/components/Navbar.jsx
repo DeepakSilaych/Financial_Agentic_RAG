@@ -60,7 +60,7 @@ const Navbar = () => {
             <div className="p-1 rounded-lg group-hover:bg-blue-50 transition-colors">
               <BotMessageSquare size={32} className="text-blue-600" />
             </div>
-            <span className="text-xl font-bold text-gray-900">Pathway</span>
+            <span className="text-xl font-bold text-gray-900">FinSight</span>
           </Link>
 
           {/* Auth Buttons */}

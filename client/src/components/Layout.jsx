@@ -109,7 +109,7 @@ const Layout = () => {
       >
         <aside
           className={`
-            fixed lg:relative inset-y-0 left-0 z-30
+            fixed lg:relative inset-y-0 left-0 
             transform transition-all duration-300 ease-in-out
             ${isSidebarOpen ? 'translate-x-0 w-72' : '-translate-x-full lg:translate-x-0 lg:w-20'}
           `}
@@ -119,7 +119,7 @@ const Layout = () => {
       </motion.div>
 
       <motion.main 
-        initial={{ y: 500, opacity: 0 }}
+        initial={{ y: 1000, opacity: 1 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
         transition={{ duration: 0.5 }}
@@ -175,7 +175,7 @@ const Layout = () => {
                 title="Documentation"
               >
                 <FileText size={18} />
-                <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-white px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
                   Docs
                 </span>
               </Link>
@@ -185,7 +185,7 @@ const Layout = () => {
                 title="Help & Support"
               >
                 <HelpCircle size={18} />
-                <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2  text-white px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
                   Help
                 </span>
               </Link>
@@ -195,7 +195,7 @@ const Layout = () => {
                 title="Notifications"
               >
                 <Bell size={18} />
-                <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-white px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
                   Notifications
                 </span>
               </Link>
@@ -288,16 +288,45 @@ const Layout = () => {
 
       <Dialog.Root open={isNewChatDialogOpen} onOpenChange={setIsNewChatDialogOpen}>
         <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 bg-black/50" />
-          <Dialog.Content className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-white rounded-lg p-6 w-[90vw] max-w-[500px] shadow-xl">
-            <Dialog.Title className="text-lg font-semibold mb-4">New Chat</Dialog.Title>
+          <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+          <Dialog.Content className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-white rounded-xl p-6 w-[95vw] max-w-[550px] shadow-lg">
+            <Dialog.Title className="text-xl font-semibold mb-4 text-gray-800">New Chat</Dialog.Title>
             <ChatInput 
-              isDialog={true} 
-              onSend={() => setIsNewChatDialogOpen(false)}
+              isDialog={true}
+              onSendMessage={async (message, mode, researchMode, files) => {
+                try {
+                  const response = await fetch(`http://localhost:8000/spaces/${currentSpace.id}/chats`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      space_id: currentSpace.id,
+                      title: message.slice(0, 50) + (message.length > 50 ? '...' : ''),
+                      first_message: message
+                    })
+                  });
+                  
+                  if (!response.ok) {
+                    throw new Error('Failed to create chat');
+                  }
+                  
+                  const newChat = await response.json();
+                  setIsNewChatDialogOpen(false);
+                  
+                  // Wait a bit for the chat to be fully created before navigating
+                  await new Promise(resolve => setTimeout(resolve, 500));
+                  navigate(`/app/chat/${newChat.id}`);
+                } catch (error) {
+                  console.error('Error creating chat:', error);
+                }
+              }}
+              className="mb-4"
             />
             <Dialog.Close asChild>
               <button
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+                aria-label="Close"
               >
                 <X size={20} />
               </button>

@@ -10,7 +10,7 @@ from llm import llm
 import uuid
 from config import GLOBAL_SET_OF_FINANCE_TERMS
 
-from utils import send_logs
+from utils import send_logs , tree_log
 from config import LOGGING_SETTINGS
 
 
@@ -267,7 +267,7 @@ def extract_metadata(state: state.InternalRAGState):
     """
     question_group_id = state.get("question_group_id", 1)
     query = state["question"]
-    log_message(f"---QUERY: {query}", f"question_group{question_group_id}")
+    log_message(f"---QUERY: {query}, question_group{question_group_id}", question_group_id)
 
     ## Extracting this for db state
     db = FinancialDatabase()
@@ -293,7 +293,7 @@ def extract_metadata(state: state.InternalRAGState):
 
     log_message(
         "------"
-        f"Extracted Metadata - company_name: {company_name}, year: {filing_year}, Category: {category}",
+        f"Extracted Metadata - company_name: {company_name}, year: {filing_year}, Category: {category}"
         f"question_group{question_group_id}",
     )
 
@@ -303,8 +303,8 @@ def extract_metadata(state: state.InternalRAGState):
     child_node = nodes.extract_metadata.__name__ + "//" + id
     parent_node = state.get("prev_node" , "START")
     log_tree = {}
-
-    if not LOGGING_SETTINGS['extract_metadata']:
+    # tree_log(f"send_Log_tree_logs : {state['send_log_tree_logs']}",1)
+    if not LOGGING_SETTINGS['extract_metadata'] or state.get("send_log_tree_logs" , "") == "False":
         child_node = parent_node 
 
     log_tree[parent_node] = [child_node]

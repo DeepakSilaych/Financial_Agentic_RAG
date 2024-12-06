@@ -3,7 +3,7 @@ from typing import List, TypedDict, Annotated, Optional, Dict, Literal, Any, Uni
 
 from pydantic import BaseModel
 from langchain_core.documents import Document
-from utils import log_message
+from utils import log_message, tree_log
 import json
 from langgraph.checkpoint.serde.base import SerializerProtocol
 import json
@@ -20,14 +20,18 @@ class QuestionNode:
         self.children = []
         self.citations = []
         self.child_citations = []  # New field for child citations
-        self.log_tree = {} 
-        self.child_logs = []  
+        self.log_tree = {}
+        self.child_logs = []
+        self.last_node = None
+        self.child_last_nodes = []
 
-    def add_child(self, child: 'QuestionNode'):
+    def add_child(self, child: "QuestionNode"):
         self.children.append(child)
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert QuestionNode to a dictionary for serialization."""
+        # log_message(f"self.log_tree : {self.log_tree}" ,1)
+        # log_message(f"self.child_logs : {self.child_logs}" ,1)
         return {
             "parent_question": self.parent_question,
             "question": self.question,
@@ -37,10 +41,14 @@ class QuestionNode:
             "children": [child.to_dict() for child in self.children],
             "citations": self.citations,
             "child_citations": self.child_citations,  # Include child_citations in serialization
+            "log_tree": self.log_tree,
+            "child_logs": self.child_logs,
+            "last_node": self.last_node,
+            "child_last_nodes": self.child_last_nodes,
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'QuestionNode':
+    def from_dict(cls, data: Dict[str, Any]) -> "QuestionNode":
         """Reconstruct a QuestionNode from a dictionary."""
         node = cls(
             parent_question=data.get("parent_question"),
@@ -51,10 +59,23 @@ class QuestionNode:
         node.child_answers = data.get("child_answers", [])
         node.children = [cls.from_dict(child) for child in data.get("children", [])]
         node.citations = data.get("citations", [])
-        node.child_citations = data.get("child_citations", [])  # Deserialize child_citations
+        node.child_citations = data.get(
+            "child_citations", []
+        )  # Deserialize child_citations
+        node.log_tree = data.get("log_tree", {})
+        # log_message(f"node.log_tree : {node.log_tree}",1)
+        node.child_logs = data.get("child_logs", [])
+        # log_message(f"node.child_logs : {node.child_logs}" ,1)
+        node.last_node = data.get("last_node", "")
+        node.child_last_nodes = data.get("child_last_nodes", [])
         return node
 
-def merge_question_dicts(existing_node: Dict[str, Any], new_node: Dict[str, Any]) -> Dict[str, Any]:
+
+def merge_question_dicts(
+    existing_node: Dict[str, Any], new_node: Dict[str, Any]
+) -> Dict[str, Any]:
+    # tree_log(f"AT START : existing_node :  {existing_node} , NEW NODE : {new_node}" , 1)
+
     if existing_node is None:
         return new_node
 
@@ -107,9 +128,34 @@ def merge_question_dicts(existing_node: Dict[str, Any], new_node: Dict[str, Any]
         existing_node.get("child_citations", []), new_node.get("child_citations", [])
     )
 
+    existing_node["log_tree"] = add_child_to_node(
+        existing_node.get("log_tree", []), new_node.get("log_tree", [])
+    )
+
+    # existing_node["log_tree"] = new_node.get("log_tree" , {})
+    # child_logs = [{}]
+    # for node in new_node.get("child_logs" , []):
+    #     child_logs.append()
+
+    # existing_node["child_logs"] = new_node.get("child_logs" , [])
+    existing_node["last_node"] = new_node.get("last_node") or existing_node.get(
+        "last_node"
+    )
+    # existing_node["child_last_nodes"] = new_node.get("child_last_nodes" , [])
+    existing_node["child_last_nodes"] = list(
+        set(
+            existing_node.get("child_last_nodes", [])
+            + new_node.get("child_last_nodes", [])
+        )
+    )
+    # tree_log(f" AT START ,  last node : {existing_node["last_node"]} , new node : {new_node["last_node"]} ,   ")
+    # tree_log(f"AT FINISH existing_node :  {existing_node}" , 1)
     return existing_node
 
-def add_child_to_node(existing_log_tree: Dict[str, List[str]], new_log_tree: Dict[str, List[str]]) -> Dict[str, List[str]]:
+
+def add_child_to_node(
+    existing_log_tree: Dict[str, List[str]], new_log_tree: Dict[str, List[str]]
+) -> Dict[str, List[str]]:
     """
     Adds a child node to the given parent node in the log_tree.
     If the parent node doesn't exist, it creates the entry with the child.
@@ -119,7 +165,7 @@ def add_child_to_node(existing_log_tree: Dict[str, List[str]], new_log_tree: Dic
         new_log_tree: Dict[str, List[str]]
     """
     # Create a copy of the first dictionary to avoid modifying it in place
-    log_message(f"existing log tree 2 : {existing_log_tree}" , 1 )
+    # log_message(f"existing log tree 2 : {existing_log_tree}" , 1 )
 
     updated_log_tree = existing_log_tree.copy()
     # Iterate through the second dictionary and merge
@@ -134,26 +180,44 @@ def add_child_to_node(existing_log_tree: Dict[str, List[str]], new_log_tree: Dic
             # If the key doesn't exist, create a new entry with the value
             updated_log_tree[key] = value
 
-    log_message(f"existing log tree : {existing_log_tree} , new_log_tree : {new_log_tree} , \n\n updated_log_tree : {updated_log_tree} " , 1)
+    # log_message(f"existing log tree : {existing_log_tree} , new_log_tree : {new_log_tree} , \n\n updated_log_tree : {updated_log_tree} " , 1)
     return updated_log_tree
     # return updated_log_tree
 
+
+def prev_node_merge(existing_str: str, new_str: str) -> str:
+    # log_message(f"Updating prev node | existing_str : {existing_str} , new_str : {new_str}", 1)
+    if new_str is None:
+        return existing_str
+    return new_str
+
+def prev_node_merge2(existing_str: str, new_str: str) -> str:
+    # log_message(f"Updating prev node | existing_str : {existing_str} , new_str : {new_str}", 1)
+    if new_str is None:
+        return existing_str
+    if existing_str is None: 
+        return new_str
+    return existing_str + "$$" + new_str
+
+
+
+
 class KPIState(TypedDict):
-    analysis_suggestions: List[
-        str
-    ]  # Suggestions of Analysis types that can be done on query (to ask user)
-    analysis_subject: List[
-        Dict
-    ]  # analyis types to be done after being selected by user
+    analysis_companies_by_year: List[Dict]
 
     analyses_to_be_done: list[str]
     analyses_kpis_by_company_year: list[dict[str, Any]]
     analyses_kpis_by_company_year_calculated: list[dict[str, Any]]
     analyses_values: list[dict[str, Any]]
+    final_answer: str
+    prev_node : str 
+    log_tree: Annotated[
+        Dict[str, List[str]], add_child_to_node
+    ]  # [ key ( prev_node_name+//+uuid ) : value ( List[str (prev_node_name+//+uuid )])]
 
 
 class OverallState(TypedDict):
-    user_id:str
+    user_id: str
     messages: Annotated[List[str], operator.add]
     question: str
     follow_up_questions: List[str]
@@ -163,8 +227,6 @@ class OverallState(TypedDict):
     combined_documents: Annotated[List[Document], operator.add]
     missing_company_year_pairs: List[dict]
     reports_to_download: List[dict]
-
-    partial_answer: Annotated[List[str],operator.add]
 
     db_state: List[dict]
 
@@ -183,10 +245,10 @@ class OverallState(TypedDict):
     critic_counter: int
     decomposed_answers: Annotated[List[str], operator.add]
 
-    question_tree: Annotated[Optional[Dict[str,Any]], merge_question_dicts]
-    question_tree_1: Annotated[Optional[Dict[str,Any]], merge_question_dicts]
-    question_tree_2: Annotated[Optional[Dict[str,Any]], merge_question_dicts]
-    question_tree_3: Annotated[Optional[Dict[str,Any]], merge_question_dicts]
+    question_tree: Annotated[Optional[Dict[str, Any]], merge_question_dicts]
+    question_tree_1: Annotated[Optional[Dict[str, Any]], merge_question_dicts]
+    question_tree_2: Annotated[Optional[Dict[str, Any]], merge_question_dicts]
+    question_tree_3: Annotated[Optional[Dict[str, Any]], merge_question_dicts]
     qa_pairs: Annotated[List[str], operator.add]
     question_store: Annotated[List[str], operator.add]
     subquestion_store: Annotated[List[str], operator.add]
@@ -195,14 +257,13 @@ class OverallState(TypedDict):
     analysis_suggestions: List[
         str
     ]  # Suggestions of Analysis types that can be done on query (to ask user)
-    analysis_subject: List[
-        Dict
-    ]  # analyis types to be done after being selected by user
+    analysis_companies_by_year: List[Dict]
 
     analyses_to_be_done: list[str]
     # analyses_kpis_by_company_year: list[dict[str, Any]]
     # analyses_kpis_by_company_year_calculated: list[dict[str, Any]]
     # analyses_values: list[dict[str, Any]]
+    kpi_answer: Annotated[str, prev_node_merge]
 
     clarifying_questions: Annotated[List[Dict], operator.add]
     clarifications: List[Dict]
@@ -211,41 +272,44 @@ class OverallState(TypedDict):
     normal_vs_research: str  ## "answer" or "research", type will be fixed to enum later
     # log_tree: Annotated[Dict[str, List[Dict[str, dict]]], operator.add]
     image_path: str
+    image_url : str
     image_desc: str
     query_safe: str
 
     urls: List[str]
-    prev_node: str
+    prev_node: Annotated[str, prev_node_merge]
     # combined_logs :
-    log_tree: Annotated[Dict[str, List[str]] , add_child_to_node ]# [ key ( prev_node_name+//+uuid ) : value ( List[str (prev_node_name+//+uuid )])]
+    log_tree: Annotated[
+        Dict[str, List[str]], add_child_to_node
+    ]  # [ key ( prev_node_name+//+uuid ) : value ( List[str (prev_node_name+//+uuid )])]
     combined_metadata: List[Dict]
 
     overall_retries: int
 
-    #File paths for retreival filtering
-    query_path:List[str]
+    # File paths for retreival filtering
+    query_path: List[str]
 
-    #frontend variables
+    # frontend variables
     message_id: str
     chat_id: str
     space_id: str
 
-
-
+    persona_last_nodes : Annotated[str , prev_node_merge2] # parent nodes for combine_persona_specific_answers
+    combine_answer_parents : Annotated[str , prev_node_merge2] # parent nodes for final_combine_answer_analysis
 
 class InternalRAGState(TypedDict):
     ## Ques
-    user_id:str
+    user_id: str
     original_question: str
     question: str
-    category: Literal['Quantitative', 'Qualitative']
+    category: Literal["Quantitative", "Qualitative"]
     decomposed_answers: Annotated[List[str], operator.add]
     question_group: Annotated[List[str], operator.add]
     question_group_id: str
-    question_tree: Annotated[Optional[Dict[str,Any]], merge_question_dicts]
-    question_tree_1: Annotated[Optional[Dict[str,Any]], merge_question_dicts]
-    question_tree_2: Annotated[Optional[Dict[str,Any]], merge_question_dicts]
-    question_tree_3: Annotated[Optional[Dict[str,Any]], merge_question_dicts]
+    question_tree: Annotated[Optional[Dict[str, Any]], merge_question_dicts]
+    question_tree_1: Annotated[Optional[Dict[str, Any]], merge_question_dicts]
+    question_tree_2: Annotated[Optional[Dict[str, Any]], merge_question_dicts]
+    question_tree_3: Annotated[Optional[Dict[str, Any]], merge_question_dicts]
     analysis_question_groups: List[str]
     expanded_question: str
     analysis_subquestions: Annotated[List[str], operator.add]
@@ -257,8 +321,8 @@ class InternalRAGState(TypedDict):
     metadata: dict
     formatted_metadata: str
     metadata_filters: List[str]  #  [ company_name , year , topics , ]
-    #Query path for filtering
-    query_path:List[str]
+    # Query path for filtering
+    query_path: List[str]
 
     ## Answer
     answer: str
@@ -270,6 +334,7 @@ class InternalRAGState(TypedDict):
     documents_after_metadata_filter: List[
         Document
     ]  # Retains docs after metadata filtering
+    documents_with_kv: List[Document]  # Retains docs with key value pairs
     fallback_qq_retriever: bool
     combined_documents: Annotated[
         List[Document], operator.add
@@ -283,7 +348,7 @@ class InternalRAGState(TypedDict):
     hallucination_reason: str
     hallucinations_retries: int
     answer_generation_retries: int
-    prev_node: str
+    prev_node: Annotated[str, prev_node_merge]
     insufficiency_reason: str
     irrelevancy_reason: str
     metadata_retries: int
@@ -295,13 +360,14 @@ class InternalRAGState(TypedDict):
     query_type: Literal["Quantitative", "Qualitative"]
     urls: List[str]
     web_searched: bool
-    image_url: str
-    log_tree: Annotated[Dict[str, List[str]] , add_child_to_node ]# [ key ( prev_node_name+//+uuid ) : value ( List[str (prev_node_name+//+uuid )])]
-    
+    image_url : str
+    image_desc: str
+    log_tree: Annotated[
+        Dict[str, List[str]], add_child_to_node
+    ]  # [ key ( prev_node_name+//+uuid ) : value ( List[str (prev_node_name+//+uuid )])]
 
-    
-
-
+    send_log_tree_logs : str
+    prev_node_rewrite : str
 
 class QuestionDecomposer(TypedDict):
     subquestions: Annotated[List[str], operator.add]
@@ -423,6 +489,10 @@ class VisualizerState(TypedDict):
 class PersonaState(TypedDict):
     persona: dict[str, str]
     persona_question: str
+    image_url:str
+    image_desc:str
     persona_generated_questions: Annotated[List[str], operator.add]
     persona_generated_answers: Annotated[List[str], operator.add]
     persona_specific_answers: Annotated[List[str], operator.add]
+    prev_node : Annotated[str , prev_node_merge]
+    persona_last_nodes : Annotated[str , prev_node_merge2] # parent nodes for combine_persona_specific_answers

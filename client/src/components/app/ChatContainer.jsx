@@ -42,7 +42,7 @@ const EmptyState = () => (
       <div className="mb-8"> 
         <BotMessageSquareIcon size={40} className="text-blue-500 mx-auto mb-4" />
         <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-          Welcome to Pathway AI
+          Welcome to FinSight AI
         </h2> 
         <p className="text-gray-600">
           Your intelligent assistant for document analysis and insights
@@ -393,15 +393,20 @@ const ChatContainer = ({ chatId }) => {
     }
   };
 
-  const handleSendMessage = async (messageData, newChatId = null) => {
+  const handleSendMessage = async (message, mode = 'chat', researchMode = false, selectedFiles = []) => {
+    if (!currentSpace?.id) {
+      setError('Please select a space first');
+      return;
+    }
+
+    const messageData = {
+      message,
+      mode,
+      research_mode: researchMode,
+      selected_files: selectedFiles
+    };
+
     try {
-      const targetChatId = newChatId || chatId;
-      
-      // If this is a new chat, navigate to it
-      if (newChatId) {
-        navigate(`/spaces/${currentSpace.id}/chats/${newChatId}`);
-      }
-      
       // If there's no active chat, create one and send the message
       if (!chatId) {
         setLoading(true);
@@ -551,7 +556,7 @@ const ChatContainer = ({ chatId }) => {
     <div className="flex flex-row h-full relative" ref={containerRef}>
       <div
         ref={chatContainerRef}
-        className="flex-1 flex flex-col overflow-hidden relative"
+        className="flex-1 h-full flex flex-col overflow-hidden relative"
         style={{ width: `${chatWidth}%` }}
       >
         <ChatMessages
@@ -571,7 +576,7 @@ const ChatContainer = ({ chatId }) => {
         </div>
       </div>
       <ResizeHandle onMouseDown={handleMouseDown} />
-      <div style={{ width: `${100 - chatWidth}%` }}>
+      <div className='h-full'  style={{ width: `${100 - chatWidth}%` }}>
         <Tab />
       </div>
     </div>

@@ -11,7 +11,7 @@ from nodes.question_decomposer import (
     combine_questions,
 )
 from .rag_e2e import rag_e2e
-from nodes.question_decomposer import question_combiner_v2
+
 from state import QuestionNode
 from langgraph.checkpoint.memory import MemorySaver
 
@@ -157,7 +157,6 @@ graph.add_node(
     nodes.combine_conversation_history.__name__, nodes.combine_conversation_history
 )
 graph.add_node(nodes.check_safety.__name__, nodes.check_safety)
-graph.add_node(nodes.decompose_question_v2.__name__, nodes.decompose_question_v2)
 graph.add_node(nodes.ask_clarifying_questions.__name__, nodes.ask_clarifying_questions)
 graph.add_node(nodes.refine_query.__name__, nodes.refine_query)
 graph.add_node(decomposer_node.__name__, decomposer_node)

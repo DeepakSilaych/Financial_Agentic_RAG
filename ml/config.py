@@ -32,7 +32,7 @@ MULTI_SERVER_HOST = "127.0.0.1"
 MULTI_SERVER_PORT = 8080
 
 # Depth of decomposer
-DECOMPOSER_DEPTH = 2
+DECOMPOSER_DEPTH = 3
 
 # Number of documents to retrieve from the vector store
 NUM_DOCS_TO_RETRIEVE = 5
@@ -53,6 +53,7 @@ NUM_METRICS = 3
 NUM_CHARTS = 5
 
 # Max retries for different nodes
+# 2 2 1 1
 MAX_DOC_GRADING_RETRIES = 2
 MAX_METADATA_FILTERING_RETRIES = 2
 MAX_HALLUCINATION_RETRIES = 1
@@ -72,35 +73,39 @@ CHAIN_DEBUG_CONFIG: RunnableConfig = {"callbacks": [ConsoleCallbackHandler()]}
 EVAL_QUERY_BATCH_SIZE = 10
 
 # Max number of retries for the entire pipeline
-MAX_RETRIES = 2
+MAX_RETRIES = 3
 
 # Max number of questions that the query clarifier should ask
-MAX_QUESTIONS_TO_ASK = 3
+MAX_QUESTIONS_TO_ASK = 1
 
-# Set to "stdout" to log to stdout, "server" to send the logs to the server, or a file name to log to a file
+#FALL BACK TESTING
+WEB_FALL_BACK=False
+OPENAI_FALL_BACK=False
+RETREIVER_FALL_BACK=False
+
+# Set to "stdout" to log to stdou1t, "server" to send the logs to the server, or a file name to log to a file
 LOG_FILE_NAME = "pipeline_log.txt"
 
-LOGGING_ENDPOINT = "http://192.168.156.15:8000/receive_nodes/"
+LOGGING_ENDPOINT = "http://127.0.0.1:8000/receive_nodes/"
 
 WORKFLOW_SETTINGS = {
     "metadata_filtering": True,
     "assess_metadata_filters": True,
-    "metadata_filtering_with_quant_qual": False,
+    "metadata_filtering_with_quant_qual": True,
     "reranking": False,
-    "grade_documents": False,
-    "assess_graded_documents": False,
+    "grade_documents": True,
+    "assess_graded_documents": True,
     "rewrite_with_hyde": True,
     "check_hallucination": False,
     "hallucination_checker": "llm",  # "hhem"
-    "grade_answer": False,
-    "grade_web_answer": False,
-    #
-    "check_safety": False,
+    "grade_answer": True,
+    "grade_web_answer": True,
+    "check_safety": True,
     "query_expansion": False,
-    "follow_up_questions": True,
+    "follow_up_questions": False,
     "with_table_for_quant_qual": True,
     "with_site_blocker": False,
-    "vision": False,
+    "vision": True,
     "calculator": False,
     "field_to_ignore_from_metadata_for_generation": [
         "created_at",
@@ -120,8 +125,8 @@ WORKFLOW_SETTINGS = {
 #     'START' : True , # Always True
 #     'check_safety': False ,
 #     # 'process_query' : False ,
-    # 'combine_conversation_history_v2' : True ,
-    # 'combine_conversation_history' : True ,
+# 'combine_conversation_history_v2' : True ,
+# 'combine_conversation_history' : True ,
 #     'refine_query' : True ,
 #     'ask_clarifying_questions' : False ,
 #     'identify_missing_reports' : False ,
@@ -163,28 +168,47 @@ WORKFLOW_SETTINGS = {
 LOGGING_SETTINGS = {
     "START": True,  # Always True
     "check_safety": True,
-    'combine_conversation_history_v2' : True ,
-    'combine_conversation_history' : True ,
+    "combine_conversation_history_v2": True,
+    "combine_conversation_history": True,
     "refine_query": True,
     "ask_clarifying_questions": True,
     "identify_missing_reports": True,
     "download_missing_reports": True,
     # kpi_nodes
+    "general_llm": True,
     "get_required_values": True,
     "get_required_kpis": True,
+    "calculate_kpis_for_company_year": True,
+    "calculate_kpis": True,
+    "generate_answer_from_kpis": True,
+    # persona_nodes
+    "create_persona": True,
+    "create_persona_specific_questions": True,
+    "combine_persona_specific_answers": True,
+    "persona_agent": True,  # subgraph : nodes below
+    # "generate_question_using_persona" : True,
+    # persona_agent nodes
+    "generate_question_using_persona": True,
+    "combine_persona_generated_answers": True,
+    "rag_tool_node": True,  # subgraph : invokes rag_e2e
     "decomposer_node_1": True,  # Always True
     "rag_1_time": True,
     # rag_e2e nodes ( Atleast 1 should be True : To visualize branching )
-    "expand_question": True,
-    "extract_metadata": True,
+    "expand_question": False,
+    "extract_metadata": False,
     "retrieve_documents_with_metadata": True,
     "grade_documents": True,
-    "rewrite_with_hyde": True,
+    "rewrite_with_hyde": False,
+    "rewrite_question": True,
     "generate_answer_with_citation_state": True,
     "grade_answer": True,
     "search_web": True,
     "generate_web_answer": True,
     "grade_web_answer": True,
+    "rerank_documents": True,
+    "retrieve_documents_with_quant_qual": True,
+    "check_hallucination": True,
+    "check_hallucination_hhem": True,
     ####
     "aggregate1": True,
     "decomposer_node_2": True,
@@ -197,6 +221,8 @@ LOGGING_SETTINGS = {
     "aggregate3": True,
     "combine_answer_v3": True,
     "append_citations": True,
+    "combine_answer_analysis": True,
+    "ask_follow_up_questions": True,
 }
 
 GLOBAL_SET_OF_FINANCE_TERMS = {

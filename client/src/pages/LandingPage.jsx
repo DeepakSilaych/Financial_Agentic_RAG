@@ -357,10 +357,10 @@ const LandingPage = () => {
               className="text-center mb-16"
             >
               <h2 className="text-4xl font-bold text-gray-900 mb-4">
-                See Pathway in Action
+                See FinSight in Action
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Watch how Pathway transforms document interaction into an intuitive, AI-powered experience.
+                Watch how FinSight transforms document interaction into an intuitive, AI-powered experience.
               </p>
             </motion.div>
 
@@ -394,14 +394,14 @@ const LandingPage = () => {
                 Loved by Teams Worldwide
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                See what professionals are saying about their experience with Pathway.
+                See what professionals are saying about their experience with FinSight.
               </p>
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
                 {
-                  quote: "Pathway has completely transformed how we handle documentation. The AI-powered search is a game-changer.",
+                  quote: "FinSight has completely transformed how we handle documentation. The AI-powered search is a game-changer.",
                   author: "Sarah Chen",
                   role: "Technical Lead, TechCorp"
                 },
@@ -448,7 +448,7 @@ const LandingPage = () => {
               </h2>
               <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
                 Join thousands of professionals who are already experiencing the future of document management.
-                Get started with Pathway today.
+                Get started with FinSight today.
               </p>
               <Link
                 to="/app"

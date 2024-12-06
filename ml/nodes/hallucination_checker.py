@@ -4,8 +4,9 @@ from typing import Optional
 
 import state , nodes
 from llm import llm
-from utils import log_message
-
+from utils import log_message , send_logs 
+from config import LOGGING_SETTINGS
+import uuid
 
 class HallucinationGrade(BaseModel):
     """Binary score for hallucination check on generated answers."""
@@ -112,8 +113,41 @@ def check_hallucination(state: state.InternalRAGState):
 
     # #####
 
-    return {
+     ###### log_tree part
+    # import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = nodes.check_hallucination.__name__ + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    if parent_node == "":
+        parent_node = "START"
+    log_tree = {}
+
+    if not LOGGING_SETTINGS['check_hallucination'] or state.get("send_log_tree_logs" , "") == "False":
+        child_node = parent_node  
+    
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+
+    output_state = {
         "answer_contains_hallucinations":answer_contains_hallucinations,
         "hallucination_reason":hallucination_reason_var,
-        "hallucinations_retries":hallucinations_retries
+        "hallucinations_retries":hallucinations_retries,
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
     }
+
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    return output_state 

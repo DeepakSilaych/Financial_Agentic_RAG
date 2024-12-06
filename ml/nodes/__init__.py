@@ -18,14 +18,11 @@ from .question_decomposer import (
     decompose_question,
     decompose_question_v2,
     decompose_question_v4,
-    question_decomposer_v3,
-    # answer_v3,
     critic_node,
-    combine_answers,
+    combine_answer_v1,
     combine_answer_v2,
     combine_answer_v3,
-    check_sufficient,
-    critic_node,
+    check_sufficient
 )
 from .question_rewriter import rewrite_question, rewrite_with_hyde
 from .web_searcher import search_web

@@ -10,8 +10,7 @@ import {
   History,
   Loader2,
   AlertTriangle,
-  User,
-  Keyboard
+  User
 } from 'lucide-react';
 import { chatApi } from '../../utils/api';
 import { useUser } from '../../context/UserContext';
@@ -71,7 +70,7 @@ const Sidebar = ({ isCollapsed }) => {
   ];
 
   const sidebarClasses = `
-    h-full text-gray-700 flex flex-col
+    h-screen text-gray-700 flex flex-col
     transition-all duration-300 ease-in-out
     ${isCollapsed ? 'w-20' : 'w-72'}
   `;
@@ -97,7 +96,7 @@ const Sidebar = ({ isCollapsed }) => {
           origin-left whitespace-nowrap
           ${isCollapsed ? 'opacity-0 scale-0 w-0' : 'opacity-100 scale-100'}
         `}>
-          Pathway
+          FinSight
         </h1>
       </div>
 
@@ -166,32 +165,21 @@ const Sidebar = ({ isCollapsed }) => {
             className={`
               flex items-center px-3 py-2 rounded-lg
               transition-all duration-200 ease-in-out
-              ${isActiveRoute('/app/chats')
+              ${isActiveRoute('/app/history')
                 ? 'bg-blue-300 bg-opacity-80 text-blue-600'
                 : 'text-gray-600 hover:bg-gray-100 hover:text-blue-600'
               }
               ${isCollapsed ? 'pl-2 pr-0' : 'space-x-2'}
             `}
           >
-            <MessageSquare size={20} className={`
-              transition-transform duration-200
-              ${isCollapsed ? 'transform scale-110' : ''}
-            `} />
             <span className={`
               transition-all duration-300 ease-in-out
               ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100'}
             `}>
-              Chats
-            </span>
-            <span className={`
-              ml-auto text-xs text-gray-500
-              transition-all duration-300 ease-in-out
-              ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100'}
-            `}>
-              <Keyboard size={14} className="inline mr-1" />
-              CTRL + K
+              Past Chats
             </span>
           </div>
+          
         </div>
 
         {!isCollapsed && (
@@ -218,8 +206,8 @@ const Sidebar = ({ isCollapsed }) => {
                     }
                   `}
                 >
-                  <History size={15} className={`transition-transform duration-200 transform scale-110`} />                  
-                  <span className="truncate">{renderChatTitle(chat)}</span>
+            <History size={15} className={`transition-transform duration-200 transform scale-110`} />                  
+            <span className="truncate">{renderChatTitle(chat)}</span>
                 </Link>
               ))
             )}

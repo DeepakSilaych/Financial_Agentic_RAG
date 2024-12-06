@@ -9,10 +9,10 @@ from nodes.question_decomposer import (
     question_decomposer_v3,
     question_combiner,
     combine_questions,
-    combine_answers_v3,
+    combine_answer,
 )
 from workflows.rag_e2e import rag_e2e
-from nodes.question_decomposer import question_combiner_v2
+
 from state import QuestionNode
 
 
@@ -111,7 +111,7 @@ def rag_2_layer(state: state.InternalRAGState):
         log_message(
             f"Combined question:  {question}", f"question_group{question_group_id}"
         )
-        question_node.answer = combine_answers_v3(
+        question_node.answer = combine_answer(
             question_node.children, question_node.child_answers, question
         )
     else:
@@ -136,7 +136,7 @@ def rag_1_layer(state: state.InternalRAGState):
         log_message(
             f"Combined question:  {question}", f"question_group{question_group_id}"
         )
-        question_node.answer = combine_answers_v3(
+        question_node.answer = combine_answer(
             question_node.children, question_node.child_answers, question
         )
     else:
@@ -155,7 +155,6 @@ graph.add_node(
     nodes.combine_conversation_history.__name__, nodes.combine_conversation_history
 )
 graph.add_node(nodes.check_safety.__name__, nodes.check_safety)
-graph.add_node(nodes.decompose_question_v2.__name__, nodes.decompose_question_v2)
 graph.add_node(nodes.ask_clarifying_questions.__name__, nodes.ask_clarifying_questions)
 graph.add_node(nodes.refine_query.__name__, nodes.refine_query)
 graph.add_node(decomposer_node.__name__, decomposer_node)

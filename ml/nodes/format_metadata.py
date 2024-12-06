@@ -77,65 +77,28 @@ def convert_metadata_to_jmespath_llm(metadata: Dict) -> list[str]:
     return result  # type: ignore
 
 
-# def company_to_parent(metadata: dict) -> dict:
-#     parent = extract_parent.invoke({"metadata": metadata})
-#     metadata["company_name"] = parent.content
-#     return metadata
-
-def convert_metadata_to_jmespath(metadata: dict[str, str | list[str]], metadata_filters: list[str] = None) -> str:
+def convert_metadata_to_jmespath(metadata: dict[str, str | list[str]]) -> str:
     jmespath_parts = []
-
 
     # if metadata_filters is None:
     #     metadata_filters = metadata.keys()
 
     for key, value in metadata.items():
-        if key not in metadata_filters:
-            continue  
-
-        if value is None :
+        if value is None:
             continue
 
-        if isinstance(value, list): 
-            if key == "company_name": # Not being used currently : company_name is a string 
-                for item in value:
-                    item = item.lower()
-                    if item.endswith(" inc.") or item.endswith(" inc"):
-                        item = item[:-4]  # Remove "inc." or "inc"
-                    jmespath_parts.append(f"contains({key}, `{item.lower()}`)")
-
-            elif key == "topics": # Being used for topics
-                if value:
-                    topic_conditions = []
-                    for topic in value:
-                        topic_conditions.append(f"topics == `{topic}`")
-                    jmespath_parts.append(f"({' || '.join(topic_conditions)})")
-
-            else:
-                for item in value:
-                    if item is None or item.lower() == "none" or item.lower() == "unknown":
-                        continue
-                    jmespath_parts.append(f"contains({key}, `{item}`)")
+        if isinstance(value, list):
+            conditions = []
+            for item in value:
+                if item is None or item.lower() == "none" or item.lower() == "unknown":
+                    continue
+                conditions.append(f"{key} == `{item}`")
+            jmespath_parts.append(f"({' || '.join(conditions)})")
 
         # Handling non-list values (company_name, year, etc.)
-        else: # Being used for company_name , year 
+        else:  # Being used for company_name , year
             if value == None or value.lower() == "none" or value.lower() == "unknown":
                 continue
-            if key == "company_name":
-                if value.endswith("inc.") or value.endswith("inc"):
-                    value = value[:-4]  # Remove "inc." or "inc"
             jmespath_parts.append(f"{key} == `{value}`")
 
     return " && ".join(jmespath_parts)
-
-
-# Input 
-# metadata = {
-#     "company_name": "Tesla Inc",
-#     "year": "2023",
-#     "topics": ["revenue", "profits", "growth"]
-# }
-
-# Output string format 
-#  "company_name == `tesla`) && contains(company_name, `motors`) && year == `2023` && (contains(topics, `revenue`) || contains(topics, `profits`) || contains(topics, `growth`))"
-

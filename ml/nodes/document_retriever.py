@@ -9,6 +9,7 @@ import concurrent.futures
 from utils import send_logs
 from config import LOGGING_SETTINGS
 
+
 def metadata_fallback(
     metadata_filters, documents, metadata_retries, doc_grading_retries
 ):
@@ -112,94 +113,67 @@ def retrieve_documents_with_metadata(state: state.InternalRAGState):
     metadata_filters = metadata_fallback(
         metadata_filters, documents, metadata_retries, doc_grading_retries
     )
-    # state["metadata_retries"] = metadata_retries
-    # state["doc_grading_retries"] = doc_grading_retries
-    # state["metadata_filters"] = metadata_filters
+
+    metadata = {k: v for k, v in metadata.items() if k in metadata_filters}
+    source_files = state.get("query_path", [])
+    if len(source_files) != 0:
+        metadata["path"] = source_files
 
     # split the question even if it doesn't contain the delimiter as that will just yield the original question
     questions = question.split("xxxxxxxxxx")
     docs = []
-    if len(metadata_filters) == 0:
-        for question in questions:
-            docs.extend(
-                retriever.similarity_search(question, config.NUM_DOCS_TO_RETRIEVE)
+    formatted_metadata = nodes.convert_metadata_to_jmespath(metadata)
+    log_message(f"\n\nformatted metadata :\n\n {formatted_metadata} \n\n")
+    for question in questions:
+        docs.extend(
+            retriever.similarity_search(
+                question,
+                config.NUM_DOCS_TO_RETRIEVE,
+                metadata_filter=formatted_metadata or None,
             )
-        formatted_metadata = ""
-    else:
-        formatted_metadata = nodes.convert_metadata_to_jmespath(
-            metadata, metadata_filters
         )
 
-        source_files=state.get('query_path',['data/AMZN.pdf'])
-        #source_files=state.get('query_path',[])
-        if(source_files):
-            source_file_str=' && ('
-            for index,path in enumerate(source_files):
-                source_file_str+=f'path == `{path}`'
-                if(index!=len(source_files)-1):
-                    source_file_str+=' || '
-            source_file_str+=')'
-            formatted_metadata+=source_file_str
-        # state["formatted_metadata"] = formatted_metadata
-        
-        log_message(f"\n\nformatted metadata :\n\n {formatted_metadata} \n\n")
-        for question in questions:
-            docs.extend(
-                retriever.similarity_search(
-                    question,
-                    config.NUM_DOCS_TO_RETRIEVE,
-                    metadata_filter=formatted_metadata,
-                )
-            )
-    
-    
-
-        print(formatted_metadata)
-
-    # state["documents"] = docs
-    # state["documents_after_metadata_filter"] = docs
-    # state["prev_node"] = nodes.retrieve_documents_with_metadata.__name__
     original_question = state.get("original_question", question)
-
 
     ###### log_tree part
     id = str(uuid.uuid4())
     child_node = nodes.retrieve_documents_with_metadata.__name__ + "//" + id
-    parent_node = state.get("prev_node" , "START")
+    prev_node_rewrite = child_node
+    parent_node = state.get("prev_node", "START")
     log_tree = {}
 
-    if not LOGGING_SETTINGS['retrieve_documents_with_metadata']:
-        child_node = parent_node 
+    if not LOGGING_SETTINGS["retrieve_documents_with_metadata"] or state.get("send_log_tree_logs" , "") == "False":
+        child_node = parent_node
 
     log_tree[parent_node] = [child_node]
     ######
 
     ##### Server Logging part
     output_state = {
-        "documents" : docs , 
-        "documents_after_metadata_filter" : docs , 
-        "original_question" : original_question , 
-        "formatted_metadata" : formatted_metadata , 
-        "metadata_retries" : metadata_retries , 
-        "doc_grading_retries" : doc_grading_retries , 
-        "metadata_filters" : metadata_filters,
-        "prev_node" : child_node,
-        "log_tree" : log_tree ,
-
+        "documents": docs,
+        "documents_after_metadata_filter": docs,
+        "original_question": original_question,
+        "formatted_metadata": formatted_metadata,
+        "metadata_retries": metadata_retries,
+        "doc_grading_retries": doc_grading_retries,
+        "metadata_filters": metadata_filters,
+        "prev_node_rewrite" : prev_node_rewrite , 
+        "prev_node": child_node,
+        "log_tree": log_tree,
     }
 
     send_logs(
-        parent_node = parent_node , 
-        curr_node= child_node , 
-        child_node=None , 
-        input_state=state , 
-        output_state=output_state , 
-        text=child_node.split("//")[0] ,
+        parent_node=parent_node,
+        curr_node=child_node,
+        child_node=None,
+        input_state=state,
+        output_state=output_state,
+        text=child_node.split("//")[0],
     )
-    
+
     ######
 
-    return output_state 
+    return output_state
 
 
 def retriever_helper(retriever, question, num_docs, filter):
@@ -228,10 +202,10 @@ def retrieve_documents_with_quant_qual(state: state.InternalRAGState):
     doc_grading_retries = state.get("doc_grading_retries", 0)
     answer_grading_retries = state.get("answer_generation_retries", 0)
 
-    state["metadata_retries"] = metadata_retries
-    state["doc_grading_retries"] = doc_grading_retries
-    state["metadata_filters"] = metadata_filters
-    
+    # state["metadata_retries"] = metadata_retries
+    # state["doc_grading_retries"] = doc_grading_retries
+    # state["metadata_filters"] = metadata_filters
+
     if (
         metadata_filters != config.METADATA_FILTER_INIT
         and not metadata_retries
@@ -242,40 +216,25 @@ def retrieve_documents_with_quant_qual(state: state.InternalRAGState):
     metadata_filters = metadata_fallback(
         metadata_filters, documents, metadata_retries, doc_grading_retries
     )
+    metadata = {k: v for k, v in metadata.items() if k in metadata_filters}
+    source_files = state.get("query_path", [])
+    if len(source_files) != 0:
+        metadata["path"] = source_files
 
-    ## Metadata Filters
-    metadata_text = "table == `False`"
-    metadata_table = "table == `True`"
-    metadata_kv = "is_table_value == `True`"
-    formatted_metadata = ""
+    metadata_text = copy(metadata)
+    metadata_text["table"] = "False"
+    metadata_table = copy(metadata)
+    metadata_table["table"] = "True"
+    metadata_kv = copy(metadata)
+    metadata_kv["is_table_value "] = "True"
 
-    
+    metadata["is_table_value"] = "False"
+    metadata["table"] = "False"
 
-    if metadata_filters:
-        formatted_metadata = nodes.convert_metadata_to_jmespath(
-            metadata, metadata_filters
-        )
-        if(formatted_metadata != ""):
-            metadata_text += " && " + formatted_metadata
-            metadata_table += " && " + formatted_metadata
-            metadata_kv += " && " + formatted_metadata
-            formatted_metadata += " && is_table_value == `False` && table == `False`"
-        else:
-            formatted_metadata += "is_table_value == `False` && table == `False`"
-    
-    source_files=state.get('query_path',['data/AMZN.pdf'])
-    #source_files=state.get('query_path',[])
-
-    if(source_files):
-        source_file_str=' && ('
-        for index,path in enumerate(source_files):
-            source_file_str+=f'path == `{path}`'
-            if(index!=len(source_files)-1):
-                source_file_str+=' || '
-        source_file_str+=')'
-        formatted_metadata+=source_file_str
-
-        print(formatted_metadata)
+    metadata_text = nodes.convert_metadata_to_jmespath(metadata_text)
+    metadata_table = nodes.convert_metadata_to_jmespath(metadata_table)
+    metadata_kv = nodes.convert_metadata_to_jmespath(metadata_kv)
+    formatted_metadata = nodes.convert_metadata_to_jmespath(metadata)
 
     ## Retrieval using rewriting and hyde
     questions = question.split("xxxxxxxxxx")
@@ -287,34 +246,114 @@ def retrieve_documents_with_quant_qual(state: state.InternalRAGState):
         cat = state["category"]
         if cat == "Quantitative":
             ## Quantitative
-            if config.WORKFLOW_SETTINGS["with_table_for_quant_qual"]:  
-                    with concurrent.futures.ThreadPoolExecutor() as executor:
-                        future_text = executor.submit(retriever_helper, retriever, question, config.NUM_DOCS_TO_RETRIEVE, metadata_text)
-                        future_table = executor.submit(retriever_helper, retriever, question, config.NUM_DOCS_TO_RETRIEVE_TABLE, metadata_table)
-                        future_kv = executor.submit(retriever_helper, retriever, question, config.NUM_DOCS_TO_RETRIEVE_KV, metadata_kv)
-                        docs+=future_text.result() + future_table.result() + future_kv.result()
-                        docs_kv+=future_kv.result()
+            if config.WORKFLOW_SETTINGS["with_table_for_quant_qual"]:
+                with concurrent.futures.ThreadPoolExecutor() as executor:
+                    future_text = executor.submit(
+                        retriever_helper,
+                        retriever,
+                        question,
+                        config.NUM_DOCS_TO_RETRIEVE,
+                        metadata_text,
+                    )
+                    future_table = executor.submit(
+                        retriever_helper,
+                        retriever,
+                        question,
+                        config.NUM_DOCS_TO_RETRIEVE_TABLE,
+                        metadata_table,
+                    )
+                    future_kv = executor.submit(
+                        retriever_helper,
+                        retriever,
+                        question,
+                        config.NUM_DOCS_TO_RETRIEVE_KV,
+                        metadata_kv,
+                    )
+                    docs += (
+                        future_text.result()
+                        + future_table.result()
+                        + future_kv.result()
+                    )
+                    docs_kv += future_kv.result()
             else:
                 with concurrent.futures.ThreadPoolExecutor() as executor:
-                    future_text_table = executor.submit(retriever_helper, retriever, question, config.NUM_DOCS_TO_RETRIEVE, formatted_metadata)
-                    future_kv = executor.submit(retriever_helper, retriever, question, config.NUM_DOCS_TO_RETRIEVE_KV, metadata_kv)
-                    docs+=future_text_table.result() + future_kv.result()
-                    docs_kv+=future_kv.result()
-        else:       
+                    future_text_table = executor.submit(
+                        retriever_helper,
+                        retriever,
+                        question,
+                        config.NUM_DOCS_TO_RETRIEVE,
+                        formatted_metadata,
+                    )
+                    future_kv = executor.submit(
+                        retriever_helper,
+                        retriever,
+                        question,
+                        config.NUM_DOCS_TO_RETRIEVE_KV,
+                        metadata_kv,
+                    )
+                    docs += future_text_table.result() + future_kv.result()
+                    docs_kv += future_kv.result()
+        else:
             ## Qualitative
-            docs += retriever_helper(retriever, question,  config.NUM_DOCS_TO_RETRIEVE, formatted_metadata)
-    
-    ## Fallback when 0 doc retrieved
-    flag = 0
-    if(len(docs) == 0):
-        flag = 1
-        docs += retriever_helper(retriever, question,  config.NUM_DOCS_TO_RETRIEVE, "")
-    state["documents"] = docs
-    state['fallback_qq_retriever'] = flag
-    state["documents_after_metadata_filter"] = docs
-    state["documents_with_kv"] = docs_kv
-    state["prev_node"] = nodes.retrieve_documents_with_quant_qual.__name__
-    state["original_question"] = state.get("original_question", question)
-    state['formatted_metadata']=formatted_metadata
+            docs += retriever_helper(
+                retriever, question, config.NUM_DOCS_TO_RETRIEVE, formatted_metadata
+            )
 
-    return state
+    ## Fallback when 0 doc retrieved
+    flag = False
+    if len(docs) == 0:
+        flag = True
+        docs += retriever_helper(retriever, question, config.NUM_DOCS_TO_RETRIEVE, "")
+    # state["documents"] = docs
+    fallback_qq_retriever = flag
+    # state["documents_after_metadata_filter"] = docs
+    documents_with_kv = docs_kv
+    # state["prev_node = nodes.retrieve_documents_with_quant_qual.__name__
+    original_question = state.get("original_question", question)
+    formatted_metadata = formatted_metadata
+
+    ###### log_tree part
+    # import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = nodes.retrieve_documents_with_quant_qual.__name__ + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    if parent_node == "":
+        parent_node = "START"
+    log_tree = {}
+
+    if not LOGGING_SETTINGS['retrieve_documents_with_quant_qual'] or state.get("send_log_tree_logs" , "") == "False":
+        child_node = parent_node  
+    
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+
+    output_state = {
+        "documents": docs,
+        "documents_after_metadata_filter": docs,
+        "documents_with_kv" : documents_with_kv ,
+        "fallback_qq_retriever" : fallback_qq_retriever,
+        "original_question": original_question,
+        "formatted_metadata": formatted_metadata,
+        "metadata_retries": metadata_retries,
+        "doc_grading_retries": doc_grading_retries,
+        "metadata_filters": metadata_filters,
+        "prev_node": child_node,
+        "log_tree": log_tree,
+    }
+
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    return output_state 
+    # return output_state

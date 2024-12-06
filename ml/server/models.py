@@ -94,15 +94,6 @@ class Folder(Base):
     space = relationship("Space", back_populates="folders")
     files = relationship("File", back_populates="folder")
 
-class Notes(Base):
-    __tablename__ = "notes"
-
-    id = Column(Integer, primary_key=True, index=True)
-    filename = Column(String, nullable=False)
-    text = Column(Text, nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-
 class Space(Base):
     __tablename__ = "spaces"
 
@@ -113,3 +104,4 @@ class Space(Base):
     chats = relationship("Chat", back_populates="space", cascade="all, delete-orphan")
     files = relationship("File", back_populates="space", cascade="all, delete-orphan")
     folders = relationship("Folder", back_populates="space", cascade="all, delete-orphan")
+

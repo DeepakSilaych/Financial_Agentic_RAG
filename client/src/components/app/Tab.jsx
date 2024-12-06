@@ -1,59 +1,76 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, forwardRef, useImperativeHandle } from 'react';
 import { Network } from 'vis-network/standalone';
 import { DataSet } from 'vis-network/standalone';
+import { ChevronDown, ChevronUp, Minimize2 } from 'lucide-react';
 
-const HierarchicalGraph = () => {
+const Tab = forwardRef(({ isVisible = true, isCollapsed = false, onToggle }, ref) => {
   const [error, setError] = useState(null);
   const networkRef = useRef(null);
   const containerRef = useRef(null);
   const nodesDataset = useRef(new DataSet([]));
   const edgesDataset = useRef(new DataSet([]));
+  const [fixedNodes] = useState(new Set(['node1', 'node2']));
+
+  // Expose resetGraph method to parent component
+  useImperativeHandle(ref, () => ({
+    resetGraph: () => {
+      nodesDataset.current.clear();
+      edgesDataset.current.clear();
+      if (networkRef.current) {
+        networkRef.current.fit();
+      }
+    }
+  }));
 
   const addNode = useCallback((nodeData) => {
     try {
-      const { current_node: nodeId, text, parent_node: parentNodes } = nodeData;
+      const { current_node: nodeId, text, text_state, parent_node: parentNodes } = nodeData;
       if (parentNodes === nodeId) return;
       
-      const parentLevel = parentNodes ? Math.max(...parentNodes.split('$$').filter(Boolean).map(id => nodesDataset.current.get(id)?.level || 0)) : -1;
+      // Split parent nodes if they contain $$
+      const parentNodeList = parentNodes ? parentNodes.split('$$').filter(Boolean) : [];
+      const parentLevel = parentNodeList.length > 0 
+        ? Math.max(...parentNodeList.map(id => nodesDataset.current.get(id)?.level || 0)) 
+        : -1;
       const nodeLevel = parentLevel + 1;
-        
+
+      // Update or create the current node
+      const existingNode = nodesDataset.current.get(nodeId);
+      const nodeColor = fixedNodes.has(nodeId) 
+        ? { background: '#ffebcd', border: '#deb887' }
+        : { background: '#D2E5FF', border: '#2B7CE9' };
+
       nodesDataset.current.update({
         id: nodeId,
         label: text || nodeId,
-        title: text,
+        title: text_state || text || nodeId,
         level: nodeLevel,
         color: {
-          background: '#D2E5FF',
-          border: '#2B7CE9',
+          ...nodeColor,
           highlight: { background: '#FFA500', border: '#FF8C00' }
         },
-        font: { size: 14 },
+        font: { size: fixedNodes.has(nodeId) ? 20 : 14 },
         shape: 'box',
         margin: 10,
         shadow: true
       });
 
-      if (parentNodes) {
-        parentNodes.split('$$').forEach(parentId => {
+      // Handle parent nodes and create edges
+      if (parentNodeList.length > 0) {
+        parentNodeList.forEach(parentId => {
           parentId = parentId.trim();
           if (parentId && parentId !== nodeId) {
-            if (!nodesDataset.current.get(parentId)) {
-              nodesDataset.current.add({
-                id: parentId,
-                label: parentId,
-                level: parentLevel,
-                color: {
-                  background: '#ffebcd',
-                  border: '#deb887',
-                  highlight: { background: '#FFA500', border: '#FF8C00' }
-                },
-                font: { size: 20 },
-                shape: 'box',
-                margin: 10,
-                shadow: true
+            // If parent node exists, update its text with current node's text
+            const parentNode = nodesDataset.current.get(parentId);
+            if (parentNode && !fixedNodes.has(parentId)) {
+              nodesDataset.current.update({
+                ...parentNode,
+                label: text,
+                title: text
               });
             }
 
+            // Create edge
             edgesDataset.current.update({
               id: `${parentId}-${nodeId}`,
               from: parentId,
@@ -71,7 +88,13 @@ const HierarchicalGraph = () => {
       console.error('Error adding node:', err);
       setError('Error updating graph');
     }
-  }, []);
+  }, [fixedNodes]);
+
+  const handleToggle = () => {
+    if (onToggle) {
+      onToggle(!isCollapsed);
+    }
+  };
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -82,24 +105,24 @@ const HierarchicalGraph = () => {
           direction: 'UD',
           sortMethod: 'directed',
           levelSeparation: 150,
-          nodeSpacing: 100,
-          treeSpacing: 100,
+          nodeSpacing: 150,
+          treeSpacing: 200,
           blockShifting: true,
           edgeMinimization: true,
-          parentCentralization: true
+          parentCentralization: true,
+          shakeTowards: 'roots'
         }
       },
       physics: {
         enabled: false,
         hierarchicalRepulsion: {
-          nodeDistance: 150,
-          springLength: 150
+          nodeDistance: 200,
+          springLength: 200,
+          springConstant: 0.3,
+          damping: 0.5
         },
         stabilization: {
-          enabled: false,
-          iterations: 1000,
-          updateInterval: 50,
-          fit: true
+          enabled: false
         }
       },
       nodes: {
@@ -108,13 +131,14 @@ const HierarchicalGraph = () => {
         widthConstraint: { minimum: 150, maximum: 250 },
         heightConstraint: { minimum: 40 },
         font: { size: 14, color: '#333', face: 'arial' },
-        shadow: true
+        shadow: true,
+        mass: 2
       },
       edges: {
         smooth: {
-          type: 'cubicBezier',
+          type: 'straight',
           forceDirection: 'vertical',
-          roundness: 0.5
+          roundness: 0
         },
         color: '#2B7CE9',
         width: 2
@@ -123,7 +147,9 @@ const HierarchicalGraph = () => {
         dragNodes: true,
         dragView: true,
         zoomView: true,
-        hover: true
+        hover: true,
+        navigationButtons: true,
+        keyboard: true
       },
       autoResize: true
     };
@@ -140,10 +166,15 @@ const HierarchicalGraph = () => {
 
     networkRef.current.on('stabilizationIterationsDone', () => {
       console.log('Stabilization finished');
-      networkRef.current.fit();
+      networkRef.current.fit({
+        animation: {
+          duration: 1000,
+          easingFunction: 'easeInOutQuad'
+        }
+      });
     });
 
-    const socket = new WebSocket('ws://localhost:8000/ws/graph');
+    const socket = new WebSocket('ws://127.0.0.1:6969/ws/graph');
 
     socket.onopen = () => {
       console.log('Connected to graph WebSocket');
@@ -190,18 +221,28 @@ const HierarchicalGraph = () => {
     };
   }, [addNode]);
 
+  if (!isVisible) return null;
+
   return (
-    <div className="h-full flex flex-col bg-slate-200">
-      <div className="border-b border-gray-200">
-        {error && <div className="mt-2 text-sm text-red-600">{error}</div>}
-      </div>
+    <div className="flex flex-col h-full max-h-screen overflow-hidden bg-white border-l border-gray-200"> 
       <div 
-        ref={containerRef} 
-        className="flex-1 w-full" 
-        style={{ background: '#fafafa' }} 
-      />
+        className={`flex-1 transition-all duration-300 ${
+          isCollapsed ? 'h-0' : 'h-full'
+        }`}
+      >
+        <div
+          ref={containerRef}
+          className="w-full h-full"
+          style={{ display: isCollapsed ? 'none' : 'block' }}
+        />
+        {error && (
+          <div className="p-4 text-red-500 text-sm">{error}</div>
+        )}
+      </div>
     </div>
   );
-};
+});
 
-export default HierarchicalGraph;
+Tab.displayName = 'Tab';
+
+export default Tab;

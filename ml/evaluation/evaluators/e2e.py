@@ -196,7 +196,7 @@ class FaithfulnessVerdictOutput(BaseModel):
 
 faithfulness_verdict_system_prompt = """Your task is to judge the faithfulness of a series of statements based on a given context.
 For each statement you must return verdict as 1 if the statement can be directly inferred based on the context or 0 if the statement can not be directly inferred based on the context.
-While checking the numbers in the statements, you should allow for some margin of error. For example, if the context mentions that John is 25 years old, you should consider statements like "John is in his mid-twenties" or "John is around 25 years old" as faithful". Or if the context mentions a number as 4.5, you should consider statements like "around 5" or "less than 5" or "5" or "4" as faithful.
+While checking the numbers in the statements, you should allow for a margin of error of about +-5%. For example, if the context mentions that John is 25 years old, you should consider statements like "John is in his mid-twenties" or "John is around 25 years old" as faithful". Or if the context mentions a number as 4.5, you should consider statements like "around 5" or "less than 5" or "5" or "4" as faithful. Or if the context mentions a number as $94,586 million, you should consider statements like "$94,500 million" or "$94,600 million" as faithful.
 
 These are some examples to show how to perform the above instruction:
 
@@ -207,7 +207,10 @@ input: {"context": "Photosynthesis is a process used by plants, algae, and certa
 output: [{"sentence": "Albert Einstein was a genius.", "reason":"The context and statement are unrelated", "verdict": 0}]
 
 input: {"context": In the 2023 financial reports, IBM's Consulting revenue was $19,985 million, reflecting a year-to-year percentage growth of 4.6%. For Google Cloud, the revenue for 2023 was $33,088 million, which represents a significant increase from $26,280 million in 2022, resulting in a percentage growth of approximately 25.5%., "statements": ["In 2023, IBM's Consulting revenue increased by 4.6% compared to the previous year.", 'Google Cloud revenues increased by 26% in 2023.']}
-output:[{"sentence": "In 2023, IBM's Consulting revenue increased by 4.6% compared to the previous year.", "reason": "The context explicitly states that IBM's Consulting revenue reflected a year-to-year percentage growth of 4.6%.", "verdict": 1}, {"sentence": "Google Cloud revenues increased by 26% in 2023.", "reason": "The context mentions that Google Cloud's revenue growth was approximately 25.5%, which is close to 26%. Therefore, this statement can be considered to be approximataly correct", "verdict": 1}]
+output: [{"sentence": "In 2023, IBM's Consulting revenue increased by 4.6% compared to the previous year.", "reason": "The context explicitly states that IBM's Consulting revenue reflected a year-to-year percentage growth of 4.6%.", "verdict": 1}, {"sentence": "Google Cloud revenues increased by 26% in 2023.", "reason": "The context mentions that Google Cloud's revenue growth was approximately 25.5%, which is close to 26%. Therefore, this statement can be considered to be approximataly correct", "verdict": 1}]
+
+input: {"context": The net cash provided by operating activities for the year 2023 amounted to $84.9 billion, measured in millions of dollars., "statements": ['In 2023, net cash provided by operating activities amounted to a total of $84,946 million.']}
+output: [{"sentence": "In 2023, net cash provided by operating activities amounted to a total of $84,946 million.", "reason": "The context states that the net cash provided by operating activities for the year 2023 amounted to $84.9 billion, which is equivalent to $84,900 million. The statement is within the margin of error of +-5% and can be considered faithful.", "verdict": 1}]
 """
 
 faithfulness_verdict_prompt = ChatPromptTemplate.from_messages(

@@ -14,7 +14,7 @@ from .rag_e2e import rag_e2e
 from state import QuestionNode , add_child_to_node
 
 import config
-from utils import send_logs , log_message
+from utils import send_logs , log_message , tree_log
 from config import LOGGING_SETTINGS
 
 
@@ -96,7 +96,10 @@ def aggregate_child_answers(root: QuestionNode):
         if child.citations:
             root.child_citations.extend(child.citations)
         if child.log_tree:
+            log_message(f"child log tree : {child.log_tree}")
             root.child_logs.append(child.log_tree)
+        if child.last_node:
+            root.child_last_nodes.append(child.last_node)
 
 
 # GOING TO BE MAKING A QUESTION TREE ITSELF, BUT JUST LIMITING IT TO ONE LAYER
@@ -246,9 +249,13 @@ def rag_1_time(state: state.InternalRAGState):
     )
     question_tree = QuestionNode.from_dict(state["question_tree_1"])
     question_node = search_question_in_tree(question_tree, question)
+    log_message(f"child_result{res}" , 1)
     question_node.answer = res["answer"]
     question_node.citations = res["citations"]
     question_node.log_tree = res["log_tree"]
+    question_node.last_node = res["prev_node"]
+
+    log_message(f"question_node.log_tree : {question_node.log_tree}" , 1)
 
     ###### log_tree part
 
@@ -261,6 +268,7 @@ def rag_1_time(state: state.InternalRAGState):
 
     ##### Server Logging part
 
+    log_message(f"question_tree.to_dict() : {question_tree.to_dict()}" , 1)
     output_state = {
         # "decomposed_questions": [prev_question],
         "question_tree_1": question_tree.to_dict(),
@@ -410,9 +418,11 @@ def aggregate1(state: state.OverallState):
     combined_citations.extend(question_tree.child_citations)
 
     overall_log_tree = state["log_tree"] 
+    log_message(f"question_tree.logs {question_tree.log_tree}" , 1)
     log_message(f"{question_tree.child_logs}" , 1)
     # print(tree)
     parent_node = ""
+    tree_log(f"{question_tree.child_logs}" , 1)
     for tree in question_tree.child_logs:
         log_message(f"datatype : {tree} " , 1)
         last_key , last_value = list(tree.items())[-1]
@@ -421,6 +431,10 @@ def aggregate1(state: state.OverallState):
         parent_node =  last_value[0] + "$$" + parent_node
         
 
+    # log_message(f"question_tree.child_last_nodes : {question_tree.child_last_nodes}")
+    # for node in question_tree.child_last_nodes:
+    #     parent_node = parent_node + "$$" + node
+    
     new_question = combine_questions_v3(qa_pairs, main_question)
     answered = check_sufficient.invoke(
         {"question": new_question, "qa_pairs": qa_pairs}
@@ -552,7 +566,9 @@ def aggregate3(state: state.OverallState):
 
     overall_log_tree = state["log_tree"] 
     parent_node = ""
+    tree_log(f"{question_tree.child_logs}" , 1)
     for tree in question_tree.child_logs:
+        # tree_log(tree , 1)
         last_key , last_value = list(tree.items())[-1]
         overall_log_tree = add_child_to_node(overall_log_tree , tree)
         overall_log_tree[last_value[0]] = ["aggregate3"]

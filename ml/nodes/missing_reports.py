@@ -295,7 +295,7 @@ def google_search(query, num_results=5):
 
 def convert_url_to_pdf(url, company, year):
     # Folder to save reports
-    save_folder = os.path.join(os.getcwd(), "financial_reports")
+    save_folder = os.path.join(os.getcwd(), "data/2")
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)
 

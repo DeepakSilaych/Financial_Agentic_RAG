@@ -148,6 +148,7 @@ const SignupPage = () => {
           <Link to="/privacy" className="text-blue-600 hover:text-blue-500">
             Privacy Policy
           </Link>
+          . We respect your privacy and will protect your personal information as outlined in our privacy terms.
         </div>
       </motion.div>
     </div>

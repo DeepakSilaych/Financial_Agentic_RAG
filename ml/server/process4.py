@@ -1,219 +1,311 @@
 from dotenv import load_dotenv
-import os
 
 load_dotenv()
-from utils import log_message, visualize_workflow
-import config
-# from workflows.series_parallel import final_workflow as app
-from workflows.post_processing import visual_workflow as visual_workflow_app
-from workflows.rag_e2e import rag_e2e as app
-import time
 
-####### Debugging ####
-
-# initial_input = {
-# #     # "question": "In the 2023 financial reports of Alphabet Inc., the parent company of Google, what specific factors led to the growth in Google Services' operating income and what percentage did Google Cloud revenues increase by during the same year? Please provide insights into the overall financial performance and strategic developments that drove these results, as outlined in the company's 10-K documents for the year 2023."
-# #     # "question": "How does google utilize financial instruments to manage foreign currency risks across different aspects of its operations, and what specific strategies or tools are implemented to mitigate the impact of fluctuations in exchange rates?"
-# #     # "question": "What was the Total Demand creation expense for NIKE for year ending May 31, 2023"
-# #     # "question": "How many employees did apple have globally as of June 30, 2023?"
-# #     "question": "What was the effective tax rate for Apple in 2023?"
-# #     # "question": "What were some significant announcements made by Apple in the first quarter of 2023?"
-# #     # "question": "What are the key software-enabled services General Motors(GM)  offers in its vehicles in 2023?"
-#     "question": "What were Apple's total employee count and why it is small?"
-# }
-
-# res = app.invoke(initial_input)
-# answer = {"input_data":res['answer']}
-# print(answer)
-
-answer = {"input_data":"From September 2018 to September 2023, Apple Inc. saw its value increase from $100 in September 2018 to $317 in September 2023. Over the same period, the S&P 500 Index grew from $100 in September 2018 to $160 in September 2023, while the Dow Jones U.S. Technology Supersector Index rose from $100 in September 2018 to $226 in September 2023. In September 2019, Apple’s value was $98, compared to the S&P 500 Index at $104 and the Dow Jones U.S. Technology Supersector Index at $105. By September 2020, Apple’s value had surged to $204, while the S&P 500 Index reached $118 and the Dow Jones U.S. Technology Supersector Index increased to $154. In September 2021, Apple’s value continued to rise to $269, with the S&P 500 Index at $161 and the Dow Jones U.S. Technology Supersector Index at $227. By September 2022, Apple had reached $277, while the S&P 500 Index had decreased to $136 and the Dow Jones U.S. Technology Supersector Index stood at $164."}
-visualize_workflow(visual_workflow_app)
-
-vis = visual_workflow_app.invoke(answer)
 import json
-import state
-# Function to serialize Pydantic models or plain objects
-def serialize_obj(obj):
-    if isinstance(obj, state.BaseModel):  # Check if it's a Pydantic model
-        return obj.dict()  # Convert Pydantic model to dictionary
-    return obj  # Return as-is for non-Pydantic models
-
-# Print the variables in a pretty format
-print("is_visualizable:", json.dumps(serialize_obj(vis.get("is_visualizable", {})), indent=4))
-for idx,i in enumerate(vis.get("metrics", [])):
-    print(f"metrics {idx}:")
-    for attr, value in vars(i).items():
-        print(f"{attr} : {value}")
-print()
-
-for idx,i in enumerate(vis.get("values", [])):
-    print(f"values {idx}:")
-    for attr, value in vars(i).items():
-        print(f"{attr} : {value}")
-print()
-
-for idx,i in enumerate(vis.get("final_insights", [])):
-    print(f"insights: {idx}", json.dumps(serialize_obj(i), indent=4))
-print()
-
-
-print("final_output:", vis.get("final_output", {}))
-print()
-
-for idx,i in enumerate(vis.get("chart_names", [])):
-    print(f"chart_names {idx}:")
-    for attr, value in vars(i).items():
-        print(f"{attr} : {value}")
-print()
-
-for idx,i in enumerate(vis.get("charts", [])):
-    print(f"charts {idx}:")
-    for attr, value in vars(i).items():
-        print(f"{attr} : {value}")
-    
-
-exit(0)
-
-######################
-# Debug to plot
 import os
-import matplotlib.pyplot as plt
-from state import BarChart, LineChart, PieChart, Chart  # Assuming these are imported from your state management library
-import numpy as np
-# Function to create a "chart" directory if it doesn't exist
-def create_chart_folder():
-    if not os.path.exists("chart"):
-        os.makedirs("chart")
+import jsonlines
+import uuid
+from typing import Optional
 
-# Function to save BarChart as an image
-# Function to save BarChart as an image (side-by-side bars for multiple companies)
+from langchain_core.runnables import RunnableConfig
+import config
+from utils import log_message
+from workflows.e2e import e2e as app
+from workflows.post_processing import visual_workflow
 
-# Function to save BarChart as an image (side-by-side bars for multiple companies)
-# Function to plot the bar chart
-def save_bar_chart(chart: BarChart, file_name: str):
-    # Create a figure and axis
-    plt.subplots(figsize=(10, 6))
+import asyncio
+from sqlalchemy.orm import Session
+from fastapi import WebSocketDisconnect
+from . import models, schemas
+import random
+import logging
+import traceback
+from .process_base import BaseMessageProcessor
 
-    # Extract all years from the data (to make sure we have all unique years)
-    all_years = set()
-    for company in chart.data:
-        all_years.update([entry[0] for entry in chart.data[company]])
+def get_all_available_financial_analyses():
+    """
+    Function to get all available financial analyses.
+    """
+    print("DEBUG: Getting all available financial analyses")
+    with open("experiments/kpis/kpis.json") as f:
+        data = json.load(f)
+    analyses = [val["topic"] for val in data]
+    print(f"DEBUG: Available analyses: {analyses}")
+    return analyses
 
-    all_years = sorted(list(all_years))  # Sort the years for proper x-axis placement
-    num_years = len(all_years)
-    
-    # Define the bar width and the positions for each group
-    bar_width = 0.15
-    x_positions = np.arange(num_years)
+logger = logging.getLogger(__name__)
 
-    # Plot each company's data
-    for idx, (company, values) in enumerate(chart.data.items()):
-        # Create a dictionary for fast lookups for each company
-        year_value_map = dict(values)
-        company_values = [year_value_map.get(year, 0) for year in all_years]  # Default to 0 if no value for the year
+class MessageProcessor(BaseMessageProcessor):
+    def __init__(self, mode):
+        super().__init__(mode)
+        print(f"DEBUG: MessageProcessor initialized with mode: {mode}")
 
-        # Shift the bars slightly based on the index
-        plt.bar(x_positions + (idx - len(chart.data) / 2) * bar_width, 
-               company_values, 
-               width=bar_width, 
-               label=company)
+    async def run(self, chat_id: int, space_id: int, message_text: str, websocket, db: Session):
+        print(f"DEBUG: Processing message for chat_id: {chat_id}, space_id: {space_id}")
+        logger.info(f"Processing message for chat_id: {chat_id}, space_id: {space_id}")
+        chat_exist = await self.check_chat_exists(chat_id, space_id, db)
+        if not chat_exist:
+            print(f"DEBUG: Chat not found: chat_id={chat_id}, space_id={space_id}")
+            logger.error(f"Chat not found: chat_id={chat_id}, space_id={space_id}")
+            await websocket.send_json({
+                'type': 'error',
+                'content': 'Chat not found'
+            })
+            return
 
-    # Set labels and title
-    plt.xlabel(chart.x_label)
-    plt.ylabel(chart.y_label)
-    plt.title(chart.title)
+        user_message = await self.save_user_message(chat_id, message_text, websocket, db)
 
-    # Add a legend
-    plt.legend()
+        await asyncio.sleep(.1)
+        print(f"DEBUG: User message saved: {user_message}")
+  
+        initial_input = {
+            "question": message_text,
+            "fast_vs_slow": self.mode,
+            "user_id": chat_id
+        }
+        print(f"DEBUG: Initial input: {initial_input}")
 
-    # Show the p
-    
-    # Save the plot as PNG in the "chart" folder
-    plt.savefig(f"chart/{file_name}.png")
-    plt.close()
+        thread: RunnableConfig = {"configurable": {"thread_id": "1"}}
+        to_restart_from: Optional[RunnableConfig] = None
+        num_question_asked = 0
+        user_id = chat_id
 
-# Function to save LineChart as an image
-def save_line_chart(chart: LineChart, file_name: str):
-    plt.figure(figsize=(10, 6))
-    for label, values in chart.data.items():
-        x = [v[0] for v in values]  # Extract x values
-        y = [v[1] for v in values]  # Extract y values
-        plt.plot(x, y, label=label)
-    plt.xlabel(chart.x_label)
-    plt.ylabel(chart.y_label)
-    plt.title(chart.title)
-    plt.legend()
-    plt.savefig(f"chart/{file_name}.png")  # Save as PNG in "chart" folder
-    plt.close()
+        clarifications = []
 
-# Function to save PieChart as an image
-def save_pie_chart(chart: PieChart, file_name: str):
-    plt.figure(figsize=(6, 6))
-    plt.pie(chart.values, labels=chart.labels, autopct='%1.1f%%', startangle=90)
-    plt.title(chart.title)
-    plt.savefig(f"chart/{file_name}.png")  # Save as PNG in "chart" folder
-    plt.close()
+        run = True
+        while run:
+            try:
+                print("DEBUG: Starting main processing loop")
+                inp = None if to_restart_from else initial_input
+                for event in app.stream(inp, thread, stream_mode="values", subgraphs=True):
+                    next_nodes = app.get_state(thread).next
+                    print(f"DEBUG: Next nodes: {next_nodes}")
+                    if len(next_nodes) == 0:
+                        run = False
+                        break
 
-# Function to save all charts in the Chart object
-def save_charts(chart_object: Chart):
-    create_chart_folder()  # Create chart directory if it doesn't exist
-    for i, c in enumerate(chart_object):
-        file_name = f"chart_{i + 1}"  # Use unique file names for each chart
-        if isinstance(c, BarChart):
-            save_bar_chart(c, file_name)
-        elif isinstance(c, LineChart):
-            save_line_chart(c, file_name)
-        elif isinstance(c, PieChart):
-            save_pie_chart(c, file_name)
+                if not run:
+                    print("DEBUG: Thread completed, breaking out of loop")
+                    break
 
-# Example usage:
-# Assuming `chart_object` is an instance of the `Chart` class with BarChart, LineChart, and PieChart objects
-# Save all charts in the "chart" folder
-save_charts(vis.get("charts", []))
+                print("DEBUG: Asking user for clarification")
+                while num_question_asked < config.MAX_QUESTIONS_TO_ASK:
+                    state = app.get_state(thread).values
+                    clarifying_questions = state.get("clarifying_questions", [])
+                    print(f"DEBUG: Clarifying questions: {clarifying_questions}")
 
-exit(0)
+                    if (
+                        len(clarifying_questions) == 0
+                        or clarifying_questions[-1]["question_type"] == "none"
+                    ):
+                        print("DEBUG: No further clarifications required")
+                        break
 
+                    question = clarifying_questions[-1]
+                    question_text = question.get("question", "")
+                    question_options = question.get("options", None)
+                    question_type = question.get("question_type", "direct-answer")
+                    print(f"DEBUG: Asking clarification: {question_text}")
 
+                    user_response = await self.handle_intermediate_message(
+                        chat_id=chat_id,
+                        question={
+                            "question": question_text,
+                            "options": question_options if question_options else [],
+                            "question_type": question_type
+                        },
+                        websocket=websocket,
+                        db=db
+                    )
+                    print(f"DEBUG: User response: {user_response}")
+                    clarifications.append(user_response)
 
+                    app.update_state(thread, {"clarifications": clarifications})
+                    num_question_asked += 1
 
+                    for event in app.stream(None, thread, stream_mode="values", subgraphs=True):
+                        print(f"DEBUG: Stream event: {event}")
 
+                for event in app.stream(None, thread, stream_mode="values", subgraphs=True):
+                    print(f"DEBUG: Stream event after clarifications: {event}")
 
-initial_input = {
-    "question": "Compare the Research and Development expenses of Apple and Google and give some figures in your answer too."
-}
+                state = app.get_state(thread).values
+                missing_company_year_pairs = state.get("missing_company_year_pairs", [])
+                reports_to_download = []
+                print(f"DEBUG: Missing company year pairs: {missing_company_year_pairs}")
 
-# Thread
-thread = {"configurable": {"thread_id": "1"}}
+                if missing_company_year_pairs:
+                    for x in missing_company_year_pairs:
+                        company = x["company_name"]
+                        year = x["filing_year"]
 
-# Run the graph until the first interruption
-for event in app.stream(initial_input, thread, stream_mode="values"):
-    print(event)
-log_message("---ASKING USER FOR CLARIFICATION---")
-state = app.get_state(thread).values
-clarifying_questions = state["clarifying_questions"]
-clarifications = []
+                        company_question = {
+                            "question": f"Do you have data for {company} for year {year}? \n Do you want to download it from the web? ",
+                            "options": ["yes", "no"]
+                        }
 
-for question in clarifying_questions:
-    # log_message("CLARIFYING QUESTION:"+ str(question))
-    user_response = input(f"{question}: ")
-    clarifications.append(f"{question}: {user_response}")
-app.update_state(thread, {"clarifications": clarifications})
-for event in app.stream(None, thread, stream_mode="values", subgraphs=True):
-    try:
-        if event[1]["final_answer"]:
-            print(event)
-            final_response = event[1]["final_answer"]
-            break
-    except:
-        print(event)
+                        company_response = await self.handle_intermediate_message(
+                            chat_id=chat_id,
+                            question=company_question,
+                            websocket=websocket,
+                            db=db
+                        )
+                        print(f"DEBUG: Company response: {company_response}")
 
-if final_response == "":
-    print("No final answer found")
-    exit()
+                        if company_response.strip().lower() == "yes":
+                            reports_to_download.append(x)
 
-thread = {"configurable": {"thread_id": "2"}}
-# insights = []
-# final_answer_charts = ''
-visual_input = {"input_data": final_response}
-for event in visual_workflow_app.stream(visual_input, thread, stream_mode="values"):
-    print(event)
+                if reports_to_download:
+                    print(f"DEBUG: Reports to download: {reports_to_download}")
+                    app.update_state(thread, {"reports_to_download": reports_to_download})
+
+                for event in app.stream(None, thread, stream_mode="values", subgraphs=True):
+                    print(f"DEBUG: Stream event after report download: {event}")
+
+                state = app.get_state(thread).values
+
+                if self.mode == "slow":
+                    print("DEBUG: Entering slow mode analysis")
+                    # Skip analysis question and assume "no" as default
+                    analysis_response = "no"
+                    print(f"DEBUG: Analysis response: {analysis_response}")
+
+                    if analysis_response.strip().lower() == "yes":
+                        combined_metadata = state["combined_metadata"]
+                        options = [
+                            {
+                                "company_name": x["company_name"],
+                                "filing_year": x["filing_year"],
+                            }
+                            for x in combined_metadata
+                        ]
+                        analysis_options_question = {
+                            "question": "Select the company/year you want to run analysis on:",
+                            "options": [f"{i+1}. {option['company_name']} ({option['filing_year']})" for i, option in enumerate(options)]
+                        }
+                        
+                        selected_options = await self.handle_intermediate_message(
+                            chat_id=chat_id,
+                            question=analysis_options_question,
+                            websocket=websocket,
+                            db=db
+                        )
+                        selected_options = [int(option.split('.')[0]) - 1 for option in selected_options.split(',')]
+                        print(f"DEBUG: Selected options: {selected_options}")
+
+                        analysis_suggestions = state.get("analysis_suggestions", None)
+                        
+                        if analysis_suggestions is None or len(analysis_suggestions) == 0:
+                            analysis_suggestions = get_all_available_financial_analyses()
+
+                        analysis_topics_question = {
+                            "question": "Select the type of analysis you want to get done",
+                            "options": analysis_suggestions
+                        }
+                        
+                        selected_analyses = await self.handle_intermediate_message(
+                            chat_id=chat_id,
+                            question=analysis_topics_question,
+                            websocket=websocket,
+                            db=db
+                        )
+                        
+                        analysis_topics = [suggestion.lower() for suggestion in selected_analyses.split(',')]
+                        print(f"DEBUG: Selected analysis topics: {analysis_topics}")
+
+                        app.update_state(
+                            thread,
+                            {
+                                "analyses_to_be_done": analysis_topics,
+                                "analysis_companies_by_year": [
+                                    options[selected_option]
+                                    for selected_option in selected_options
+                                ],
+                            },
+                        )
+
+                for event in app.stream(None, thread, stream_mode="values", subgraphs=True):
+                    print(f"DEBUG: Final stream event: {event}")
+
+                state = app.get_state(thread).values
+                print(f"\nDEBUG: FINAL ANSWER: {state['final_answer']}\n")
+
+                ''' charts '''
+                res = visual_workflow.invoke({"input_data":state["final_answer"]})
+                
+                print("DEBUG: Chart response:", res['charts'])
+                
+                # Transform charts to match frontend format
+                charts = []
+                try:
+                    for chart in res["charts"]:
+                        # Handle both string and model object responses
+                        if isinstance(chart, str):
+                            # Skip invalid chart data
+                            print(f"WARNING: Received string instead of chart object: {chart}")
+                            continue
+                            
+                        chart_data = chart.model_dump()
+                        transformed_chart = {
+                            "chart_type": chart_data["type"].lower().split()[0],
+                            "data": {
+                                "labels": [],
+                                "datasets": []
+                            },
+                            "title": chart_data.get("title", "")
+                        }
+                        
+                        if chart_data["type"] in ["Bar Chart", "Line Chart"]:
+                            transformed_chart["data"]["labels"] = [str(x[0]) for x in next(iter(chart_data["data"].values()))]
+                            for label, values in chart_data["data"].items():
+                                transformed_chart["data"]["datasets"].append({
+                                    "label": label,
+                                    "data": [x[1] for x in values]
+                                })
+                        elif chart_data["type"] == "Pie Chart":
+                            transformed_chart["data"] = {
+                                "labels": chart_data["labels"],
+                                "datasets": [{
+                                    "data": chart_data["values"]
+                                }]
+                            }
+                        
+                        charts.append(transformed_chart)
+                except Exception as e:
+                    print(f"ERROR transforming charts: {str(e)}")
+                    print(f"Chart data: {res['charts']}")
+
+                await self.handle_response(
+                    chat_id, state["final_answer"], websocket, db, charts=charts
+                )
+                break
+            except Exception as e:
+                print(f"DEBUG: Error occurred: {e}")
+                print(f"DEBUG: Traceback: {traceback.format_exc()}")
+
+                error_question = {
+                    "question": "An error occurred. Would you like to retry?",
+                    "options": ["yes", "no"]
+                }
+                error_response = await self.handle_intermediate_message(
+                    chat_id=chat_id,
+                    question=error_question,
+                    websocket=websocket,
+                    db=db
+                )
+                print(f"DEBUG: Error response: {error_response}")
+                if error_response.strip().lower() not in ["y", "yes"]:
+                    break
+
+                last_state = next(app.get_state_history(thread))
+                overall_retries = last_state.values.get("overall_retries", 0)
+                if overall_retries >= config.MAX_RETRIES:
+                    print("DEBUG: Max retries exceeded! Exiting...")
+                    break
+
+                to_restart_from = app.update_state(
+                    last_state.config,
+                    {"overall_retries": overall_retries + 1},
+                )
+                print(f"DEBUG: Retrying... Retry count: {overall_retries + 1}")

@@ -84,10 +84,11 @@ def grade_answer(state: state.InternalRAGState):
     ###### log_tree part
     id = str(uuid.uuid4())
     child_node = nodes.grade_answer.__name__ + "//" + id
+    prev_node_rewrite = child_node
     parent_node = state.get("prev_node" , "START")
     log_tree = {}
 
-    if not LOGGING_SETTINGS['grade_answer']:
+    if not LOGGING_SETTINGS['grade_answer'] or state.get("send_log_tree_logs" , "") == "False":
         child_node = parent_node  
         
     log_tree[parent_node] = [child_node]
@@ -99,6 +100,7 @@ def grade_answer(state: state.InternalRAGState):
         "answer_generation_retries": answer_generation_retries + 1 ,
         "insufficiency_reason" : insufficiency_reason,
         "is_answer_sufficient" : is_answer_sufficient,
+        "prev_node_rewrite" : prev_node_rewrite ,
         "prev_node" : child_node,
         "log_tree" : log_tree ,
     }
@@ -247,7 +249,7 @@ def grade_web_answer(state: state.InternalRAGState):
     parent_node = state.get("prev_node" , "START")
     log_tree = {}
 
-    if not LOGGING_SETTINGS['grade_web_answer']:
+    if not LOGGING_SETTINGS['grade_web_answer'] or state.get("send_log_tree_logs" , "") == "False":
         child_node = parent_node  
 
     log_tree[parent_node] = [child_node]

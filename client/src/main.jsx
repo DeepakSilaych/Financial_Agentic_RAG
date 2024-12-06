@@ -85,7 +85,7 @@ createRoot(document.getElementById('root')).render(
                 </Layout>
               </ProtectedRoute>
             }>
-              <Route index element={<Blank />} />
+              <Route index element={<App />} />
               <Route path="chat" element={<App />} />
               <Route path="storage" element={<FileStorage />} />
 							<Route path="storage/pdf" element={<PDFChat />} />

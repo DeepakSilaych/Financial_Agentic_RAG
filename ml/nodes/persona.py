@@ -5,6 +5,9 @@ from langchain_core.output_parsers import StrOutputParser
 
 import state, config
 from llm import llm
+from utils import send_logs , log_message 
+from config import LOGGING_SETTINGS
+import uuid
 
 
 class Persona(BaseModel):
@@ -62,9 +65,43 @@ def create_persona(state: state.OverallState):
     if len(personas) > config.MAX_PERSONAS_GENERATED:
         personas = personas[: config.MAX_PERSONAS_GENERATED]
 
-    return {
+    
+    ###### log_tree part
+    # import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = "create_persona" + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    if parent_node == "":
+        parent_node = "START"    
+    log_tree = {}
+
+    if not LOGGING_SETTINGS['create_persona']:
+        child_node = parent_node  
+    
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+
+    output_state = {
         "personas": [persona.model_dump() for persona in personas],
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
     }
+
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    return output_state 
 
 
 class PersonaSpecificQuestion(BaseModel):
@@ -115,12 +152,54 @@ def create_persona_specific_questions(state: state.OverallState):
         }
     ).questions  # type: ignore
 
-    return {
+    
+    ###### log_tree part
+    # import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = "create_persona_specific_questions" + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    if parent_node == "":
+        parent_node = "START"
+    log_tree = {}
+
+    if not LOGGING_SETTINGS['create_persona_specific_questions']:
+        child_node = parent_node  
+    
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+
+    output_state = {
         "persona_specific_questions": [
             persona_specific_question.question
             for persona_specific_question in persona_specific_questions
-        ]
+        ],
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
+        # "combine_answer_parents" : child_node ,
     }
+
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    return output_state 
+
+    # return {
+    #     "persona_specific_questions": [
+    #         persona_specific_question.question
+    #         for persona_specific_question in persona_specific_questions
+    #     ]
+    # }
 
 
 class PersonaGeneratedQuestion(BaseModel):
@@ -177,7 +256,44 @@ def generate_question_using_persona(state: state.PersonaState):
         }
     ).question
 
-    return {"persona_generated_questions": [generated_question]}
+    
+    ###### log_tree part
+    # import uuid , nodes 
+    id = str(uuid.uuid4())
+    # child_node = generate_question_using_persona + "//" + id
+    child_node = "agent" + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    if parent_node == "":
+        parent_node = "START"
+    log_tree = {}
+
+    if not LOGGING_SETTINGS['generate_question_using_persona']:
+        child_node = parent_node  
+    
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+
+    output_state = {
+        "persona_generated_questions": [generated_question],
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
+    }
+
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    return output_state 
 
 
 def generate_question_using_persona_with_supervisor(state: state.OverallState):
@@ -248,7 +364,45 @@ def combine_persona_generated_answers(state: state.PersonaState):
         }
     )
 
-    return {"persona_specific_answers": [combined_answer]}
+    
+    ###### log_tree part
+    # import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = "combine_persona_generated_answers" + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    if parent_node == "":
+        parent_node = "START"
+    log_tree = {}
+
+    if not LOGGING_SETTINGS['combine_persona_generated_answers']:
+        child_node = parent_node  
+    
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+
+    output_state = {
+        "persona_specific_answers": [combined_answer],
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
+        "persona_last_nodes" : child_node , 
+    }
+
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    return output_state 
+
 
 
 _answer_combiner_using_persona_with_supervisor_system_prompt = """You are a supervisor of a team of financial analysts with the following roles:
@@ -327,7 +481,45 @@ def combine_persona_specific_answers(state: state.OverallState):
         }
     )
 
-    return {"final_answer": combined_answer}
+    
+    ###### log_tree part
+    # import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = "combine_persona_specific_answers" + "//" + id
+    # parent_node = state.get("prev_node" , "START")
+    parent_node = state.get("persona_last_nodes" , "START")
+    if parent_node == "":
+        parent_node = "START"
+    log_tree = {}
+
+    if not LOGGING_SETTINGS['combine_persona_specific_answers']:
+        child_node = parent_node  
+    
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+
+    output_state = {
+        "final_answer": combined_answer,
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
+        "combine_answer_parents" : child_node ,
+    }
+
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    return output_state 
 
 
 _persona_selection_using_supervisor_system_prompt = """You are a supervisor of a team of financial personas (analysts) with the following descriptions:

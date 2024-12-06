@@ -7,6 +7,9 @@ from langchain_core.output_parsers import StrOutputParser
 
 import state
 from llm import llm
+import uuid
+from utils import send_logs
+from config import LOGGING_SETTINGS
 
 
 class PathDecider(BaseModel):
@@ -118,23 +121,25 @@ Your responsibilities are as follows:
 1. **Query Type Identification**:
     - **Web Query**: Queries related to general information, news, or facts.
     - **Financial Query**: Queries related to financial data, stock prices. This will use information that has to be fetched from the documents.
-    
+    - **General Question**: Queries that don't fall into the above categories and can be answered by inherent knowledge or general reasoning or statements like salutations, greetings, etc.
+
 2. **Path Selection**:
     - **Web Query**: Send the query to the web search module for information retrieval.
     - **Financial Query**: Send the query to the RAG module for answering.
-    
+    - **General Question**: Proceed with the general question-answering module for answering.
+
 3. **Output Specification**:
     - If the query is a web query, output "web".
     - If it is a simple financial query, output "financial".
-    
-    
+    - If it is a general query, output "general".
+
 Few examples of queries are, with some explanation provided for some queries:
 
 1. "What is the GDP of India?"
     - **Query Type**: Web Query
     - **Path**: Web Search Module
     - **Output**: "web"
-    
+
 2. "What is the stock price of Apple as of the last quarter of 2021?"
     - **Query Type**: Simple Financial Query
     - **Path**: RAG Module
@@ -144,12 +149,16 @@ Few examples of queries are, with some explanation provided for some queries:
     - **Query Type**: Web Query
     - **Path**: Web Search Module
     - **Output**: "web"
-    
+
 4. "Which is better to invest in, Apple or Google?"
     - **Query Type**: Complex
     - **Path**: Complete Module
     - **Output**: "financial"
-    
+
+5. "Hello! How are you?"
+    - **Query Type**: General Question
+    - **Path**: Question-Answering Module
+    - **Output**: "general"
 """
 
 _system_prompt_for_split_decider_2_normal_mode = """
@@ -191,31 +200,31 @@ Your responsibilities are as follows:
 1. **Query Type Identification**:
     - **Simple Financial Query**: Queries related to financial data, stock prices, or investment which can be answered directly from a single  document and would can be answered by a simple RAG module.
     - **Complex Financial Query**: Queries related to financial data, stock prices, or investment which you feel are multi-hop and require information from multiple sources and would need further clarification or context. This module cannot reason enough by itself and only performs retrieval with query decomposition.
-    - **Information Retrieval + Reasoning**: Queries that require information retrieval from the documents and as well as high level reasoning power for sufficiently answering the query. Here, the query will be forwarded to a team of expert agents who will discuss the question in fine detail.
-    
+    - **Information Retrieval + Reasoning**: Queries that require information retrieval from the documents and as well as high level reasoning power for sufficiently answering the query. Here, the query will be forwarded to a team of expert agents who will reason about the question in fine detail.
+
 2. **Path Selection**:
     - **Simple Financial Query**: Send the query to the naive RAG module for answering.
     - **Complex Financial Query**: Send the query to the complete RAG module for answering.
     - **Information Retrieval + Reasoning**: Send the query to the persona RAG module for detailed analysis and reasoning along with RAG module for answering.
-    
+
 3. **Output Specification**:
     - If it is a simple financial query, output "simple_financial".
     - If it is a complex financial query, output "complex_financial".
-    - If it is a query involving retreival and reasoning, output "discuss".
-    
-    
+    - If it is a query involving retreival and reasoning, output "reason".
+
+
 Few examples of queries are, with some explanation provided for some queries:
-    
+
 1. "What is the stock price of Apple in 2021 for the end of the financial year?"
     - **Query Type**: Simple Financial Query
     - **Path**: Naive RAG Module
     - **Output**: "simple_financial"
     - **Explanation**: This query can be answered directly from a single document, and does not require any further decomposition of the question.
-      
+
 2. "Which is better to invest in, Apple or Google?"
     - **Query Type**: Complex Financial Query
     - **Path**: Complete RAG Module
-    - **Output**: "discuss"
+    - **Output**: "reason"
     - **Explanation**: This query requires a comparison of two companies where we would require reasoning over some fundamental indicators of both companies.
 
 3. "What is the stock price of Apple and Microsoft in the period 2021-2023?"
@@ -239,7 +248,6 @@ def split_path_decider_1(state: state.OverallState):
     log_message("---DECIDING THE PATH FOR THE QUERY---")
     query = state["question"]
     path_decider_output = split_path_first_decider.invoke({"query": query})
-    print(path_decider_output)
     log_message(
         f"---DECIDED THE PATH FOR THE QUERY: {path_decider_output.path_decided}---"
     )
@@ -285,7 +293,7 @@ def split_path_decider_2(state: state.OverallState):
 
 
 ## TODO:rewrite the following prompt
-_system_prompt_for_answer_analysis="""
+_system_prompt_for_answer_analysis = """
 You are a financial analyst who has been given the task of drafting an answer to a question. Your task is answering the following question {query} 
 
 To achieve this you have used your team to research an answer to the question. You have additionally ran detailed analysis into the quantitivate aspects related to your question. This will let you add supporting detail to your answer.
@@ -294,12 +302,66 @@ You are now tasked with combining these answers appropriately to get the final a
 Make sure you include all the necessary facts and details from the answers to create a comprehensive final answer. Be sure not to miss out on any important information."""
 
 answer_analysis_prompt = ChatPromptTemplate.from_messages(
-    [("system", _system_prompt_for_answer_analysis), ("human", "Answer from team: {answer}\n Results from Quantitative Analysis: {KPI_answer}\n")]
+    [
+        ("system", _system_prompt_for_answer_analysis),
+        (
+            "human",
+            "Answer from team: {answer}\n Results from Quantitative Analysis: {KPI_answer}\n",
+        ),
+    ]
 )
-answer_analysis = answer_analysis_prompt | llm |StrOutputParser()
+answer_analysis = answer_analysis_prompt | llm | StrOutputParser()
 
-def combine_answer_analysis(state:state.OverallState):
+
+def combine_answer_analysis(state: state.OverallState):
     log_message("--COMBINING THE ANSWER--")
-    answer = answer_analysis.invoke({"query":state["question"],"answer":state["final_answer"],"KPI_answer":('\n'.join([s for s in state["partial_answer"]]))})
-    return {"final_answer" : answer}
+    print(
+        {
+            "query": state["question"],
+            "answer": state["final_answer"],
+            "KPI_answer": state.get("kpi_answer", None),
+        }
+    )
+    answer = state["final_answer"]
+    # answer = answer_analysis.invoke(
+    #     {
+    #         "query": state["question"],
+    #         "answer": state["final_answer"],
+    #         "KPI_answer": state.get("kpi_answer", "None"),
+    #     }
+    # )
+
+        ###### log_tree part
+    # import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = "combine_answer_analysis" + "//" + id
+    # parent_node = state.get("prev_node" , "START")
+    parent_node = state.get("combine_answer_parents" , "")
+    log_tree = {}
+    # tree_log(f"send_Log_tree_logs : {state['send_log_tree_logs']}",1)
+    if not LOGGING_SETTINGS['combine_answer_analysis'] or state.get("send_log_tree_logs" , "") == "False":
+        child_node = parent_node 
+
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+    output_state =  {
+        "final_answer": answer , 
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
+    }
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
     
+    ######
+
+    return output_state 
+    # return {"final_answer": answer}

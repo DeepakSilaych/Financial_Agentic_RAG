@@ -5,7 +5,9 @@ from langchain_core.messages import AIMessage
 
 import state
 from llm import llm
-from utils import log_message
+from utils import log_message , send_logs
+from config import LOGGING_SETTINGS
+import uuid
 
 
 class LLM_Response(BaseModel):
@@ -54,6 +56,41 @@ def general_llm(state: state.OverallState):
         "image_desc": state["image_desc"]
         }
     )
+
+        ###### log_tree part
+    # import uuid , nodes 
+    id = str(uuid.uuid4())
+    child_node = "general_llm" + "//" + id
+    parent_node = state.get("prev_node" , "START")
+    log_tree = {}
+    # tree_log(f"send_Log_tree_logs : {state['send_log_tree_logs']}",1)
+    if not LOGGING_SETTINGS['general_llm'] or state.get("send_log_tree_logs" , "") == "False":
+        child_node = parent_node 
+
+    log_tree[parent_node] = [child_node]
+    ######
+
+    ##### Server Logging part
+    output_state =  {
+        "final_answer": llm_output.answer,
+        "answer": llm_output.answer,
+        "messages": [AIMessage(role="Chatbot", content=llm_output.answer)],
+        "prev_node" : child_node,
+        "log_tree" : log_tree ,
+    }
+
+    send_logs(
+        parent_node = parent_node , 
+        curr_node= child_node , 
+        child_node=None , 
+        input_state=state , 
+        output_state=output_state , 
+        text=child_node.split("//")[0] ,
+    )
+    
+    ######
+
+    return output_state 
     
     return {
         "final_answer": llm_output.answer,

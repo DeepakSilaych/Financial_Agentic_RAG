@@ -1,18 +1,17 @@
 from dotenv import load_dotenv
-import os
-import jsonlines
-import uuid
 
 load_dotenv()
 
+import json
+import os
+import jsonlines
+import uuid
 from typing import Optional
-import threading
 
 from langchain_core.runnables import RunnableConfig
 import config
 from utils import log_message
 from workflows.e2e import e2e as app
-from workflows.kpi import kpi_workflow
 
 
 def store_conversation_with_metadata(conversation_data, folder="data_convo/"):
@@ -22,42 +21,37 @@ def store_conversation_with_metadata(conversation_data, folder="data_convo/"):
     # Define the file path
     file_path = os.path.join(folder, "conversation_history.jsonl")
 
-    # Append the data to the JSONL file
-    with jsonlines.open(file_path, mode='a') as writer:
-        writer.write({
-            "record_id": conversation_data["user_id"],
-            "query": conversation_data["question"],
-            "answer": conversation_data["answer"],
-            "type":"conversational_awareness"
-        })
+    with jsonlines.open(file_path, mode="a") as writer:
+        writer.write(
+            {
+                "record_id": conversation_data["user_id"],
+                "query": conversation_data["question"],
+                "answer": conversation_data["answer"],
+                "type": "conversational_awareness",
+            }
+        )
 
     print(f"Conversation successfully stored in {file_path}")
 
-def run_kpi_workflow(question, analysis_topic, analysis_subject):
+
+def get_all_available_financial_analyses():
     """
-    Function to run the KPI workflow in a separate thread.
+    Function to get all available financial analyses.
     """
-    try:
-        print("Starting KPI Workflow...")
-        analysis_answer = kpi_workflow.invoke(
-            {
-                "question": question,
-                "analyses_to_be_done": analysis_topic,
-                "analysis_subject": analysis_subject,
-            }
-        )["final_answer"]
-        print("-------------ANALYSIS ANSWER-------------")
-        print(analysis_answer)
-    except Exception as e:
-        print(f"Error in KPI Workflow: {e}")
+    with open("experiments/kpis/kpis.json") as f:
+        data = json.load(f)
+    return [val["topic"] for val in data]
 
 
 def chatbot():
     print("Welcome to the 10-K Analyzer Chatbot. Ask your question below.")
-    # question = input("Question: ")
-    question = "Compare the revenue of Google in 2021"
+    question = input("Question: ")
 
-    initial_input = {"question": question, "fast_vs_slow": "slow"}
+    initial_input = {
+        "question": question,
+        "fast_vs_slow": "slow"
+        # "image_path": "./images/image6.png"
+    }
     thread: RunnableConfig = {"configurable": {"thread_id": "1"}}
     to_restart_from: Optional[RunnableConfig] = None
     num_question_asked = 0
@@ -68,14 +62,24 @@ def chatbot():
     clarifications = []
 
     print("\nProcessing your query...\n")
-    while True:
+    run = True
+    while run:
         try:
             inp = None if to_restart_from else initial_input
             # Run the graph until the first interruption
             for event in app.stream(inp, thread, stream_mode="values", subgraphs=True):
-                pass
-            # first interrupt : before refine_query and before identify_missing_reports
+                print("#1", app.get_state(thread).next)
+                next_nodes = app.get_state(thread).next
+                if len(next_nodes) == 0:
+                    run = False
+                    break
 
+            # If the thread has completed, break out of the loop
+            # This happens when split_path_decider_1 has chosen `general`
+            if not run:
+                break
+
+            # first interrupt: after ask_clarifying_questions
             log_message("---ASKING USER FOR CLARIFICATION---")
             while num_question_asked < config.MAX_QUESTIONS_TO_ASK:
                 # Get the latest state
@@ -83,55 +87,57 @@ def chatbot():
                 clarifying_questions = state.get("clarifying_questions", [])
 
                 if (
-                    clarifying_questions
-                    and clarifying_questions[-1]["question_type"] != "none"
-                    and len(clarifying_questions) <= 3
+                    len(clarifying_questions) == 0
+                    or len(clarifying_questions) > config.MAX_QUESTIONS_TO_ASK
+                    or clarifying_questions[-1]["question_type"] == "none"
                 ):
-                    question = clarifying_questions[-1]
-                    question_text = question.get("question", "")
-                    question_options = question.get("options", None)
-                    question_type = question.get("question_type", "direct-answer")
-
-                    if (
-                        question_type in ["multiple-choice", "single-choice"]
-                        and question_options
-                    ):
-                        idx = list(range(1, len(question["options"]) + 1))
-                        options = "\n".join(
-                            [
-                                f"({i}) {option}"
-                                for i, option in zip(idx, question["options"])
-                            ]
-                        )
-                        user_response = (
-                            input(
-                                f"{question_text}\nOptions:\n{options}\nChoose any option: "
-                            )
-                            .replace(" ", "")
-                            .split(",")
-                        )
-                        answers = "; ".join(
-                            [question["options"][int(i) - 1] for i in user_response]
-                        )
-                        clarifications.append(answers)
-                    else:
-                        user_response = input(f"{question_text}: ")
-                        clarifications.append(user_response)
-
-                    app.update_state(thread, {"clarifications": clarifications})
-                    num_question_asked += 1
-                else:
                     log_message("No further clarifications required.")
                     break
 
+                question = clarifying_questions[-1]
+                question_text = question.get("question", "")
+                question_options = question.get("options", None)
+                question_type = question.get("question_type", "direct-answer")
+
+                if (
+                    question_type in ["multiple-choice", "single-choice"]
+                    and question_options
+                ):
+                    idx = list(range(1, len(question["options"]) + 1))
+                    options = "\n".join(
+                        [
+                            f"({i}) {option}"
+                            for i, option in zip(idx, question["options"])
+                        ]
+                    )
+                    user_response = (
+                        input(
+                            f"{question_text}\nOptions:\n{options}\nChoose any option: "
+                        )
+                        .replace(" ", "")
+                        .split(",")
+                    )
+                    answers = "; ".join(
+                        [question["options"][int(i) - 1] for i in user_response]
+                    )
+                    clarifications.append(answers)
+                else:
+                    user_response = input(f"{question_text}: ")
+                    clarifications.append(user_response)
+
+                app.update_state(thread, {"clarifications": clarifications})
+                num_question_asked += 1
+
+                # Continue the conversation till all clarifications are asked
                 for event in app.stream(
                     None, thread, stream_mode="values", subgraphs=True
                 ):
-                    pass
-
-            for event in app.stream(None, thread, stream_mode="values", subgraphs=True):
-                pass
-            # second interrupt before download_missing_reports
+                    print("#2", app.get_state(thread).next)
+            for event in app.stream(
+                None, thread, stream_mode="values", subgraphs=True
+            ):
+                print("#3", app.get_state(thread).next)
+            # second interrupt: after identify missing reports
             state = app.get_state(thread).values
             missing_company_year_pairs = state.get("missing_company_year_pairs", [])
             reports_to_download = []
@@ -149,13 +155,10 @@ def chatbot():
                 app.update_state(thread, {"reports_to_download": reports_to_download})
 
             for event in app.stream(None, thread, stream_mode="values", subgraphs=True):
-                pass
+                print("#4", app.get_state(thread).next)
 
-            # third interrupt before analysis
+            # third interrupt: after download missing reports
             state = app.get_state(thread).values
-            kpi_thread = None
-            # if state["path_decided"] == "analysis":
-            analysis_suggestions = state.get("analysis_suggestions", [])
             fast_vs_slow = state.get("fast_vs_slow", "slow")
             if fast_vs_slow.strip() == "slow":
                 analysis_or_not = input(
@@ -166,19 +169,27 @@ def chatbot():
 
                     combined_metadata = state["combined_metadata"]
                     options = [
-                        {"company_name": x["company_name"], "filing_year": x["filing_year"]}
+                        {
+                            "company_name": x["company_name"],
+                            "filing_year": x["filing_year"],
+                        }
                         for x in combined_metadata
                     ]
                     print("Select the company/year you want to run analysis on:")
                     for i, option in enumerate(options, start=1):
-                        print(f"{i}: {option['company_name']} ({option['filing_year']})")
+                        print(
+                            f"{i}: {option['company_name']} ({option['filing_year']})"
+                        )
 
                     # Get the user input as a number
-                    selected_option = int(input("Enter the option number: ")) - 1
+                    selected_options = (
+                        input("Enter the option number: ").replace(" ", "").split(",")
+                    )
+                    selected_options = [int(i) - 1 for i in selected_options]
 
-                    # Validate the input and fetch the selected item
-                    if 0 <= selected_option < len(options):
-                        analysis_subject = options[selected_option]
+                    analysis_suggestions = state.get("analysis_suggestions", None)
+                    if analysis_suggestions is None or len(analysis_suggestions) == 0:
+                        analysis_suggestions = get_all_available_financial_analyses()
 
                     # Let the user choose the type of analysis to run
                     idx = list(range(1, len(analysis_suggestions) + 1))
@@ -188,54 +199,37 @@ def chatbot():
                             for i, option in zip(idx, analysis_suggestions)
                         ]
                     )
-                    analysis_topic = (
+                    analysis_topics = (
                         input(
                             f"Select the type of analysis you want to get done:\n{analysis_options}\nChoose any options: "
                         )
                         .replace(" ", "")
                         .split(",")
                     )
-                    analysis_topic = [
-                        analysis_suggestions[int(i) - 1] for i in analysis_topic
+                    analysis_topics = [
+                        analysis_suggestions[int(i) - 1].lower()
+                        for i in analysis_topics
                     ]
 
                     app.update_state(
                         thread,
                         {
-                            "analyses_to_be_done": analysis_topic,
-                            "analysis_subject": [analysis_subject],
+                            "analyses_to_be_done": analysis_topics,
+                            "analysis_companies_by_year": [
+                                options[selected_option]
+                                for selected_option in selected_options
+                            ],
                         },
                     )
 
-                    # Run the KPI workflow in a separate thread
-                    kpi_thread = threading.Thread(
-                        target=run_kpi_workflow,
-                        args=(
-                            state.get("question", ""),
-                            analysis_topic,
-                            analysis_subject,
-                        ),
-                    )
-                    kpi_thread.start()
-
             for event in app.stream(None, thread, stream_mode="values", subgraphs=True):
-                pass
+                print("#5", app.get_state(thread).next)
+            for event in app.stream(None, thread, stream_mode="values", subgraphs=True):
+                print("#6", app.get_state(thread).next)
 
             # If we reach here, it means the thread has completed successfully
 
-            # wait for the KPI thread to finish
-            if kpi_thread is not None:
-                kpi_thread.join()
-            for event in app.stream(None, thread, stream_mode="values", subgraphs=True):
-                print(app.get_state(thread).next)
-        
             state = app.get_state(thread).values
-            conv={}
-            conv["user_id"]=user_id
-            conv["question"]=state["question"]
-            conv["answer"]=state['final_answer']
-            conv["type"]="conversational_awareness"
-        
             print("\nFINAL ANSWER:", state["final_answer"])
             break
         except Exception as e:
@@ -255,6 +249,7 @@ def chatbot():
                 {"overall_retries": overall_retries + 1},
             )
             print("Retrying...")
+
 
 if __name__ == "__main__":
     chatbot()

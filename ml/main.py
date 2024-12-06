@@ -1,171 +1,149 @@
-from dotenv import load_dotenv
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
+from sqlalchemy.exc import SQLAlchemyError
+from fastapi.staticfiles import StaticFiles
+import uvicorn
+import logging
+import asyncio
 import os
 
-load_dotenv()
-import json
-import uuid
-from utils import log_message
-from datetime import datetime
-import config
-from workflows.repeater_with_HITL import repeater_with_HITL as app
-# from workflows.final_workflow_with_path_decider import final_workflow_with_path_decider as app
-# from workflows.rag_e2e import rag_e2e as app
+from server.database import engine
+from server import models
+from server.routes import chat_router, file_router, ws_router, space_router
 
-####### Debugging ####
+from fastapi.websockets import WebSocket, WebSocketDisconnect
 
-initial_input = {
-    "question": "How many employees did apple have globally as of June 30, 2023? What was the revenue of google in 2022?"
-}
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
+# Create database tables
+models.Base.metadata.create_all(bind=engine)
 
-####### Debugging ####
+# Mount the data directory as a static files directory
+app = FastAPI()
+app.mount("/data", StaticFiles(directory="data"), name="data")
+data_dir = os.path.join(os.path.dirname(__file__), "data")
+os.makedirs(data_dir, exist_ok=True)
+app.mount("/media", StaticFiles(directory=data_dir), name="media")
 
-# res = app.invoke(initial_input)
+# Initialize FastAPI
 
-# print(res)
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+# Error handlers
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    logger.error(f"Validation error: {exc}")
+    return JSONResponse(
+        status_code=400,
+        content={"detail": f"Validation error: {str(exc)}"},
+    )
 
-thread = {"configurable": {"thread_id": "1"}}
+@app.exception_handler(SQLAlchemyError)
+async def sqlalchemy_exception_handler(request: Request, exc: SQLAlchemyError):
+    logger.error(f"Database error: {exc}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": f"Database error: {str(exc)}"},
+    )
 
-# Initialize clarifications list
-clarifications = []
+@app.exception_handler(Exception)
+async def general_exception_handler(request: Request, exc: Exception):
+    logger.error(f"General error: {exc}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": f"Internal server error: {str(exc)}"},
+    )
 
-# Run the graph until the first interruption
-for event in app.stream(initial_input, thread, stream_mode="values"):
-    print(app.get_state(thread).next)
+graph_clients = set()
 
-log_message("---ASKING USER FOR CLARIFICATION---")
+@app.post("/receive_nodes/")
+async def receive_nodes(node_data: dict):
+    """
+    Endpoint to receive single node data, save it to a file, and broadcast to connected WebSocket clients.
+    Expected format: 
+    {
+        "parent_node": "parent1$$parent2",
+        "current_node": "node_id",
+        "text": "Node description"
+    }
+    """
+    try:
+        # Validate input structure
+        if not isinstance(node_data, dict):
+            return JSONResponse(
+                content={"error": "Invalid data format. Expected dictionary"}, 
+                status_code=400
+            )
+            
+        # Validate required fields
+        required_fields = ['parent_node', 'current_node', 'text']
+        if not all(field in node_data for field in required_fields):
+            return JSONResponse(
+                content={"error": f"Missing required fields: {required_fields}"}, 
+                status_code=400
+            )
 
-for hitl in range(3):
-    # Get the latest state
-    state = app.get_state(thread).values
-    clarifying_questions = state.get("clarifying_questions", [])
-    # Check if the last clarifying question exists and requires clarification
-    if clarifying_questions and clarifying_questions[-1]["question_type"] != "none" and len(clarifying_questions) <= 3:
-        question = clarifying_questions[-1]
-        question_text = question.get("question", "")
-        question_options = question.get("options", None)
-        question_type = question.get("question_type", "direct-answer")
-
-        # Display the question and handle response based on the type
-        if question_type in ["multiple-choice", "single-choice"] and question_options:
-            idx = list(range(1,len(question['options'])+1))
-            options = '\n'.join([f"({i}) {option}" for i, option in zip(idx, question['options'])])
-            user_response = input(f"{question['question']}\nOptions:\n{options}\nChoose any option: ").replace(" ", "").split(',')
-            answers = "; ".join([question['options'][int(i)-1] for i in user_response])
-            clarifications.append(answers)
-        else:
-            user_response = input(f"{question['question']}: ")
-            clarifications.append(user_response)
-
-        # Update the state with the user's clarifications
-        app.update_state(thread, {"clarifications": clarifications})
-    else:
-        log_message("No further clarifications required.")
-        break
-
-    # Run the graph to generate subsequent clarifying questions
-    for event in app.stream(None, thread, stream_mode="values", subgraphs=True):
-        print(app.get_state(thread).next)#print(event)
-
-state=app.get_state(thread).values
-analysis_suggestions=state.get("analysis_suggestions",[])
-path_decided=state.get("path_decided","")
-if path_decided=="analysis":
-    analysis_or_not=input("Do you want to get analysis done for a particular year/company?(Y/N)")
-    if analysis_or_not.strip()=="y":
-        combined_metadata=state["combined_metadata"]
-        options=[{x.company_name:x.filing_year} for x in combined_metadata]
-        analysis_subject=input(f"Select the company/yearyou want to run analysis on : {options}")
-        analysis_topic=input(f"Select the type of analysis you want to get done: {analysis_suggestions}")
-        app.update_state(thread,{"analysis_topic":analysis_topic, "analysis_subject":analysis_subject})
-
-for event in app.stream(None, thread, stream_mode="values", subgraphs=True):
-    print(app.get_state(thread).next)#print(event)
-state = app.get_state(thread).values
-missing_company_year_pairs = state.get("missing_company_year_pairs", [])
-reports_to_download=[]
-if missing_company_year_pairs:
-    for x in missing_company_year_pairs:
-        company=x["company_name"]
-        year=x["filing_year"]
-        print(f"We dont have data for {company} for year {year}")
-        response_download=input("Do you want to download it from the web? (Y/N)")
-        if response_download.strip() == "y":
-            reports_to_download.append(x)
+        # Save node data to file
+        with open("received_nodes.txt", "a") as f:
+            f.write(f"{node_data}\n")
         
-if reports_to_download:
-    app.update_state(thread, {"reports_to_download":reports_to_download})
-for event in app.stream(None, thread, stream_mode="values", subgraphs=True):
-    print(app.get_state(thread).next)#print(event)
+        # Broadcast to all connected clients
+        if graph_clients:
+            await asyncio.gather(
+                *[client.send_json(node_data) for client in graph_clients]
+            )
 
-state = app.get_state(thread).values
-print("FINAL ANSWER:", state["final_answer_with_citations"])
-# # #########  ------------- Conversation Chatbot
+        return JSONResponse(
+            content={
+                "message": "Node data saved and sent to clients",
+                "clients": len(graph_clients),
+                "node": node_data["current_node"]
+            },
+            status_code=200
+        )
+    except Exception as e:
+        logger.error(f"Error in receive_nodes: {str(e)}")
+        return JSONResponse(
+                content={"error": f"Internal server error: {str(e)}"}, 
+                status_code=500
+        )
 
-# # Initialize the chatbot
-# def chatbot():
-#     log_message("Initializing Chatbot...")
-#     folder_path = 'logs'
-#     for filename in os.listdir(folder_path):
-#         file_path = os.path.join(folder_path, filename)
-#         if os.path.isfile(file_path):
-#             os.remove(file_path)
+@app.websocket("/ws/graph")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    graph_clients.add(websocket)
+    logger.info(f"New graph client connected. Total clients: {len(graph_clients)}")
     
-#     # Thread for maintaining state
-#     thread = {"configurable": {"thread_id": "1"}}
-    
-#     # Conversation loop
-#     while True:
-#         # Get user input
-#         user_query = input("You: ")
-#         if user_query.lower() in {"exit", "quit"}:
-#             print("Chatbot: Goodbye!")
-#             break
+    try:
+        while True:
+            await websocket.receive_text() 
+    except WebSocketDisconnect:
+        graph_clients.remove(websocket)
+        logger.info(f"Graph client disconnected. Remaining clients: {len(graph_clients)}")
+    except Exception as e:
+        logger.error(f"WebSocket error: {str(e)}")
+        graph_clients.remove(websocket)
 
-#         # Input to the workflow
-#         input_data = {"question": user_query}
-
-#         # Run the workflow
-#         log_message("---PROCESSING QUERY---")
-#         for event in app.stream(input_data, thread, stream_mode="values"):
-#             print(f"Chatbot: {event}")
-
-#         # Check for clarifying questions
-#         state = app.get_state(thread).values
-#         clarifying_questions = state.get("clarifying_questions", [])
-#         clarifications = []
-
-#         if clarifying_questions:
-#             log_message("---ASKING USER FOR CLARIFICATIONS---")
-#             for question in clarifying_questions:
-#                 user_response = input(f"Chatbot (Clarification needed): {question}: ")
-#                 clarifications.append(f"{question}: {user_response}")
-
-#             # Update state with clarifications
-#             app.update_state(thread, {"clarifications": clarifications})
-
-#             # Resume the workflow with clarifications
-#             log_message("---RESUMING WITH CLARIFICATIONS---")
-#             for event in app.stream(None, thread, stream_mode="values", subgraphs=True):
-#                 print(f"Chatbot: {event}")
-#             state=app.get_state(thread).values
-#             question=state.get("question","")
-#             final_answer=state.get("final_answer","")
-#             print("--------------FINAL ANSWER-------------")
-#             print(final_answer)
-#             # data={
-#             #     "time_stamp": datetime.now().isoformat() ,
-#             #     "User":HumanMessage(content=question,role="User"),
-#             #     "Chatbot":AIMessage(content=final_answer,role="Chatbot")
-#             # }
-#             # conversation_id=str(uuid.uuid4())
-
-#             # with open(f"conversational_history/{conversation_id}.json", "w") as file:
-#             #     json.dump(data, file, indent=4)
-
-#     log_message("Chatbot session ended.")
+# Include routers
+app.include_router(chat_router)
+app.include_router(file_router)
+app.include_router(ws_router)
+app.include_router(space_router)
 
 
-# if __name__ == "__main__":
-#     chatbot()
+def main():
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False)
+
+if __name__ == "__main__":
+    main()

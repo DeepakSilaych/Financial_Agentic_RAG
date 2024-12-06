@@ -9,14 +9,14 @@ from .rag_e2e import rag_e2e
 
 def rag1_to_rag2(state: state.InternalRAGState):
     if len(state["question_group"][-1]) == 1:
-        return nodes.combine_answers.__name__
+        return nodes.combine_answer_v1.__name__
     else:
         return rag2.__name__
 
 
 def rag2_to_rag3(state: state.InternalRAGState):
     if len(state["question_group"][-1]) == 2:
-        return nodes.combine_answers.__name__
+        return nodes.combine_answer_v1.__name__
     else:
         return rag3.__name__
 
@@ -113,7 +113,7 @@ graph.add_node(nodes.expand_question.__name__, nodes.expand_question)
 graph.add_node(rag1.__name__, rag1)
 graph.add_node(rag2.__name__, rag2)
 graph.add_node(rag3.__name__, rag3)
-graph.add_node(nodes.combine_answers.__name__, nodes.combine_answers)
+graph.add_node(nodes.combine_answer_v1.__name__, nodes.combine_answer_v1)
 # graph.add_node(nodes.ask_follow_up_questions.__name__,nodes.ask_follow_up_questions)
 
 graph.add_edge(nodes.expand_question.__name__, nodes.decompose_question_v2.__name__)
@@ -121,19 +121,19 @@ graph.add_conditional_edges(nodes.decompose_question_v2.__name__, edges.send_dec
 graph.add_conditional_edges(
     rag1.__name__, rag1_to_rag2,
     [
-        nodes.combine_answers.__name__,
+        nodes.combine_answer_v1.__name__,
         rag2.__name__,
     ],
 )
 graph.add_conditional_edges(
     rag2.__name__, rag2_to_rag3,
     [
-        nodes.combine_answers.__name__,
+        nodes.combine_answer_v1.__name__,
         rag3.__name__,
     ]
 )
-graph.add_edge(rag3.__name__, nodes.combine_answers.__name__)
-graph.add_edge(nodes.combine_answers.__name__,nodes.append_citations.__name__)
+graph.add_edge(rag3.__name__, nodes.combine_answer_v1.__name__)
+graph.add_edge(nodes.combine_answer_v1.__name__,nodes.append_citations.__name__)
 graph.add_edge(nodes.append_citations.__name__ , nodes.ask_follow_up_questions.__name__)
 graph.add_edge(nodes.ask_follow_up_questions.__name__,END)
 # fmt: on

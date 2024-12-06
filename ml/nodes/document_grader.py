@@ -26,12 +26,21 @@ class DocumentGraderInput(BaseModel):
     document: str
 
 
-_system_prompt = """You are a grader assessing relevance of a retrieved document to a user question. \n 
-    If the document contains keyword(s) or semantic meaning related to the user question, grade it as relevant. \n
-    It does not need to be a stringent test. The goal is to filter out erroneous retrievals. \n
-    While (irrelevant documents marked as relevant) are acceptable, (relevant documents marked as irrelevant) must be avoided at all costs.\n
-    Provide a simple binary score: "yes" for relevant and "no" for irrelevant.\n
-    Give a binary score 'yes' or 'no' score to indicate whether the document is relevant to the question."""
+_system_prompt = """You are a grader assessing relevance of a retrieved document to a user question. 
+    - Consider a document relevant if it contains information that can help answer the question.
+    - For fact-based queries, look for potential information even in large tables or lengthy documents. 
+    - Be inclusive in your assessment - prefer keeping potentially useful documents.
+    - Extract partial relevance - a document doesn't need to contain the ENTIRE answer to be considered relevant. Documents that may contain some part of the answer MUST be marked Relevant.
+    - Look for keywords, semantic meaning, and potential information sources.
+    
+    Provide a score:
+    - 'yes' if the document contains ANY potentially useful information
+    - 'no' only if the document is clearly unrelated or irrelevant
+
+    You will be penalised if you exclude a potentially useful document.
+    
+    Remember: It's better to include a marginally relevant document than to exclude a potentially useful one."""
+
 grade_prompt = ChatPromptTemplate.from_messages(
     [
         ("system", _system_prompt),
@@ -84,20 +93,25 @@ def grade_documents(state: state.InternalRAGState):
     # import uuid , nodes 
     id = str(uuid.uuid4())
     child_node = nodes.grade_documents.__name__ + "//" + id
+    prev_node_rewrite = child_node
     parent_node = state.get("prev_node" , "START")
+    if parent_node == "":
+        parent_node = "START"
     log_tree = {}
+
+    if not LOGGING_SETTINGS['grade_documents'] or state.get("send_log_tree_logs" , "") == "False":
+        child_node = parent_node  
+    
     log_tree[parent_node] = [child_node]
     ######
 
     ##### Server Logging part
 
-    if not LOGGING_SETTINGS['grade_documents']:
-        child_node = parent_node  
-
     output_state = {
         "documents": filtered_docs,
         "irrelevancy_reason": concatenated_reasons,
         "doc_grading_retries": doc_grading_retries + 1,
+        "prev_node_rewrite" : prev_node_rewrite , 
         "prev_node" : child_node,
         "log_tree" : log_tree ,
     }

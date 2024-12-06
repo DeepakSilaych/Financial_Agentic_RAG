@@ -8,7 +8,7 @@ from langchain_core.messages import SystemMessage, HumanMessage
 import state, config , nodes
 from llm import llm
 import uuid
-from utils import log_message , send_logs
+from utils import log_message , send_logs , tree_log
 from config import LOGGING_SETTINGS
 
 
@@ -184,6 +184,7 @@ def generate_answer_with_citation_state(state: state.InternalRAGState):
     question = state.get("original_question",state["question"])
     documents = state["documents"]
     image_url = state.get("image_url", "")
+    image_desc=state.get("image_desc","")
 
     if image_url == "":
         chat_prompt_template = ChatPromptTemplate.from_messages(
@@ -209,11 +210,11 @@ def generate_answer_with_citation_state(state: state.InternalRAGState):
                 HumanMessage(content=[
                     {
                         "type": "text",
-                        "text": f"Context: {remove_unnecessary_metadata_for_generation(documents)} \nImage being shared may or may not be relevant to the question.",
+                        "text": f"Context: {remove_unnecessary_metadata_for_generation(documents)} \nImage description being shared may or may not be relevant to the question.",
                     },
                     {
-                        "type": "image_url",
-                        "image_url": {"url": f"{image_url}"}
+                        "type": "text",
+                        "text": {f"Image Description: {image_desc}"}
                     },
                     {
                         "type": "text",
@@ -234,6 +235,8 @@ def generate_answer_with_citation_state(state: state.InternalRAGState):
         ]  # Convert Citation objects to dictionaries
     else:
         citations = []
+    for cit in citations:
+        cit["unique_id"] = str(uuid.uuid4())
 
 
     ###### log_tree part
@@ -241,9 +244,10 @@ def generate_answer_with_citation_state(state: state.InternalRAGState):
     id = str(uuid.uuid4())
     child_node = nodes.generate_answer_with_citation_state.__name__ + "//" + id
     parent_node = state.get("prev_node" , "START")
+    # tree_log(f" tree_log_parent_node : {parent_node}" , 1)
     log_tree = {}
 
-    if not LOGGING_SETTINGS['generate_answer_with_citation_state']:
+    if not LOGGING_SETTINGS['generate_answer_with_citation_state'] or state.get("send_log_tree_logs" , "") == "False":
         child_node = parent_node 
     
     log_tree[parent_node] = [child_node]
@@ -282,7 +286,7 @@ class AnswerWithCitationOutput(BaseModel):
 
 
 format1 = """
-Inline citations :  `[[<number>/<website_link>]]` ( <number> means sequencial numbering )
+Inline citations :  `[[<number>/<website_link>/<unique_id>]]` ( <number> means sequencial numbering )
 At the end of the answer, include a "Sources" section listing all the citations with their corresponding numbers. Each source should include:
    - Citation number ( matching the inline citation)
    - Title (Title of the article or page)
@@ -295,7 +299,7 @@ At the end of the answer, include a "Sources" section listing all the citations 
 """
 
 format2 = """
-Inline citations : `[[<number>/<file_name>/<page_number>]]` ( <number> means sequencial numbering )
+Inline citations : `[[<number>/<file_name>/<page_number>/<unique_id>]]` ( <number> means sequencial numbering )
 At the end of the answer, include a "Sources" section listing all the citations with their corresponding numbers. Each source should include:
    - Citation number (matching the inline citation).
    - File name. (exact file name)
@@ -400,9 +404,10 @@ def append_citations(state: state.OverallState):
     ##### Server Logging part
 
     output_state = { 
-        "final_answer_with_citations" : final_answer_with_citations ,
+        "final_answer" : final_answer_with_citations ,
         "prev_node" : child_node,
         "log_tree" : log_tree ,
+        "combine_answer_parents" : child_node , 
     }
 
     send_logs(
@@ -488,15 +493,15 @@ def generate_web_answer(state: state.InternalRAGState):
     citations = res.citations
     res_citations = []
     for cite in citations:
-        res_citations.append({"citation_content" : cite.citation_content , "title" : cite.title , "website" : cite.website})
+        res_citations.append({"citation_content" : cite.citation_content , "title" : cite.title , "website" : cite.website,"unique_id":str(uuid.uuid4())})
     log_message(
         f"-------FINAL ANSWER GENERATION--------\n------ {res}",
         f"question_group{question_group_id}",
     )
 
-    web_generated_answer = res.main_answer
-    answer = res.main_answer
-    citations = res.citations
+    # web_generated_answer = res.main_answer
+    # answer = res.main_answer
+    # citations = res.citations
 
     ###### log_tree part
     # import uuid , nodes 
@@ -505,7 +510,7 @@ def generate_web_answer(state: state.InternalRAGState):
     parent_node = state.get("prev_node" , "START")
     log_tree = {}
 
-    if not LOGGING_SETTINGS['generate_web_answer']:
+    if not LOGGING_SETTINGS['generate_web_answer'] or state.get("send_log_tree_logs" , "") == "False":
         child_node = parent_node  
         
     log_tree[parent_node] = [child_node]

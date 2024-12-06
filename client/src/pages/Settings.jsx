@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Palette,
   MessageSquare,
@@ -8,7 +8,9 @@ import {
   RotateCcw,
   Accessibility,
   Volume2,
-  Type
+  Type,
+  Cloud,
+  CheckCircle
 } from 'lucide-react';
 import { useSettings } from '../context/SettingsContext';
 
@@ -61,6 +63,8 @@ const Select = ({ value, onChange, options, label }) => (
 
 const Settings = () => {
   const { settings, updateSettings, resetSettings } = useSettings();
+  const [googleDriveApiKey, setGoogleDriveApiKey] = useState('');
+  const [isGoogleDriveConnected, setIsGoogleDriveConnected] = useState(false);
 
   const fontSizeOptions = [
     { value: 'small', label: 'Small' },
@@ -86,6 +90,17 @@ const Settings = () => {
     { value: 'dark', label: 'Dark' },
   ];
 
+  const handleSubmitGoogleDriveApiKey = (e) => {
+    e.preventDefault();
+    // TODO: Implement API call to backend to save Google Drive API key
+    console.log('Submitting Google Drive API Key:', googleDriveApiKey);
+    // Simulate API call
+    setTimeout(() => {
+      setIsGoogleDriveConnected(true);
+      setGoogleDriveApiKey('');
+    }, 1000);
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
@@ -100,6 +115,36 @@ const Settings = () => {
       </div>
 
       <div className="space-y-6 bg-white shadow rounded-lg p-6">
+        <SettingSection title="Google Drive Integration" icon={Cloud}>
+          {isGoogleDriveConnected ? (
+            <div className="flex items-center text-green-600">
+              <CheckCircle size={20} className="mr-2" />
+              <span>Google Drive Connected Successfully</span>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmitGoogleDriveApiKey} className="space-y-4">
+              <div>
+                <label htmlFor="googleDriveApiKey" className="block text-sm font-medium text-gray-700">
+                  Google Drive API Key
+                </label>
+                <input
+                  type="text"
+                  id="googleDriveApiKey"
+                  value={googleDriveApiKey}
+                  onChange={(e) => setGoogleDriveApiKey(e.target.value)}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="Enter your Google Drive API Key"
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Connect Google Drive
+              </button>
+            </form>
+          )}
+        </SettingSection>
         <SettingSection title="Theme" icon={Palette}>
           <Select
             value={settings.theme.mode}
