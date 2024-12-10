@@ -1,0 +1,3392 @@
+
+--- IS VISUALIZABLE ROUTE ---
+Attempt 1 using openai
+--- GET METRICS ---
+Attempt 1 using openai
+--- GENERATING CHART NAMES ---
+---CHECKING FOR HARMFUL CONTENT---
+Attempt 1 using openai
+What is Google's revenue?
+Loading conversation history from data_convo/conversation_history.jsonl.
+No conversational history available.
+Attempt 1 using openai
+Context Required: False
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+---DECIDED THE PATH FOR THE QUERY: financial---
+----DECIDING PATH 1----
+---SENDING QUERY TO FINANCIAL MODULE---
+---GENERATING CLARIFYING QUESTIONS BASED ON USER QUERY---
+Attempt 1 using openai
+---ASKING USER FOR CLARIFICATION---
+No further clarifications required.
+---- EXTRACTING MISSING DOCUMENT DETAILS ----
+Attempt 1 using openai
+Attempt 1 using openai
+company_set_1_str :
+
+ {None : None }, {alphabet : 2021 }, {alphabet : 2022 }, {alphabet : 2023 }, {amazon : 2023 }, {apple : 2021 }, {apple : 2022 }, {apple : 2023 }, {apple : 2024 }, {ebay : 2023 }, {electronic arts : 2023 }, {fedex : 2023 }, {general motors : 2023 }, {ibm : 2023 }, {jpmorgan chase : 2023 }, {meta : 2023 }, {microsoft : 2023 }, {nike : 2023 }, {nvidia : 2023 }, {tesla : 2022 } 
+company_set_2_str :
+
+ {Alphabet : None} 
+
+
+ Missing Company-Year Pairs: []
+
+
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+----DECIDING PATH POST CLARIFICATION----
+Path Decided:  simple_financial | state['final_answer'] : I am unable to answer this question.
+---QUERY: What is Google's revenue?
+Attempt 1 using openai
+Attempt 1 using openai
+
+
+ topics_list : ['financial_statement_analysis', 'corporate_finance', 'market_analysis_and_benchmarking'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: None, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+--COMBINING THE ANSWER--
+---GENERATING FOLLOW-UP QUESTIONS BASED ON FINAL ANSWER AND HISTORY---
+Attempt 1 using openai
+--- IS VISUALIZABLE ROUTE ---
+Attempt 1 using openai
+--- GENERATING CHART NAMES ---
+--- GET METRICS ---
+Attempt 1 using openai
+---CHECKING FOR HARMFUL CONTENT---
+Attempt 1 using openai
+What is Google's revenue?
+Loading conversation history from data_convo/conversation_history.jsonl.
+No conversational history available.
+Attempt 1 using openai
+Context Required: False
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+---DECIDED THE PATH FOR THE QUERY: financial---
+----DECIDING PATH 1----
+---SENDING QUERY TO FINANCIAL MODULE---
+---GENERATING CLARIFYING QUESTIONS BASED ON USER QUERY---
+Attempt 1 using openai
+---ASKING USER FOR CLARIFICATION---
+Attempt 1 using openai
+----FINAL REFINED QUERY FOR RETRIEVAL---
+----What is Google's revenue for the years 2022 and 2023?
+---GENERATING CLARIFYING QUESTIONS BASED ON USER QUERY---
+Attempt 1 using openai
+Attempt 1 using openai
+----FINAL REFINED QUERY FOR RETRIEVAL---
+----What is Google's total revenue, revenue from advertising, revenue from cloud services, and revenue from other bets for the years 2022 and 2023?
+---GENERATING CLARIFYING QUESTIONS BASED ON USER QUERY---
+Attempt 1 using openai
+No further clarifications required.
+---- EXTRACTING MISSING DOCUMENT DETAILS ----
+Attempt 1 using openai
+Attempt 1 using openai
+company_set_1_str :
+
+ {None : None }, {alphabet : 2021 }, {alphabet : 2022 }, {alphabet : 2023 }, {amazon : 2023 }, {apple : 2021 }, {apple : 2022 }, {apple : 2023 }, {apple : 2024 }, {ebay : 2023 }, {electronic arts : 2023 }, {fedex : 2023 }, {general motors : 2023 }, {ibm : 2023 }, {jpmorgan chase : 2023 }, {meta : 2023 }, {microsoft : 2023 }, {nike : 2023 }, {nvidia : 2023 }, {tesla : 2022 } 
+company_set_2_str :
+
+ {Alphabet : 2022}, {Alphabet : 2023} 
+
+
+ Missing Company-Year Pairs: []
+
+
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+----DECIDING PATH POST CLARIFICATION----
+Path Decided:  complex_financial | state['final_answer'] : I am unable to answer this question.
+Attempt 1 using openai
+---QUERY: What was Google's total revenue for the years 2022 and 2023?
+---QUERY: What was Google's revenue from cloud services for the years 2022 and 2023?
+---QUERY: What was Google's revenue from advertising for the years 2022 and 2023?
+---QUERY: What was Google's revenue from other bets for the years 2022 and 2023?
+---QUERY: What is Google's total revenue, revenue from advertising, revenue from cloud services, and revenue from other bets for the years 2022 and 2023?
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+
+
+ topics_list : ['economic_analysis', 'capital_markets', 'financial_statement_analysis'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+
+
+ topics_list : ['investment_management', 'financial_statement_analysis', 'market_analysis_and_benchmarking'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+
+
+ topics_list : ['investment_management', 'financial_statement_analysis', 'corporate_finance'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+
+
+ topics_list : ['market_analysis_and_benchmarking', 'investment_management', 'financial_statement_analysis'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+
+
+ topics_list : ['investment_management', 'capital_markets', 'financial_statement_analysis'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+---CHECKING FOR HARMFUL CONTENT---
+Attempt 1 using openai
+What is Google's revenue?
+Loading conversation history from data_convo/conversation_history.jsonl.
+No conversational history available.
+Attempt 1 using openai
+Context Required: False
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+---DECIDED THE PATH FOR THE QUERY: financial---
+----DECIDING PATH 1----
+---SENDING QUERY TO FINANCIAL MODULE---
+---GENERATING CLARIFYING QUESTIONS BASED ON USER QUERY---
+Attempt 1 using openai
+---ASKING USER FOR CLARIFICATION---
+Attempt 1 using openai
+----FINAL REFINED QUERY FOR RETRIEVAL---
+----What was Google's (Alphabet) revenue for the year 2022?
+---GENERATING CLARIFYING QUESTIONS BASED ON USER QUERY---
+Attempt 1 using openai
+No further clarifications required.
+---- EXTRACTING MISSING DOCUMENT DETAILS ----
+Attempt 1 using openai
+Attempt 1 using openai
+company_set_1_str :
+
+ {None : None }, {alphabet : 2021 }, {alphabet : 2022 }, {alphabet : 2023 }, {amazon : 2023 }, {apple : 2021 }, {apple : 2022 }, {apple : 2023 }, {apple : 2024 }, {ebay : 2023 }, {electronic arts : 2023 }, {fedex : 2023 }, {general motors : 2023 }, {ibm : 2023 }, {jpmorgan chase : 2023 }, {meta : 2023 }, {microsoft : 2023 }, {nike : 2023 }, {nvidia : 2023 }, {tesla : 2022 } 
+company_set_2_str :
+
+ {Alphabet : 2022} 
+
+
+ Missing Company-Year Pairs: []
+
+
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+----DECIDING PATH POST CLARIFICATION----
+Path Decided:  simple_financial | state['final_answer'] : I am unable to answer this question.
+---QUERY: What was Google's (Alphabet) revenue for the year 2022?
+Attempt 1 using openai
+Attempt 1 using openai
+
+
+ topics_list : ['financial_statement_analysis', 'market_analysis_and_benchmarking', 'corporate_finance'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2022, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2022` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+--COMBINING THE ANSWER--
+---GENERATING FOLLOW-UP QUESTIONS BASED ON FINAL ANSWER AND HISTORY---
+Attempt 1 using openai
+--- IS VISUALIZABLE ROUTE ---
+Attempt 1 using openai
+---CHECKING FOR HARMFUL CONTENT---
+Attempt 1 using openai
+What is Google's revenue?
+Loading conversation history from data_convo/conversation_history.jsonl.
+No conversational history available.
+Attempt 1 using openai
+Context Required: False
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+---DECIDED THE PATH FOR THE QUERY: financial---
+----DECIDING PATH 1----
+---SENDING QUERY TO FINANCIAL MODULE---
+---GENERATING CLARIFYING QUESTIONS BASED ON USER QUERY---
+Attempt 1 using openai
+---ASKING USER FOR CLARIFICATION---
+Attempt 1 using openai
+----FINAL REFINED QUERY FOR RETRIEVAL---
+----What is Google's revenue for the year 2023?
+---GENERATING CLARIFYING QUESTIONS BASED ON USER QUERY---
+Attempt 1 using openai
+No further clarifications required.
+---- EXTRACTING MISSING DOCUMENT DETAILS ----
+Attempt 1 using openai
+Attempt 1 using openai
+company_set_1_str :
+
+ {None : None }, {alphabet : 2021 }, {alphabet : 2022 }, {alphabet : 2023 }, {amazon : 2023 }, {apple : 2021 }, {apple : 2022 }, {apple : 2023 }, {apple : 2024 }, {ebay : 2023 }, {electronic arts : 2023 }, {fedex : 2023 }, {general motors : 2023 }, {ibm : 2023 }, {jpmorgan chase : 2023 }, {meta : 2023 }, {microsoft : 2023 }, {nike : 2023 }, {nvidia : 2023 }, {tesla : 2022 } 
+company_set_2_str :
+
+ {Alphabet : 2023} 
+
+
+ Missing Company-Year Pairs: []
+
+
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+----DECIDING PATH POST CLARIFICATION----
+Path Decided:  simple_financial | state['final_answer'] : I am unable to answer this question.
+---QUERY: What is Google's revenue for the year 2023?
+Attempt 1 using openai
+Attempt 1 using openai
+
+
+ topics_list : ['market_analysis_and_benchmarking', 'financial_statement_analysis', 'corporate_finance'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 1
+------TRANSFORMING QUERY USING REWRITE AND HYDE------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 2
+------TRANSFORMING QUERY USING REWRITE AND HYDE------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 3
+------CALLING WEB SEARCH------
+---WEB SEARCH---
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+------NO RAG ANSWER FOUND : RETURNING WEB GENERATED ANSWER------
+--COMBINING THE ANSWER--
+---GENERATING FOLLOW-UP QUESTIONS BASED ON FINAL ANSWER AND HISTORY---
+Attempt 1 using openai
+--- IS VISUALIZABLE ROUTE ---
+Attempt 1 using openai
+---CHECKING FOR HARMFUL CONTENT---
+Attempt 1 using openai
+What is the revenue of Google?
+Loading conversation history from data_convo/conversation_history.jsonl.
+No conversational history available.
+Attempt 1 using openai
+Context Required: False
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+---DECIDED THE PATH FOR THE QUERY: financial---
+----DECIDING PATH 1----
+---SENDING QUERY TO FINANCIAL MODULE---
+---GENERATING CLARIFYING QUESTIONS BASED ON USER QUERY---
+Attempt 1 using openai
+---ASKING USER FOR CLARIFICATION---
+No further clarifications required.
+---- EXTRACTING MISSING DOCUMENT DETAILS ----
+Attempt 1 using openai
+Attempt 1 using openai
+company_set_1_str :
+
+ {None : None }, {alphabet : 2021 }, {alphabet : 2022 }, {alphabet : 2023 }, {amazon : 2023 }, {apple : 2021 }, {apple : 2022 }, {apple : 2023 }, {apple : 2024 }, {ebay : 2023 }, {electronic arts : 2023 }, {fedex : 2023 }, {general motors : 2023 }, {ibm : 2023 }, {jpmorgan chase : 2023 }, {meta : 2023 }, {microsoft : 2023 }, {nike : 2023 }, {nvidia : 2023 }, {tesla : 2022 } 
+company_set_2_str :
+
+ {Alphabet : None} 
+
+
+ Missing Company-Year Pairs: []
+
+
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+----DECIDING PATH POST CLARIFICATION----
+Path Decided:  simple_financial | state['final_answer'] : I am unable to answer this question.
+---QUERY: What is the revenue of Google?
+Attempt 1 using openai
+Attempt 1 using openai
+
+
+ topics_list : ['corporate_finance', 'financial_statement_analysis', 'market_analysis_and_benchmarking'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: None, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+--COMBINING THE ANSWER--
+---GENERATING FOLLOW-UP QUESTIONS BASED ON FINAL ANSWER AND HISTORY---
+Attempt 1 using openai
+--- IS VISUALIZABLE ROUTE ---
+Attempt 1 using openai
+--- GET METRICS ---
+--- GENERATING CHART NAMES ---
+Attempt 1 using openai
+---CHECKING FOR HARMFUL CONTENT---
+Attempt 1 using openai
+Compare Google and Microsoft in terms of their business strategies, product offerings, and market impact.
+Loading conversation history from data_convo/conversation_history.jsonl.
+No conversational history available.
+Attempt 1 using openai
+Context Required: False
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+---DECIDED THE PATH FOR THE QUERY: financial---
+----DECIDING PATH 1----
+---SENDING QUERY TO FINANCIAL MODULE---
+---GENERATING CLARIFYING QUESTIONS BASED ON USER QUERY---
+Attempt 1 using openai
+---ASKING USER FOR CLARIFICATION---
+No further clarifications required.
+---- EXTRACTING MISSING DOCUMENT DETAILS ----
+Attempt 1 using openai
+Attempt 1 using openai
+company_set_1_str :
+
+ {None : None }, {alphabet : 2021 }, {alphabet : 2022 }, {alphabet : 2023 }, {amazon : 2023 }, {apple : 2021 }, {apple : 2022 }, {apple : 2023 }, {apple : 2024 }, {ebay : 2023 }, {electronic arts : 2023 }, {fedex : 2023 }, {general motors : 2023 }, {ibm : 2023 }, {jpmorgan chase : 2023 }, {meta : 2023 }, {microsoft : 2023 }, {nike : 2023 }, {nvidia : 2023 }, {tesla : 2022 } 
+company_set_2_str :
+
+ {Alphabet : None}, {Microsoft : None} 
+
+
+ Missing Company-Year Pairs: []
+
+
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+----DECIDING PATH POST CLARIFICATION----
+Path Decided:  reason | state['final_answer'] : I am unable to answer this question.
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+---QUERY: How do Google and Microsoft's respective market shares in cloud computing influence their competitive strengths and weaknesses in that sector?
+Attempt 1 using openai
+---QUERY: How do the innovation rates of Google's and Microsoft's software products differ, particularly in terms of new features and updates released in the past year?
+Attempt 1 using openai
+---QUERY: What specific market entry strategies have Google and Microsoft employed in emerging markets, and how do these strategies reflect their overall business objectives?
+---QUERY: How do Google's and Microsoft's market shares compare in key segments such as cloud computing, search engines, and productivity software, and what trends can be identified in consumer adoption patterns within these segments?
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+
+
+ topics_list : ['market_analysis_and_benchmarking', 'capital_markets', 'investment_management'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: None, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+
+
+ topics_list : ['market_analysis_and_benchmarking', 'big_data_and_analytics_in_finance', 'investment_management'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: None, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+
+
+ topics_list : ['big_data_and_analytics_in_finance', 'market_analysis_and_benchmarking', 'capital_markets'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+
+
+ topics_list : ['emerging_markets_and_global_financeOther', 'market_analysis_and_benchmarking', 'strategic_finance_and_swot_analysis'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: None, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+---- ASSESSING METADATA FILTERS ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+---- ASSESSING METADATA FILTERS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+---TRANSFORM QUERY---
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 1
+------TRANSFORMING QUERY USING REWRITE AND HYDE------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------NO. OF RELEVANT DOCS = 3, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 1, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+Attempt 1 using openai
+Attempt 1 using openai
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 1, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 1
+------TRANSFORMING QUERY USING REWRITE AND HYDE------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+---QUERY: How do Google and Microsoft's approaches to competitive positioning in their respective product ecosystems differ, particularly in relation to their partnerships and collaborations?
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+Attempt 1 using openai
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 4, SO GENEARTING ANSWER------
+Attempt 1 using openai
+
+
+ topics_list : ['market_analysis_and_benchmarking', 'strategic_finance_and_swot_analysis', 'corporate_finance'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: None, Category: Qualitative
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 2
+------TRANSFORMING QUERY USING REWRITE AND HYDE------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 3
+------CALLING WEB SEARCH------
+---WEB SEARCH---
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+Attempt 1 using openai
+Attempt 1 using openai
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 1
+------TRANSFORMING QUERY USING REWRITE AND HYDE------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 1, SO GENEARTING ANSWER------
+Attempt 1 using openai
+RAG Answer Score: 0, Web Answer Score: 0
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: MAXIMUM ANSWER_GENERATION_RETRIES REACHED: ENDING WORKFLOW------
+---WEB SEARCH---
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+---QUERY: What specific technological innovations have Google and Microsoft developed in the past five years that highlight their competitive advantages or weaknesses in the market?
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+Attempt 1 using openai
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 2
+------TRANSFORMING QUERY USING REWRITE AND HYDE------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+
+
+ topics_list : ['market_analysis_and_benchmarking', 'big_data_and_analytics_in_finance', 'strategic_finance_and_swot_analysis'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+RAG Answer Score: 0, Web Answer Score: 0
+Attempt 1 using openai
+---QUERY: What specific strategies have Google and Microsoft implemented to increase their market share, and how have these strategies impacted consumer preferences and industry standards?
+Attempt 1 using openai
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+---- ASSESSING METADATA FILTERS ----
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+---TRANSFORM QUERY---
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+
+
+ topics_list : ['market_analysis_and_benchmarking', 'corporate_finance', 'strategic_finance_and_swot_analysis'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: None, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 4
+------CALLING WEB SEARCH------
+---WEB SEARCH---
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 3
+------CALLING WEB SEARCH------
+---WEB SEARCH---
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 3, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 1, SO GENEARTING ANSWER------
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+------NO RAG ANSWER FOUND : RETURNING WEB GENERATED ANSWER------
+Attempt 1 using openai
+RAG Answer Score: 0, Web Answer Score: 0
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+---QUERY: What role does innovation play in shaping Google and Microsoft's long-term business strategies, and how do their approaches to fostering innovation differ?
+Attempt 1 using openai
+---QUERY: What metrics or indicators can be used to measure customer satisfaction for Google's and Microsoft's hardware offerings, and how do these metrics compare between the two companies?
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+
+
+ topics_list : ['customer_and_employee_analysis', 'market_analysis_and_benchmarking', 'big_data_and_analytics_in_finance'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: None, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+
+
+ topics_list : ['big_data_and_analytics_in_finance', 'strategic_finance_and_swot_analysis', 'corporate_finance'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: None, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 1, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 1
+------TRANSFORMING QUERY USING REWRITE AND HYDE------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 2, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: MAXIMUM ANSWER_GENERATION_RETRIES REACHED: ENDING WORKFLOW------
+---WEB SEARCH---
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 2
+------TRANSFORMING QUERY USING REWRITE AND HYDE------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+RAG Answer Score: 0, Web Answer Score: 0
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 1, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+---QUERY: How do the organizational cultures of Google and Microsoft influence their approach to innovation and strategic decision-making in the context of their competition?
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: MAXIMUM ANSWER_GENERATION_RETRIES REACHED: ENDING WORKFLOW------
+---WEB SEARCH---
+
+
+ topics_list : ['strategic_finance_and_swot_analysis', 'market_analysis_and_benchmarking', 'big_data_and_analytics_in_finance'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: None, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 3
+------CALLING WEB SEARCH------
+---WEB SEARCH---
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+------ANSWER IS SUFFICIENT------
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context.' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 1
+------TRANSFORMING QUERY USING REWRITE AND HYDE------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+------NO RAG ANSWER FOUND : RETURNING WEB GENERATED ANSWER------
+Attempt 1 using openai
+RAG Answer Score: 0, Web Answer Score: 0
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+---QUERY: What role do Google and Microsoft's partnerships and collaborations play in shaping their market presence and influencing trends within their respective sectors?
+Attempt 1 using openai
+---QUERY: How do the product portfolios of Google and Microsoft in terms of services (like cloud computing and productivity tools) compare regarding innovation and customer satisfaction metrics over the last two years?
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 1, SO GENEARTING ANSWER------
+Attempt 1 using openai
+
+
+ topics_list : ['market_analysis_and_benchmarking', 'corporate_finance', 'big_data_and_analytics_in_finance'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: None, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+
+
+ topics_list : ['big_data_and_analytics_in_finance', 'customer_and_employee_analysis', 'market_analysis_and_benchmarking'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 1
+------TRANSFORMING QUERY USING REWRITE AND HYDE------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 3
+------CALLING WEB SEARCH------
+---WEB SEARCH---
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------NO. OF RELEVANT DOCS = 4, SO GENEARTING ANSWER------
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 2
+------TRANSFORMING QUERY USING REWRITE AND HYDE------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+RAG Answer Score: 0, Web Answer Score: 0
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 3
+------CALLING WEB SEARCH------
+---WEB SEARCH---
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 2, SO GENEARTING ANSWER------
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+------NO RAG ANSWER FOUND : RETURNING WEB GENERATED ANSWER------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: MAXIMUM ANSWER_GENERATION_RETRIES REACHED: ENDING WORKFLOW------
+---WEB SEARCH---
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context.' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+RAG Answer Score: 0, Web Answer Score: 0
+Attempt 1 using openai
+Attempt 1 using openai
+--COMBINING THE ANSWER--
+---GENERATING FOLLOW-UP QUESTIONS BASED ON FINAL ANSWER AND HISTORY---
+Attempt 1 using openai
+--- IS VISUALIZABLE ROUTE ---
+Attempt 1 using openai
+---CHECKING FOR HARMFUL CONTENT---
+Attempt 1 using openai
+Compare the revenue of Google and Microsoft for the last fiscal year.
+Loading conversation history from data_convo/conversation_history.jsonl.
+No conversational history available.
+Attempt 1 using openai
+Context Required: False
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+---DECIDED THE PATH FOR THE QUERY: financial---
+----DECIDING PATH 1----
+---SENDING QUERY TO FINANCIAL MODULE---
+---GENERATING CLARIFYING QUESTIONS BASED ON USER QUERY---
+Attempt 1 using openai
+---ASKING USER FOR CLARIFICATION---
+No further clarifications required.
+---- EXTRACTING MISSING DOCUMENT DETAILS ----
+Attempt 1 using openai
+Attempt 1 using openai
+company_set_1_str :
+
+ {None : None }, {alphabet : 2021 }, {alphabet : 2022 }, {alphabet : 2023 }, {amazon : 2023 }, {apple : 2021 }, {apple : 2022 }, {apple : 2023 }, {apple : 2024 }, {ebay : 2023 }, {electronic arts : 2023 }, {fedex : 2023 }, {general motors : 2023 }, {ibm : 2023 }, {jpmorgan chase : 2023 }, {meta : 2023 }, {microsoft : 2023 }, {nike : 2023 }, {nvidia : 2023 }, {tesla : 2022 } 
+company_set_2_str :
+
+ {Alphabet : 2023}, {Microsoft : 2023} 
+
+
+ Missing Company-Year Pairs: []
+
+
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+----DECIDING PATH POST CLARIFICATION----
+Path Decided:  reason | state['final_answer'] : I am unable to answer this question.
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+---QUERY: What were the key drivers behind the revenue growth or decline for Google and Microsoft in the last fiscal year compared to previous years?
+Attempt 1 using openai
+---QUERY: What specific technological advancements or innovations introduced by Google and Microsoft in the last fiscal year have significantly impacted their market share and revenue growth?
+Attempt 1 using openai
+---QUERY: How did changes in global trade policies and tariffs during the last fiscal year affect the revenue streams of Google and Microsoft, particularly in their international markets?
+Attempt 1 using openai
+---QUERY: What specific technological innovations or product enhancements did Google and Microsoft launch in the last fiscal year, and how did these initiatives contribute to changes in their revenue streams?
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+
+
+ topics_list : ['market_analysis_and_benchmarking', 'financial_statement_analysis', 'investment_management'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+
+
+ topics_list : ['market_analysis_and_benchmarking', 'big_data_and_analytics_in_finance', 'strategic_finance_and_swot_analysis'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+
+
+ topics_list : ['trade_finance', 'emerging_markets_and_global_financeOther', 'economic_analysis'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- ASSESSING METADATA FILTERS ----
+---- ASSESSING METADATA FILTERS ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+---TRANSFORM QUERY---
+---TRANSFORM QUERY---
+---TRANSFORM QUERY---
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+
+
+ topics_list : ['big_data_and_analytics_in_finance', 'emerging_markets_and_global_financeOther', 'financial_regulation'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 1
+------TRANSFORMING QUERY USING REWRITE AND HYDE------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+------NO. OF RELEVANT DOCS = 3, SO GENEARTING ANSWER------
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 1, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 3, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+------NO. OF RELEVANT DOCS = 4, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 2, SO GENEARTING ANSWER------
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 2, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: MAXIMUM ANSWER_GENERATION_RETRIES REACHED: ENDING WORKFLOW------
+---WEB SEARCH---
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: MAXIMUM ANSWER_GENERATION_RETRIES REACHED: ENDING WORKFLOW------
+---WEB SEARCH---
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: MAXIMUM ANSWER_GENERATION_RETRIES REACHED: ENDING WORKFLOW------
+---WEB SEARCH---
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+RAG Answer Score: 0, Web Answer Score: 0
+RAG Answer Score: 0, Web Answer Score: 0
+Attempt 1 using openai
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+Attempt 1 using openai
+Attempt 1 using openai
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+---QUERY: How did the adoption of cloud computing technologies by Google and Microsoft in the last fiscal year impact their overall revenue growth, and what metrics can be used to measure this effect?
+Attempt 1 using openai
+---QUERY: How have changes in consumer behavior and preferences in the technology sector affected the revenue streams of Google and Microsoft over the past fiscal year?
+Attempt 1 using openai
+Attempt 1 using openai
+RAG Answer Score: 0, Web Answer Score: 0
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+Attempt 1 using openai
+
+
+ topics_list : ['market_analysis_and_benchmarking', 'big_data_and_analytics_in_finance', 'financial_modeling'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+---QUERY: What specific trends in consumer digital advertising spending occurred in the last fiscal year, and how did these trends influence Google's revenue compared to Microsoft's revenue?
+Attempt 1 using openai
+
+
+ topics_list : ['big_data_and_analytics_in_finance', 'market_analysis_and_benchmarking', 'corporate_finance'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+Attempt 1 using openai
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+
+
+ topics_list : ['market_analysis_and_benchmarking', 'big_data_and_analytics_in_finance', 'financial_statement_analysis'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- ASSESSING METADATA FILTERS ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+---- ASSESSING METADATA FILTERS ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+---TRANSFORM QUERY---
+Attempt 1 using openai
+---TRANSFORM QUERY---
+Attempt 1 using openai
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+---- ASSESSING METADATA FILTERS ----
+Attempt 1 using openai
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+Attempt 1 using openai
+Attempt 1 using openai
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: MAXIMUM ANSWER_GENERATION_RETRIES REACHED: ENDING WORKFLOW------
+---WEB SEARCH---
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+RAG Answer Score: 1, Web Answer Score: 0
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+---QUERY: What were the total revenues for Google and Microsoft in the last fiscal year, and how did their revenue segments (e.g., cloud services, advertising, software sales) contribute to any changes compared to the previous fiscal years?
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+
+
+ topics_list : ['market_analysis_and_benchmarking', 'financial_statement_analysis', 'investment_management'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+Attempt 1 using openai
+---QUERY: What external economic factors, such as global economic conditions or regulatory changes, have impacted the revenue performance of Google and Microsoft in the last fiscal year?
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+---TRANSFORM QUERY---
+Attempt 1 using openai
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+
+
+ topics_list : ['emerging_markets_and_global_financeOther', 'financial_regulation', 'economic_analysis'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: MAXIMUM ANSWER_GENERATION_RETRIES REACHED: ENDING WORKFLOW------
+---WEB SEARCH---
+---- ASSESSING METADATA FILTERS ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+---TRANSFORM QUERY---
+Attempt 1 using openai
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+RAG Answer Score: 0, Web Answer Score: 0
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+---QUERY: What role did artificial intelligence advancements introduced by Google and Microsoft play in enhancing customer engagement and retention, and how did this translate into revenue growth in the last fiscal year?
+Attempt 1 using openai
+Attempt 1 using openai
+
+
+ topics_list : ['customer_and_employee_analysis', 'big_data_and_analytics_in_finance', 'sustainable_finance'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+Attempt 1 using openai
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 1, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 4, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: MAXIMUM ANSWER_GENERATION_RETRIES REACHED: ENDING WORKFLOW------
+---WEB SEARCH---
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context.' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: MAXIMUM ANSWER_GENERATION_RETRIES REACHED: ENDING WORKFLOW------
+---WEB SEARCH---
+------NO. OF RELEVANT DOCS = 1, SO GENEARTING ANSWER------
+Attempt 1 using openai
+RAG Answer Score: 0, Web Answer Score: 0
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+---QUERY: What was the percentage growth or decline in total revenues for Google and Microsoft in the last fiscal year compared to their respective revenues in the previous fiscal years?
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: MAXIMUM ANSWER_GENERATION_RETRIES REACHED: ENDING WORKFLOW------
+---WEB SEARCH---
+Attempt 1 using openai
+
+
+ topics_list : ['market_analysis_and_benchmarking', 'financial_statement_analysis', 'corporate_finance'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+RAG Answer Score: 1, Web Answer Score: 0
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+---TRANSFORM QUERY---
+Attempt 1 using openai
+RAG Answer Score: 0, Web Answer Score: 0
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 4, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: MAXIMUM ANSWER_GENERATION_RETRIES REACHED: ENDING WORKFLOW------
+---WEB SEARCH---
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+RAG Answer Score: 0, Web Answer Score: 0
+Attempt 1 using openai
+client=<openai.resources.chat.completions.Completions object at 0x7d4e9512b470> async_client=<openai.resources.chat.completions.AsyncCompletions object at 0x7d4e95141280> root_client=<openai.OpenAI object at 0x7d4e9556e3f0> root_async_client=<openai.AsyncOpenAI object at 0x7d4e953e7cb0> model_name='gpt-4o-mini' model_kwargs={} openai_api_key=SecretStr('**********') failed on attempt 1: Function GeneratedAnswerOutput arguments:
+
+{"main_answer":"In the fiscal year 2021, several trends in consumer digital advertising spending significantly influenced Google's revenue. Notably, there was a continued shift in users' behaviors toward online platforms, which contributed to the growth of Google's advertising revenues. Specifically, Google Search and other revenues increased by $44.9 billion from 2020 to 2021, driven by factors such as an increase in search queries due to greater user adoption, particularly on mobile devices, and heightened advertiser spending. Additionally, the growth in advertising revenues was supported by improvements in ad formats and delivery. The adverse effects of COVID-19 on 2020 revenues also played a role in this increase, as many advertisers ramped up their spending to recover from the previous year's downturn.\n\nIn contrast, while the document does not provide specific revenue figures for Microsoft, it implies that similar trends in advertising and digital engagement would have influenced its revenue streams. However, a direct comparison of the influence of these trends on Google's revenue versus Microsoft's revenue cannot be determined from the provided context.","citations":[{"citation_content="  	: 	1.4 		, 	"\"Users' behaviors and advertising continue to shift online as the digital economy evolves.\"  \nThe continuing shift from an offline to online world has contributed to the growth of our business since inception, contributing to revenue growth, and we expect that this online shift will continue to benefit our business.  \n\n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \n  \
+
+are not valid JSON. Received JSONDecodeError Unterminated string starting at: line 1 column 1230 (char 1229)
+For troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE 
+For troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE 
+Attempt 2 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+Attempt 1 using openai
+---QUERY: How did inflationary pressures and changes in interest rates during the last fiscal year impact the operating costs and profit margins of Google and Microsoft, and how did this, in turn, affect their revenue generation capabilities?
+Attempt 1 using openai
+Attempt 1 using openai
+
+
+ topics_list : ['economic_analysis', 'capital_markets', 'financial_regulation'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Qualitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 1, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 2
+------TRANSFORMING QUERY USING REWRITE AND HYDE------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 3
+------CALLING WEB SEARCH------
+---WEB SEARCH---
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+RAG Answer Score: 0, Web Answer Score: 0
+Attempt 1 using openai
+Attempt 1 using openai
+--- IS VISUALIZABLE ROUTE ---
+Attempt 1 using openai
+--- GENERATING CHART NAMES ---
+--- GET METRICS ---
+Attempt 1 using openai
+---CHECKING FOR HARMFUL CONTENT---
+Attempt 1 using openai
+What are the revenues of Apple and Google?
+Loading conversation history from data_convo/conversation_history.jsonl.
+No conversational history available.
+Attempt 1 using openai
+Context Required: False
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+---DECIDED THE PATH FOR THE QUERY: financial---
+----DECIDING PATH 1----
+---SENDING QUERY TO FINANCIAL MODULE---
+---GENERATING CLARIFYING QUESTIONS BASED ON USER QUERY---
+Attempt 1 using openai
+---ASKING USER FOR CLARIFICATION---
+No further clarifications required.
+---- EXTRACTING MISSING DOCUMENT DETAILS ----
+Attempt 1 using openai
+Attempt 1 using openai
+company_set_1_str :
+
+ {None : None }, {alphabet : 2021 }, {alphabet : 2022 }, {alphabet : 2023 }, {amazon : 2023 }, {apple : 2021 }, {apple : 2022 }, {apple : 2023 }, {apple : 2024 }, {ebay : 2023 }, {electronic arts : 2023 }, {fedex : 2023 }, {general motors : 2023 }, {ibm : 2023 }, {jpmorgan chase : 2023 }, {meta : 2023 }, {microsoft : 2023 }, {nike : 2023 }, {nvidia : 2023 }, {tesla : 2022 } 
+company_set_2_str :
+
+ {Apple : None}, {Alphabet : None} 
+
+
+ Missing Company-Year Pairs: []
+
+
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+----DECIDING PATH POST CLARIFICATION----
+Path Decided:  complex_financial | state['final_answer'] : I am unable to answer this question.
+Attempt 1 using openai
+---QUERY: What were Apple's annual revenues for the most recent fiscal year?
+---QUERY: What were Google's annual revenues for the most recent fiscal year?
+---QUERY: What are the revenues of Apple and Google?
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+
+
+ topics_list : ['corporate_finance', 'financial_statement_analysis', 'market_analysis_and_benchmarking'] 
+
+
+------Extracted Metadata - company_name: apple, year: None, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `apple` 
+
+
+
+
+ topics_list : ['financial_statement_analysis', 'corporate_finance', 'investment_management'] 
+
+
+------Extracted Metadata - company_name: apple, year: 2023, Category: Quantitative
+
+
+ topics_list : ['financial_statement_analysis', 'market_analysis_and_benchmarking', 'corporate_finance'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2023, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `apple` && year == `2023` 
+
+
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2023` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+Attempt 1 using openai
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+Attempt 1 using openai
+Attempt 1 using openai
+---TRANSFORM QUERY---
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` 
+
+
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 4, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `apple` 
+
+
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+---CHECKING FOR HARMFUL CONTENT---
+Attempt 1 using openai
+What are the revenues of Apple and Google?
+Loading conversation history from data_convo/conversation_history.jsonl.
+No conversational history available.
+Attempt 1 using openai
+Context Required: False
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+---DECIDED THE PATH FOR THE QUERY: financial---
+----DECIDING PATH 1----
+---SENDING QUERY TO FINANCIAL MODULE---
+---GENERATING CLARIFYING QUESTIONS BASED ON USER QUERY---
+Attempt 1 using openai
+---ASKING USER FOR CLARIFICATION---
+Attempt 1 using openai
+----FINAL REFINED QUERY FOR RETRIEVAL---
+----What were the revenues of Apple and Google for the year 2022?
+---GENERATING CLARIFYING QUESTIONS BASED ON USER QUERY---
+Attempt 1 using openai
+No further clarifications required.
+---- EXTRACTING MISSING DOCUMENT DETAILS ----
+Attempt 1 using openai
+Attempt 1 using openai
+company_set_1_str :
+
+ {None : None }, {alphabet : 2021 }, {alphabet : 2022 }, {alphabet : 2023 }, {amazon : 2023 }, {apple : 2021 }, {apple : 2022 }, {apple : 2023 }, {apple : 2024 }, {ebay : 2023 }, {electronic arts : 2023 }, {fedex : 2023 }, {general motors : 2023 }, {ibm : 2023 }, {jpmorgan chase : 2023 }, {meta : 2023 }, {microsoft : 2023 }, {nike : 2023 }, {nvidia : 2023 }, {tesla : 2022 } 
+company_set_2_str :
+
+ {Apple : 2022}, {Alphabet : 2022} 
+
+
+ Missing Company-Year Pairs: []
+
+
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+----DECIDING PATH POST CLARIFICATION----
+Path Decided:  complex_financial | state['final_answer'] : I am unable to answer this question.
+Attempt 1 using openai
+---QUERY: What were Google's total revenues for the year 2022?
+---QUERY: What were the revenues of Apple and Google for the year 2022?
+---QUERY: What were Apple's total revenues for the year 2022?
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+
+
+ topics_list : ['financial_statement_analysis', 'valuation_techniques', 'economic_analysis'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2022, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2022` 
+
+
+
+
+ topics_list : ['financial_statement_analysis', 'corporate_finance', 'investment_management'] 
+
+
+------Extracted Metadata - company_name: apple, year: 2022, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `apple` && year == `2022` 
+
+
+
+
+ topics_list : ['financial_statement_analysis', 'corporate_finance', 'valuation_techniques'] 
+
+
+------Extracted Metadata - company_name: apple, year: 2022, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `apple` && year == `2022` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+Attempt 1 using openai
+Attempt 1 using openai
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 3, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 4, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+question_node.log_tree : {'decomposer_node_1': ['extract_metadata//c48de9b3-3ab3-4980-b33b-b84b81a9fc7c'], 'extract_metadata//c48de9b3-3ab3-4980-b33b-b84b81a9fc7c': ['retrieve_documents_with_metadata//86c7e035-dcfc-469a-b468-16a8dec166bc'], 'retrieve_documents_with_metadata//86c7e035-dcfc-469a-b468-16a8dec166bc': ['grade_documents//ea585e51-151b-465f-9b32-a71c9758f5c6'], 'grade_documents//ea585e51-151b-465f-9b32-a71c9758f5c6': ['generate_answer_with_citation_state//0ebb3481-9590-4814-9170-6f1d6cca2e4a'], 'generate_answer_with_citation_state//0ebb3481-9590-4814-9170-6f1d6cca2e4a': ['grade_answer//a13190a4-d938-485a-9a96-0ee35319db7d']}
+question_tree.to_dict() : {'parent_question': None, 'question': 'What were the revenues of Apple and Google for the year 2022?', 'layer': 0, 'answer': None, 'child_answers': [], 'children': [{'parent_question': 'What were the revenues of Apple and Google for the year 2022?', 'question': "What were Apple's total revenues for the year 2022?", 'layer': 1, 'answer': "Apple's total revenues for the year 2022 amounted to **$394,328 million**.", 'child_answers': [], 'children': [], 'citations': [{'citation_content': '- **September 24, 2022:** \n  - **Total Net Sales:** $394,328 million', 'page': 31, 'file_name': 'apple-10k-2022.pdf', 'file_path': 'data/1/apple-10k-2022.pdf', 'unique_id': 'b271d728-53e8-4c20-9871-88f2a65ded86'}, {'citation_content': 'Total net sales\n$\n394,328 \n8 %\n$\n365,817 \n33 %\n$\n274,515', 'page': 23, 'file_name': 'apple-10k-2022.pdf', 'file_path': 'data/1/apple-10k-2022.pdf', 'unique_id': 'f60c55d2-3a60-4f6c-bced-a658b2d30d2a'}], 'child_citations': [], 'log_tree': {'decomposer_node_1': ['extract_metadata//c48de9b3-3ab3-4980-b33b-b84b81a9fc7c'], 'extract_metadata//c48de9b3-3ab3-4980-b33b-b84b81a9fc7c': ['retrieve_documents_with_metadata//86c7e035-dcfc-469a-b468-16a8dec166bc'], 'retrieve_documents_with_metadata//86c7e035-dcfc-469a-b468-16a8dec166bc': ['grade_documents//ea585e51-151b-465f-9b32-a71c9758f5c6'], 'grade_documents//ea585e51-151b-465f-9b32-a71c9758f5c6': ['generate_answer_with_citation_state//0ebb3481-9590-4814-9170-6f1d6cca2e4a'], 'generate_answer_with_citation_state//0ebb3481-9590-4814-9170-6f1d6cca2e4a': ['grade_answer//a13190a4-d938-485a-9a96-0ee35319db7d']}, 'child_logs': [], 'last_node': 'grade_answer//a13190a4-d938-485a-9a96-0ee35319db7d', 'child_last_nodes': []}, {'parent_question': 'What were the revenues of Apple and Google for the year 2022?', 'question': "What were Google's total revenues for the year 2022?", 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the revenues of Apple and Google for the year 2022?', 'question': 'What were the revenues of Apple and Google for the year 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+question_node.log_tree : {'decomposer_node_1': ['extract_metadata//2f633f17-f1fc-4953-ba94-98645e9b192e'], 'extract_metadata//2f633f17-f1fc-4953-ba94-98645e9b192e': ['retrieve_documents_with_metadata//7dc60f31-a217-4589-b4a1-e30711a15271'], 'retrieve_documents_with_metadata//7dc60f31-a217-4589-b4a1-e30711a15271': ['grade_documents//59661569-3d29-44f0-af3c-f771bb4fe691'], 'grade_documents//59661569-3d29-44f0-af3c-f771bb4fe691': ['generate_answer_with_citation_state//8af2e935-4c04-4da5-b099-4a47a01a3805'], 'generate_answer_with_citation_state//8af2e935-4c04-4da5-b099-4a47a01a3805': ['grade_answer//a614b881-1a52-49a4-b829-31930f2ecc62']}
+question_tree.to_dict() : {'parent_question': None, 'question': 'What were the revenues of Apple and Google for the year 2022?', 'layer': 0, 'answer': None, 'child_answers': [], 'children': [{'parent_question': 'What were the revenues of Apple and Google for the year 2022?', 'question': "What were Apple's total revenues for the year 2022?", 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the revenues of Apple and Google for the year 2022?', 'question': "What were Google's total revenues for the year 2022?", 'layer': 1, 'answer': "Google's total revenues for the year 2022 were **$282,836 million** (or **$282.8 billion**). This total reflects significant growth compared to previous years.", 'child_answers': [], 'children': [], 'citations': [{'citation_content': 'Lastly, the total revenues for the company were **$282,836** in 2022.', 'page': 59, 'file_name': 'goog-10-k-2022.pdf', 'file_path': 'data/1/goog-10-k-2022.pdf', 'unique_id': '18328593-a13a-42bb-9a46-5f0ddb90a193'}, {'citation_content': 'The final row consolidates the total revenues for Google across all the categories listed. For 2021, the total was $257,637 thousand, which increased to $282,836 thousand in 2022.', 'page': 32, 'file_name': 'goog-10-k-2022.pdf', 'file_path': 'data/1/goog-10-k-2022.pdf', 'unique_id': '83b78712-edbf-40f4-9455-47f78add96ab'}], 'child_citations': [], 'log_tree': {'decomposer_node_1': ['extract_metadata//2f633f17-f1fc-4953-ba94-98645e9b192e'], 'extract_metadata//2f633f17-f1fc-4953-ba94-98645e9b192e': ['retrieve_documents_with_metadata//7dc60f31-a217-4589-b4a1-e30711a15271'], 'retrieve_documents_with_metadata//7dc60f31-a217-4589-b4a1-e30711a15271': ['grade_documents//59661569-3d29-44f0-af3c-f771bb4fe691'], 'grade_documents//59661569-3d29-44f0-af3c-f771bb4fe691': ['generate_answer_with_citation_state//8af2e935-4c04-4da5-b099-4a47a01a3805'], 'generate_answer_with_citation_state//8af2e935-4c04-4da5-b099-4a47a01a3805': ['grade_answer//a614b881-1a52-49a4-b829-31930f2ecc62']}, 'child_logs': [], 'last_node': 'grade_answer//a614b881-1a52-49a4-b829-31930f2ecc62', 'child_last_nodes': []}, {'parent_question': 'What were the revenues of Apple and Google for the year 2022?', 'question': 'What were the revenues of Apple and Google for the year 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `apple` && year == `2022` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 4, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: MAXIMUM ANSWER_GENERATION_RETRIES REACHED: ENDING WORKFLOW------
+---WEB SEARCH---
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+RAG Answer Score: 0, Web Answer Score: 0
+question_node.log_tree : {'decomposer_node_1': ['extract_metadata//d17b0bae-dcc4-4055-9c17-08d676daa2d7'], 'extract_metadata//d17b0bae-dcc4-4055-9c17-08d676daa2d7': ['retrieve_documents_with_metadata//fdfeba8a-c0b1-4f5b-8872-b392800b1614'], 'retrieve_documents_with_metadata//fdfeba8a-c0b1-4f5b-8872-b392800b1614': ['grade_documents//5794bea1-defa-4433-960e-ce04685c07dd'], 'grade_documents//5794bea1-defa-4433-960e-ce04685c07dd': ['generate_answer_with_citation_state//ac8d35b5-f5f3-4566-b1c7-08a2246eb569'], 'generate_answer_with_citation_state//ac8d35b5-f5f3-4566-b1c7-08a2246eb569': ['grade_answer//a89d82d8-8e48-42ef-9e27-a3a27dd42529'], 'rewrite_question//ba9e27ea-a6ba-4121-af2d-88f5976a357e': ['retrieve_documents_with_metadata//bfddeed0-f5b5-404c-90f0-ffc056678a56'], 'retrieve_documents_with_metadata//bfddeed0-f5b5-404c-90f0-ffc056678a56': ['grade_documents//3d89d131-c7af-4534-877f-428354d818f0'], 'grade_documents//3d89d131-c7af-4534-877f-428354d818f0': ['generate_answer_with_citation_state//ee880c39-131b-42b8-a8f1-75732cbf1f10'], 'generate_answer_with_citation_state//ee880c39-131b-42b8-a8f1-75732cbf1f10': ['grade_answer//483f815e-a638-4145-8755-c15631002033'], 'grade_answer//483f815e-a638-4145-8755-c15631002033': ['search_web//81c555bc-d77e-41f7-9991-a12d77afe588'], 'search_web//81c555bc-d77e-41f7-9991-a12d77afe588': ['generate_web_answer//c1e90283-f8ef-46a6-9af9-1134761ea57f'], 'generate_web_answer//c1e90283-f8ef-46a6-9af9-1134761ea57f': ['grade_web_answer//6cde320d-1d27-4bdb-8966-5b5a75c2ab63']}
+question_tree.to_dict() : {'parent_question': None, 'question': 'What were the revenues of Apple and Google for the year 2022?', 'layer': 0, 'answer': 'The query cannot be answered with the provided context', 'child_answers': [], 'children': [{'parent_question': 'What were the revenues of Apple and Google for the year 2022?', 'question': "What were Apple's total revenues for the year 2022?", 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the revenues of Apple and Google for the year 2022?', 'question': "What were Google's total revenues for the year 2022?", 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the revenues of Apple and Google for the year 2022?', 'question': 'What were the revenues of Apple and Google for the year 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}], 'citations': [], 'child_citations': [], 'log_tree': {'decomposer_node_1': ['extract_metadata//d17b0bae-dcc4-4055-9c17-08d676daa2d7'], 'extract_metadata//d17b0bae-dcc4-4055-9c17-08d676daa2d7': ['retrieve_documents_with_metadata//fdfeba8a-c0b1-4f5b-8872-b392800b1614'], 'retrieve_documents_with_metadata//fdfeba8a-c0b1-4f5b-8872-b392800b1614': ['grade_documents//5794bea1-defa-4433-960e-ce04685c07dd'], 'grade_documents//5794bea1-defa-4433-960e-ce04685c07dd': ['generate_answer_with_citation_state//ac8d35b5-f5f3-4566-b1c7-08a2246eb569'], 'generate_answer_with_citation_state//ac8d35b5-f5f3-4566-b1c7-08a2246eb569': ['grade_answer//a89d82d8-8e48-42ef-9e27-a3a27dd42529'], 'rewrite_question//ba9e27ea-a6ba-4121-af2d-88f5976a357e': ['retrieve_documents_with_metadata//bfddeed0-f5b5-404c-90f0-ffc056678a56'], 'retrieve_documents_with_metadata//bfddeed0-f5b5-404c-90f0-ffc056678a56': ['grade_documents//3d89d131-c7af-4534-877f-428354d818f0'], 'grade_documents//3d89d131-c7af-4534-877f-428354d818f0': ['generate_answer_with_citation_state//ee880c39-131b-42b8-a8f1-75732cbf1f10'], 'generate_answer_with_citation_state//ee880c39-131b-42b8-a8f1-75732cbf1f10': ['grade_answer//483f815e-a638-4145-8755-c15631002033'], 'grade_answer//483f815e-a638-4145-8755-c15631002033': ['search_web//81c555bc-d77e-41f7-9991-a12d77afe588'], 'search_web//81c555bc-d77e-41f7-9991-a12d77afe588': ['generate_web_answer//c1e90283-f8ef-46a6-9af9-1134761ea57f'], 'generate_web_answer//c1e90283-f8ef-46a6-9af9-1134761ea57f': ['grade_web_answer//6cde320d-1d27-4bdb-8966-5b5a75c2ab63']}, 'child_logs': [], 'last_node': 'grade_web_answer//6cde320d-1d27-4bdb-8966-5b5a75c2ab63', 'child_last_nodes': []}
+question_tree.logs {'decomposer_node_1': ['extract_metadata//d17b0bae-dcc4-4055-9c17-08d676daa2d7'], 'extract_metadata//d17b0bae-dcc4-4055-9c17-08d676daa2d7': ['retrieve_documents_with_metadata//fdfeba8a-c0b1-4f5b-8872-b392800b1614'], 'retrieve_documents_with_metadata//fdfeba8a-c0b1-4f5b-8872-b392800b1614': ['grade_documents//5794bea1-defa-4433-960e-ce04685c07dd'], 'grade_documents//5794bea1-defa-4433-960e-ce04685c07dd': ['generate_answer_with_citation_state//ac8d35b5-f5f3-4566-b1c7-08a2246eb569'], 'generate_answer_with_citation_state//ac8d35b5-f5f3-4566-b1c7-08a2246eb569': ['grade_answer//a89d82d8-8e48-42ef-9e27-a3a27dd42529'], 'rewrite_question//ba9e27ea-a6ba-4121-af2d-88f5976a357e': ['retrieve_documents_with_metadata//bfddeed0-f5b5-404c-90f0-ffc056678a56'], 'retrieve_documents_with_metadata//bfddeed0-f5b5-404c-90f0-ffc056678a56': ['grade_documents//3d89d131-c7af-4534-877f-428354d818f0'], 'grade_documents//3d89d131-c7af-4534-877f-428354d818f0': ['generate_answer_with_citation_state//ee880c39-131b-42b8-a8f1-75732cbf1f10'], 'generate_answer_with_citation_state//ee880c39-131b-42b8-a8f1-75732cbf1f10': ['grade_answer//483f815e-a638-4145-8755-c15631002033'], 'grade_answer//483f815e-a638-4145-8755-c15631002033': ['search_web//81c555bc-d77e-41f7-9991-a12d77afe588'], 'search_web//81c555bc-d77e-41f7-9991-a12d77afe588': ['generate_web_answer//c1e90283-f8ef-46a6-9af9-1134761ea57f'], 'generate_web_answer//c1e90283-f8ef-46a6-9af9-1134761ea57f': ['grade_web_answer//6cde320d-1d27-4bdb-8966-5b5a75c2ab63']}
+[{'decomposer_node_1': ['extract_metadata//c48de9b3-3ab3-4980-b33b-b84b81a9fc7c'], 'extract_metadata//c48de9b3-3ab3-4980-b33b-b84b81a9fc7c': ['retrieve_documents_with_metadata//86c7e035-dcfc-469a-b468-16a8dec166bc'], 'retrieve_documents_with_metadata//86c7e035-dcfc-469a-b468-16a8dec166bc': ['grade_documents//ea585e51-151b-465f-9b32-a71c9758f5c6'], 'grade_documents//ea585e51-151b-465f-9b32-a71c9758f5c6': ['generate_answer_with_citation_state//0ebb3481-9590-4814-9170-6f1d6cca2e4a'], 'generate_answer_with_citation_state//0ebb3481-9590-4814-9170-6f1d6cca2e4a': ['grade_answer//a13190a4-d938-485a-9a96-0ee35319db7d']}, {'decomposer_node_1': ['extract_metadata//2f633f17-f1fc-4953-ba94-98645e9b192e'], 'extract_metadata//2f633f17-f1fc-4953-ba94-98645e9b192e': ['retrieve_documents_with_metadata//7dc60f31-a217-4589-b4a1-e30711a15271'], 'retrieve_documents_with_metadata//7dc60f31-a217-4589-b4a1-e30711a15271': ['grade_documents//59661569-3d29-44f0-af3c-f771bb4fe691'], 'grade_documents//59661569-3d29-44f0-af3c-f771bb4fe691': ['generate_answer_with_citation_state//8af2e935-4c04-4da5-b099-4a47a01a3805'], 'generate_answer_with_citation_state//8af2e935-4c04-4da5-b099-4a47a01a3805': ['grade_answer//a614b881-1a52-49a4-b829-31930f2ecc62']}]
+datatype : {'decomposer_node_1': ['extract_metadata//c48de9b3-3ab3-4980-b33b-b84b81a9fc7c'], 'extract_metadata//c48de9b3-3ab3-4980-b33b-b84b81a9fc7c': ['retrieve_documents_with_metadata//86c7e035-dcfc-469a-b468-16a8dec166bc'], 'retrieve_documents_with_metadata//86c7e035-dcfc-469a-b468-16a8dec166bc': ['grade_documents//ea585e51-151b-465f-9b32-a71c9758f5c6'], 'grade_documents//ea585e51-151b-465f-9b32-a71c9758f5c6': ['generate_answer_with_citation_state//0ebb3481-9590-4814-9170-6f1d6cca2e4a'], 'generate_answer_with_citation_state//0ebb3481-9590-4814-9170-6f1d6cca2e4a': ['grade_answer//a13190a4-d938-485a-9a96-0ee35319db7d']} 
+datatype : {'decomposer_node_1': ['extract_metadata//2f633f17-f1fc-4953-ba94-98645e9b192e'], 'extract_metadata//2f633f17-f1fc-4953-ba94-98645e9b192e': ['retrieve_documents_with_metadata//7dc60f31-a217-4589-b4a1-e30711a15271'], 'retrieve_documents_with_metadata//7dc60f31-a217-4589-b4a1-e30711a15271': ['grade_documents//59661569-3d29-44f0-af3c-f771bb4fe691'], 'grade_documents//59661569-3d29-44f0-af3c-f771bb4fe691': ['generate_answer_with_citation_state//8af2e935-4c04-4da5-b099-4a47a01a3805'], 'generate_answer_with_citation_state//8af2e935-4c04-4da5-b099-4a47a01a3805': ['grade_answer//a614b881-1a52-49a4-b829-31930f2ecc62']} 
+Attempt 1 using openai
+Attempt 1 using openai
+----CHECKING REPEATER ONCE----
+Attempt 1 using openai
+---QUERY: What was the percentage increase in revenue for Apple from 2021 to 2022?
+---QUERY: What were Google's total revenues for the year 2021?
+Attempt 1 using openai
+---QUERY: What were Apple's total revenues for the year 2021?
+Attempt 1 using openai
+Attempt 1 using openai
+---QUERY: What was the percentage increase in revenue for Google from 2021 to 2022?
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+
+
+ topics_list : ['financial_statement_analysis', 'corporate_finance', 'market_analysis_and_benchmarking'] 
+
+
+------Extracted Metadata - company_name: apple, year: 2022, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `apple` && year == `2022` 
+
+
+
+
+ topics_list : ['financial_statement_analysis', 'valuation_techniques', 'investment_management'] 
+
+
+------Extracted Metadata - company_name: apple, year: 2021, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `apple` && year == `2021` 
+
+
+
+
+ topics_list : ['financial_statement_analysis', 'market_analysis_and_benchmarking', 'corporate_finance'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2022, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2022` 
+
+
+
+
+ topics_list : ['financial_statement_analysis', 'valuation_techniques', 'economic_analysis'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2021, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2021` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+Attempt 1 using openai
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+---TRANSFORM QUERY---
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `apple` 
+
+
+------NO. OF RELEVANT DOCS = 4, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 4, SO GENEARTING ANSWER------
+Attempt 1 using openai
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 3, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+question_tree.to_dict() : {'parent_question': None, 'question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'layer': 0, 'answer': None, 'child_answers': [], 'children': [{'parent_question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'question': "What were Apple's total revenues for the year 2021?", 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'question': "What were Google's total revenues for the year 2021?", 'layer': 1, 'answer': "Google's total revenues for the year 2021 were $257,637 million (or $257.6 billion).", 'child_answers': [], 'children': [], 'citations': [{'citation_content': 'The total revenues for the year were $182,527 (in thousands).', 'page': 33, 'file_name': 'goog-10-k-2021.pdf', 'file_path': 'data/1/goog-10-k-2021.pdf', 'unique_id': 'a9cae484-17f5-4a7c-8ba6-15661025a993'}, {'citation_content': "The total revenue saw a significant rise to $257,637 (in thousands), summarizing the overall upward trend in the company's financial performance over the two years.", 'page': 33, 'file_name': 'goog-10-k-2021.pdf', 'file_path': 'data/1/goog-10-k-2021.pdf', 'unique_id': '32665a49-a7e8-455c-9e06-b560844b8e50'}], 'child_citations': [], 'log_tree': {'decomposer_node_2': ['extract_metadata//b584bd1f-5974-4bb1-84ba-6dc8f957f50b'], 'extract_metadata//b584bd1f-5974-4bb1-84ba-6dc8f957f50b': ['retrieve_documents_with_metadata//9f5c3f74-4347-4986-9e2a-1a8f2eddb177'], 'retrieve_documents_with_metadata//9f5c3f74-4347-4986-9e2a-1a8f2eddb177': ['grade_documents//beb8d5d9-ce92-43b7-96dc-9143c40fe37c'], 'grade_documents//beb8d5d9-ce92-43b7-96dc-9143c40fe37c': ['generate_answer_with_citation_state//c22eb9e0-2266-43db-89ee-ba111f6b6f86'], 'generate_answer_with_citation_state//c22eb9e0-2266-43db-89ee-ba111f6b6f86': ['grade_answer//7cf7738d-5cf0-46fc-89de-468bf47fbc15']}, 'child_logs': [], 'last_node': 'grade_answer//7cf7738d-5cf0-46fc-89de-468bf47fbc15', 'child_last_nodes': []}, {'parent_question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'question': 'What was the percentage increase in revenue for Apple from 2021 to 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'question': 'What was the percentage increase in revenue for Google from 2021 to 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+question_tree.to_dict() : {'parent_question': None, 'question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'layer': 0, 'answer': None, 'child_answers': [], 'children': [{'parent_question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'question': "What were Apple's total revenues for the year 2021?", 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'question': "What were Google's total revenues for the year 2021?", 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'question': 'What was the percentage increase in revenue for Apple from 2021 to 2022?', 'layer': 1, 'answer': 'The percentage increase in revenue for Apple from 2021 to 2022 is approximately 8%. This is calculated based on total net sales, which increased from $385,817 million in 2021 to $394,328 million in 2022. The formula for calculating the percentage increase is:  \n\\[ \\text{Percentage Increase} = \\frac{\\text{New Value} - \\text{Old Value}}{\\text{Old Value}} \\times 100 \\]  \nThus,  \n\\[ \\text{Percentage Increase} = \\frac{394,328 - 385,817}{385,817} \\times 100 \\approx 8\\% \\]  \n', 'child_answers': [], 'children': [], 'citations': [{'citation_content': 'This row indicates a year-over-year growth in total net sales from $385,817 million in 2021 to $394,328 million in 2022, showing a positive trend largely driven by increased product sales.', 'page': 31, 'file_name': 'apple-10k-2022.pdf', 'file_path': 'data/1/apple-10k-2022.pdf', 'unique_id': 'a11e511f-dd17-410d-beca-ce5dbc388b9e'}], 'child_citations': [], 'log_tree': {'decomposer_node_2': ['extract_metadata//71d9d0f2-1ed1-4c7a-9d95-a4ab200f20df'], 'extract_metadata//71d9d0f2-1ed1-4c7a-9d95-a4ab200f20df': ['retrieve_documents_with_metadata//9bd42e4a-e767-4e56-9704-0485290571e0'], 'retrieve_documents_with_metadata//9bd42e4a-e767-4e56-9704-0485290571e0': ['grade_documents//87eb7ced-40f7-4d32-bcb8-b2d3b787ca7c'], 'grade_documents//87eb7ced-40f7-4d32-bcb8-b2d3b787ca7c': ['generate_answer_with_citation_state//816a84a8-f9f0-4d9b-b3ef-53790d60a15d'], 'generate_answer_with_citation_state//816a84a8-f9f0-4d9b-b3ef-53790d60a15d': ['grade_answer//25a9f9a5-2f2e-4c92-b5fa-d6d0f3f97fc7']}, 'child_logs': [], 'last_node': 'grade_answer//25a9f9a5-2f2e-4c92-b5fa-d6d0f3f97fc7', 'child_last_nodes': []}, {'parent_question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'question': 'What was the percentage increase in revenue for Google from 2021 to 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 4, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+question_tree.to_dict() : {'parent_question': None, 'question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'layer': 0, 'answer': None, 'child_answers': [], 'children': [{'parent_question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'question': "What were Apple's total revenues for the year 2021?", 'layer': 1, 'answer': "Apple's total revenues for the year 2021 were $385,817 million, as detailed in their financial summary for that fiscal year.", 'child_answers': [], 'children': [], 'citations': [{'citation_content': '- **September 25, 2021:**  - **Total Net Sales:** $385,817 million', 'page': 31, 'file_name': 'apple-10k-2022.pdf', 'file_path': 'data/1/apple-10k-2022.pdf', 'unique_id': '74363f01-818e-478b-a71e-22d657aade4f'}], 'child_citations': [], 'log_tree': {'decomposer_node_2': ['extract_metadata//d2859e7a-e019-4ded-a409-9def33edbdbe'], 'extract_metadata//d2859e7a-e019-4ded-a409-9def33edbdbe': ['retrieve_documents_with_metadata//6443268c-92c1-4edb-a65f-25a613048a9b'], 'rewrite_question//58e9ae33-37ac-40f7-962e-3588e3efb21d': ['retrieve_documents_with_metadata//50e3b1a0-009e-4578-ac10-6238ac67da72'], 'retrieve_documents_with_metadata//50e3b1a0-009e-4578-ac10-6238ac67da72': ['grade_documents//381b1315-a916-42a3-8e5b-afdd334d4179'], 'grade_documents//381b1315-a916-42a3-8e5b-afdd334d4179': ['generate_answer_with_citation_state//61731326-89e5-467f-ad1f-5d47280b3aaf'], 'generate_answer_with_citation_state//61731326-89e5-467f-ad1f-5d47280b3aaf': ['grade_answer//734a6f55-b1bb-48b7-ac10-e5a69f2c72cb']}, 'child_logs': [], 'last_node': 'grade_answer//734a6f55-b1bb-48b7-ac10-e5a69f2c72cb', 'child_last_nodes': []}, {'parent_question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'question': "What were Google's total revenues for the year 2021?", 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'question': 'What was the percentage increase in revenue for Apple from 2021 to 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'question': 'What was the percentage increase in revenue for Google from 2021 to 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+question_tree.to_dict() : {'parent_question': None, 'question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'layer': 0, 'answer': None, 'child_answers': [], 'children': [{'parent_question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'question': "What were Apple's total revenues for the year 2021?", 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'question': "What were Google's total revenues for the year 2021?", 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'question': 'What was the percentage increase in revenue for Apple from 2021 to 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the comparative revenue growth rates for Apple and Google in 2022 relative to their revenues in 2021?', 'question': 'What was the percentage increase in revenue for Google from 2021 to 2022?', 'layer': 1, 'answer': 'The total revenues for Google increased from **$257,637** in 2021 to **$282,836** in 2022. To calculate the percentage increase:  \n\n\\[ \\text{Percentage Increase} = \\frac{(282,836 - 257,637)}{257,637} \\times 100 \\approx 9.77\\% \\]  \n\nTherefore, the percentage increase in revenue for Google from 2021 to 2022 was approximately **9.77%**.', 'child_answers': [], 'children': [], 'citations': [{'citation_content': 'Lastly, the total revenues for the company were **182,527** in 2020. This total increased to **257,637** in 2021 and further rose to **282,836** in 2022.', 'page': 59, 'file_name': 'goog-10-k-2022.pdf', 'file_path': 'data/1/goog-10-k-2022.pdf', 'unique_id': '33dcdb9c-8801-4bd4-a64c-54379a6ec7ca'}], 'child_citations': [], 'log_tree': {'decomposer_node_2': ['extract_metadata//19e88902-546c-4491-9fcd-fa163393645f'], 'extract_metadata//19e88902-546c-4491-9fcd-fa163393645f': ['retrieve_documents_with_metadata//146de4aa-c9bd-4a2a-8792-62c6b9ea8ab7'], 'retrieve_documents_with_metadata//146de4aa-c9bd-4a2a-8792-62c6b9ea8ab7': ['grade_documents//61d3f2ef-bf51-48aa-996f-f9c2f6d67245'], 'grade_documents//61d3f2ef-bf51-48aa-996f-f9c2f6d67245': ['generate_answer_with_citation_state//b9b9145d-630d-47ba-8ce7-fd87b128a922'], 'generate_answer_with_citation_state//b9b9145d-630d-47ba-8ce7-fd87b128a922': ['grade_answer//e7a76f20-ab9d-4b5e-8988-6b90c6aaf11c']}, 'child_logs': [], 'last_node': 'grade_answer//e7a76f20-ab9d-4b5e-8988-6b90c6aaf11c', 'child_last_nodes': []}], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}
+Attempt 1 using openai
+Attempt 1 using openai
+----CHECKING REPEATER ONCE----
+Attempt 1 using openai
+---QUERY: What were Google's total revenues for the year 2021?
+---QUERY: What were Apple's total revenues for the year 2021?
+---QUERY: What was the percentage increase in revenue for Apple from 2021 to 2022?
+---QUERY: What were the total revenues of Apple and Google for the year 2022?
+---QUERY: What was the percentage increase in revenue for Google from 2021 to 2022?
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+
+
+ topics_list : ['financial_statement_analysis', 'corporate_finance', 'market_analysis_and_benchmarking'] 
+
+
+------Extracted Metadata - company_name: apple, year: 2021, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `apple` && year == `2021` 
+
+
+
+
+ topics_list : ['financial_statement_analysis', 'investment_management', 'corporate_finance'] 
+
+
+------Extracted Metadata - company_name: apple, year: 2022, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `apple` && year == `2022` 
+
+
+
+
+ topics_list : ['financial_statement_analysis', 'market_analysis_and_benchmarking', 'corporate_finance'] 
+
+
+------Extracted Metadata - company_name: apple, year: 2022, Category: Quantitative
+
+
+ topics_list : ['financial_statement_analysis', 'valuation_techniques', 'corporate_finance'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2022, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `apple` && year == `2022` 
+
+
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2022` 
+
+
+
+
+ topics_list : ['financial_statement_analysis', 'corporate_finance', 'market_analysis_and_benchmarking'] 
+
+
+------Extracted Metadata - company_name: alphabet, year: 2021, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `alphabet` && year == `2021` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+---TRANSFORM QUERY---
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `apple` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+---- ASSESSING METADATA FILTERS ----
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 4, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 4, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 5, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 3, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 4, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: REROUTING TO RETRIEVER------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `apple` && year == `2022` 
+
+
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+question_tree.to_dict() : {'parent_question': None, 'question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'layer': 0, 'answer': None, 'child_answers': [], 'children': [{'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': "What were Apple's total revenues for the year 2021?", 'layer': 1, 'answer': "Apple's total net sales for the fiscal year ending September 25, 2021, were $385,817 million.", 'child_answers': [], 'children': [], 'citations': [{'citation_content': '- **September 25, 2021:**\n  - **Total Net Sales:** $385,817 million', 'page': 31, 'file_name': 'apple-10k-2022.pdf', 'file_path': 'data/1/apple-10k-2022.pdf', 'unique_id': 'ad4cbb4b-368f-4038-ac31-ad6b707065bf'}], 'child_citations': [], 'log_tree': {'decomposer_node_3': ['extract_metadata//8a29dbe2-9370-40fe-9e54-6e10462e15ba'], 'extract_metadata//8a29dbe2-9370-40fe-9e54-6e10462e15ba': ['retrieve_documents_with_metadata//5c7191ff-d09a-40c3-b79f-8b7821add154'], 'rewrite_question//c0663c4b-bd25-492e-b615-9c66ae7b4e2d': ['retrieve_documents_with_metadata//9104100c-ddfc-42ab-ae25-171958290acd'], 'retrieve_documents_with_metadata//9104100c-ddfc-42ab-ae25-171958290acd': ['grade_documents//06d49f9a-321f-462f-8c74-c59201aea883'], 'grade_documents//06d49f9a-321f-462f-8c74-c59201aea883': ['generate_answer_with_citation_state//8dcc5fde-b3e9-4737-918b-4cf2825825c7'], 'generate_answer_with_citation_state//8dcc5fde-b3e9-4737-918b-4cf2825825c7': ['grade_answer//371780de-275a-4449-b60a-5773d80375b7']}, 'child_logs': [], 'last_node': 'grade_answer//371780de-275a-4449-b60a-5773d80375b7', 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': "What were Google's total revenues for the year 2021?", 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': 'What were the total revenues of Apple and Google for the year 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': 'What was the percentage increase in revenue for Apple from 2021 to 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': 'What was the percentage increase in revenue for Google from 2021 to 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+question_tree.to_dict() : {'parent_question': None, 'question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'layer': 0, 'answer': None, 'child_answers': [], 'children': [{'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': "What were Apple's total revenues for the year 2021?", 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': "What were Google's total revenues for the year 2021?", 'layer': 1, 'answer': "Google's total revenues for the year 2021 amounted to $257,637 million (or $257.6 billion).", 'child_answers': [], 'children': [], 'citations': [{'citation_content': 'The total revenues for the year were $182,527 (in thousands).', 'page': 33, 'file_name': 'goog-10-k-2021.pdf', 'file_path': 'data/1/goog-10-k-2021.pdf', 'unique_id': '5546cedf-4a17-48ea-a45e-f0762c85a42d'}, {'citation_content': "The total revenue saw a significant rise to $257,637 (in thousands), summarizing the overall upward trend in the company's financial performance over the two years.", 'page': 33, 'file_name': 'goog-10-k-2021.pdf', 'file_path': 'data/1/goog-10-k-2021.pdf', 'unique_id': '9fb187be-2768-45b7-a983-b4ae8e0dab5f'}], 'child_citations': [], 'log_tree': {'decomposer_node_3': ['extract_metadata//b07a289d-0a88-4372-81a5-6ca51c7af6ca'], 'extract_metadata//b07a289d-0a88-4372-81a5-6ca51c7af6ca': ['retrieve_documents_with_metadata//f4df4492-7a50-45a0-8f50-24f0f16f89ca'], 'retrieve_documents_with_metadata//f4df4492-7a50-45a0-8f50-24f0f16f89ca': ['grade_documents//eb4d9ec1-9fdc-4961-b950-f90e27a5bb4a'], 'grade_documents//eb4d9ec1-9fdc-4961-b950-f90e27a5bb4a': ['generate_answer_with_citation_state//dfeb1fdd-6d53-4230-a205-2d675d5c8758'], 'generate_answer_with_citation_state//dfeb1fdd-6d53-4230-a205-2d675d5c8758': ['grade_answer//2688ef48-5773-4c96-80c6-e0c4e27d6669']}, 'child_logs': [], 'last_node': 'grade_answer//2688ef48-5773-4c96-80c6-e0c4e27d6669', 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': 'What were the total revenues of Apple and Google for the year 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': 'What was the percentage increase in revenue for Apple from 2021 to 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': 'What was the percentage increase in revenue for Google from 2021 to 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+question_tree.to_dict() : {'parent_question': None, 'question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'layer': 0, 'answer': None, 'child_answers': [], 'children': [{'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': "What were Apple's total revenues for the year 2021?", 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': "What were Google's total revenues for the year 2021?", 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': 'What were the total revenues of Apple and Google for the year 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': 'What was the percentage increase in revenue for Apple from 2021 to 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': 'What was the percentage increase in revenue for Google from 2021 to 2022?', 'layer': 1, 'answer': 'The percentage increase in revenue for Google from 2021 to 2022 was approximately 9.8%. This is calculated based on the total revenue figures: \\n- Total revenues in 2021: $257,637 million \\n- Total revenues in 2022: $282,836 million \\n\\nThe formula for percentage increase is: \\n\\[(\\text{New Value} - \\text{Old Value}) / \\text{Old Value} \\times 100\\]\\n\\[(282,836 - 257,637) / 257,637 \\times 100 \\approx 9.8\\%\\]', 'child_answers': [], 'children': [], 'citations': [{'citation_content': 'Total revenues for the company were **$182,527** in 2020. This total increased to **$257,637** in 2021 and further rose to **$282,836** in 2022.', 'page': 59, 'file_name': 'goog-10-k-2022.pdf', 'file_path': 'data/1/goog-10-k-2022.pdf', 'unique_id': 'e3c4eae4-aa09-4f0f-a9cd-e168c468c7db'}], 'child_citations': [], 'log_tree': {'decomposer_node_3': ['extract_metadata//f7441688-59d6-4afe-9181-6c1d01cfaf6e'], 'extract_metadata//f7441688-59d6-4afe-9181-6c1d01cfaf6e': ['retrieve_documents_with_metadata//b22cd623-1cfa-45ef-8aba-e69aacfa6aa2'], 'retrieve_documents_with_metadata//b22cd623-1cfa-45ef-8aba-e69aacfa6aa2': ['grade_documents//782db145-044d-4074-a6b0-0a99ef9b48ef'], 'grade_documents//782db145-044d-4074-a6b0-0a99ef9b48ef': ['generate_answer_with_citation_state//72bf910b-0264-4354-b956-6261427fd5cc'], 'generate_answer_with_citation_state//72bf910b-0264-4354-b956-6261427fd5cc': ['grade_answer//c9d0875a-d5a4-4386-b305-26dee1a74d45']}, 'child_logs': [], 'last_node': 'grade_answer//c9d0875a-d5a4-4386-b305-26dee1a74d45', 'child_last_nodes': []}], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}
+------NO. OF RELEVANT DOCS = 3, SO GENEARTING ANSWER------
+Attempt 1 using openai
+------ANSWER IS SUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER SUFFICIENT: ENDING WORKFLOW------
+question_tree.to_dict() : {'parent_question': None, 'question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'layer': 0, 'answer': None, 'child_answers': [], 'children': [{'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': "What were Apple's total revenues for the year 2021?", 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': "What were Google's total revenues for the year 2021?", 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': 'What were the total revenues of Apple and Google for the year 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': 'What was the percentage increase in revenue for Apple from 2021 to 2022?', 'layer': 1, 'answer': 'The percentage increase in revenue for Apple from 2021 to 2022 can be calculated using the total net sales figures for both years. In 2021, total net sales were $385,817 million, and in 2022, they increased to $394,328 million. The formula for percentage increase is:  \n\n\\[ \\text{Percentage Increase} = \\frac{\\text{New Value} - \\text{Old Value}}{\\text{Old Value}} \\times 100 \\]  \n\nSubstituting the values:  \n\\[ \\text{Percentage Increase} = \\frac{394,328 - 385,817}{385,817} \\times 100 \\approx 2.64\\% \\]  \n\nThus, the percentage increase in revenue from 2021 to 2022 was approximately 2.64%.', 'child_answers': [], 'children': [], 'citations': [{'citation_content': 'Total net sales increased from $385,817 million in 2021 to $394,328 million in 2022, showing a positive trend largely driven by increased product sales.', 'page': 31, 'file_name': 'apple-10k-2022.pdf', 'file_path': 'data/1/apple-10k-2022.pdf', 'unique_id': 'bd3ff548-b308-40ed-8f4c-5ada60068b6c'}], 'child_citations': [], 'log_tree': {'decomposer_node_3': ['extract_metadata//292c425f-9368-4eb2-b3fe-c0c48a4b3509'], 'extract_metadata//292c425f-9368-4eb2-b3fe-c0c48a4b3509': ['retrieve_documents_with_metadata//e118eb14-6195-4ff6-b6ac-33bb5c7c279a'], 'retrieve_documents_with_metadata//e118eb14-6195-4ff6-b6ac-33bb5c7c279a': ['grade_documents//b6d04f1c-7416-4af0-8217-487e26854d9f'], 'grade_documents//b6d04f1c-7416-4af0-8217-487e26854d9f': ['generate_answer_with_citation_state//7da7f444-a592-4d88-8782-7591b1133c43'], 'generate_answer_with_citation_state//7da7f444-a592-4d88-8782-7591b1133c43': ['grade_answer//ec40aa99-794a-4376-8a8d-898a07845c28']}, 'child_logs': [], 'last_node': 'grade_answer//ec40aa99-794a-4376-8a8d-898a07845c28', 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': 'What was the percentage increase in revenue for Google from 2021 to 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}
+------CHECKING IF ANSWER SATISFIES QUERY------
+Attempt 1 using openai
+------ANSWER IS INSUFFICIENT------
+------CHECKING IF GENERATED ANSWER SATISFY QUERY------
+------ANSWER INSUFFICIENT: MAXIMUM ANSWER_GENERATION_RETRIES REACHED: ENDING WORKFLOW------
+---WEB SEARCH---
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context.' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+Attempt 1 using openai
+RAG Answer Score: 1, Web Answer Score: 0
+question_tree.to_dict() : {'parent_question': None, 'question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'layer': 0, 'answer': None, 'child_answers': [], 'children': [{'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': "What were Apple's total revenues for the year 2021?", 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': "What were Google's total revenues for the year 2021?", 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': 'What were the total revenues of Apple and Google for the year 2022?', 'layer': 1, 'answer': 'The total revenues of Apple for the year 2022 amounted to **$394,328 million**. However, the total revenues for Google in 2022 cannot be determined from the provided context.', 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {'decomposer_node_3': ['extract_metadata//65142f95-61c4-450f-9c08-94fed20bf89a'], 'extract_metadata//65142f95-61c4-450f-9c08-94fed20bf89a': ['retrieve_documents_with_metadata//706122b4-7541-41ca-aeb1-4f0c11cdb4e0'], 'retrieve_documents_with_metadata//706122b4-7541-41ca-aeb1-4f0c11cdb4e0': ['grade_documents//006b46a3-4466-4841-a64b-9544cd8ace34'], 'grade_documents//006b46a3-4466-4841-a64b-9544cd8ace34': ['generate_answer_with_citation_state//93121587-e161-4a70-9b27-c2cadc3780c4'], 'generate_answer_with_citation_state//93121587-e161-4a70-9b27-c2cadc3780c4': ['grade_answer//91bd4ee2-d82a-41be-9a03-68edbae479c2'], 'rewrite_question//350da367-d4b5-4147-9bb1-c370d00dd15d': ['retrieve_documents_with_metadata//ab94e6f8-5136-4da5-af81-9dc288806ec6'], 'retrieve_documents_with_metadata//ab94e6f8-5136-4da5-af81-9dc288806ec6': ['grade_documents//99d9b9f4-a70f-4d89-8c8e-217ef07ae42a'], 'grade_documents//99d9b9f4-a70f-4d89-8c8e-217ef07ae42a': ['generate_answer_with_citation_state//a49c8ad2-a7f6-484f-b499-7637fe7fb18d'], 'generate_answer_with_citation_state//a49c8ad2-a7f6-484f-b499-7637fe7fb18d': ['grade_answer//600f362d-4b3b-4b61-aec4-893a4a3feffc'], 'grade_answer//600f362d-4b3b-4b61-aec4-893a4a3feffc': ['search_web//887e62d4-f538-4471-a964-d504fc09a0c9'], 'search_web//887e62d4-f538-4471-a964-d504fc09a0c9': ['generate_web_answer//3d5c0d97-5f18-4071-a872-1cbe72ccabc3'], 'generate_web_answer//3d5c0d97-5f18-4071-a872-1cbe72ccabc3': ['grade_web_answer//12e55c79-3028-4d4e-aa5a-63bdfb71b657']}, 'child_logs': [], 'last_node': 'grade_web_answer//12e55c79-3028-4d4e-aa5a-63bdfb71b657', 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': 'What was the percentage increase in revenue for Apple from 2021 to 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}, {'parent_question': 'What were the total revenues of Apple and Google for the year 2022, and what were the percentage increases in their revenues compared to 2021?', 'question': 'What was the percentage increase in revenue for Google from 2021 to 2022?', 'layer': 1, 'answer': None, 'child_answers': [], 'children': [], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}], 'citations': [], 'child_citations': [], 'log_tree': {}, 'child_logs': [], 'last_node': None, 'child_last_nodes': []}
+---COMBINING ALL THE DECOMPOSED ANSWERS TO ANSWER ORIGINAL QUESTION---
+Attempt 1 using openai
+Combined answer: In 2022, Apple's total revenues amounted to $394,328 million, while Google's total revenues were $282,836 million (or $282.8 billion). From 2021 to 2022, Apple experienced a revenue increase of approximately 8%, up from $385,817 million in 2021, whereas Google saw a revenue increase of approximately 9.8%, rising from $257,637 million in 2021.
+Attempt 1 using openai
+--COMBINING THE ANSWER--
+---GENERATING FOLLOW-UP QUESTIONS BASED ON FINAL ANSWER AND HISTORY---
+Attempt 1 using openai
+--- IS VISUALIZABLE ROUTE ---
+Attempt 1 using openai
+--- GET METRICS ---
+--- GENERATING CHART NAMES ---
+Attempt 1 using openai
+---CHECKING FOR HARMFUL CONTENT---
+Attempt 1 using openai
+What was Apple's revenue in 2015?
+Using the last 1 messages for context.
+Attempt 1 using openai
+Context Required: False
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+---DECIDED THE PATH FOR THE QUERY: financial---
+----DECIDING PATH 1----
+---SENDING QUERY TO FINANCIAL MODULE---
+---GENERATING CLARIFYING QUESTIONS BASED ON USER QUERY---
+Attempt 1 using openai
+---ASKING USER FOR CLARIFICATION---
+No further clarifications required.
+---- EXTRACTING MISSING DOCUMENT DETAILS ----
+Attempt 1 using openai
+Attempt 1 using openai
+company_set_1_str :
+
+ {None : None }, {alphabet : 2021 }, {alphabet : 2022 }, {alphabet : 2023 }, {amazon : 2023 }, {apple : 2021 }, {apple : 2022 }, {apple : 2023 }, {apple : 2024 }, {ebay : 2023 }, {electronic arts : 2023 }, {fedex : 2023 }, {general motors : 2023 }, {ibm : 2023 }, {jpmorgan chase : 2023 }, {meta : 2023 }, {microsoft : 2023 }, {nike : 2023 }, {nvidia : 2023 }, {tesla : 2022 } 
+company_set_2_str :
+
+ {Apple : 2015} 
+
+
+ Missing Company-Year Pairs: [{'company_name': 'apple', 'filing_year': '2015'}]
+
+
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+----DECIDING PATH POST CLARIFICATION----
+Path Decided:  simple_financial | state['final_answer'] : I am unable to answer this question.
+---QUERY: What was Apple's revenue in 2015?
+Attempt 1 using openai
+Attempt 1 using openai
+
+
+ topics_list : ['financial_statement_analysis', 'investment_management', 'market_analysis_and_benchmarking'] 
+
+
+------Extracted Metadata - company_name: apple, year: 2015, Category: Quantitative
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `apple` && year == `2015` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- 0 DOCUMENTS RETRIEVED , RETRYING ----
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+ company_name == `apple` 
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 1
+------TRANSFORMING QUERY USING REWRITE AND HYDE------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 2
+------TRANSFORMING QUERY USING REWRITE AND HYDE------
+---TRANSFORM QUERY---
+Attempt 1 using openai
+------RETRIEVING DOCUMENTS------
+
+
+formatted metadata :
+
+  
+
+
+---- ASSESSING METADATA FILTERS ----
+---- SUFFICIENT DOCUMENTS RETRIEVED , SENDING TO GRADE DOCUMENTS ----
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+Attempt 1 using openai
+------NO. OF RELEVANT DOCS = 0, SO GENEARTING ANSWER------
+-----doc_grading_retries: 3
+------CALLING WEB SEARCH------
+---WEB SEARCH---
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+------COMPARING RAG ANSWER WITH WEB ANSWER------
+------NO RAG ANSWER FOUND : RETURNING WEB GENERATED ANSWER------
+--COMBINING THE ANSWER--
+---GENERATING FOLLOW-UP QUESTIONS BASED ON FINAL ANSWER AND HISTORY---
+Attempt 1 using openai
+--- IS VISUALIZABLE ROUTE ---
+Attempt 1 using openai
+---CHECKING FOR HARMFUL CONTENT---
+Attempt 1 using openai
+Who is Elon Musk?
+Using the last 2 messages for context.
+Attempt 1 using openai
+Context Required: True
+Using the last 4 messages for context.
+Retrieving relevant conversational history from vector DB.
+---CHECKING FOR HARMFUL CONTENT---
+Attempt 1 using openai
+Who is Elon Musk?
+Using the last 4 messages for context.
+Attempt 1 using openai
+Context Required: False
+---DECIDING THE PATH FOR THE QUERY---
+Attempt 1 using openai
+---DECIDED THE PATH FOR THE QUERY: web---
+----DECIDING PATH 1----
+---SENDING QUERY TO WEB SEARCH MODULE---
+---WEB SEARCH---
+HTTPError('429 Client Error: Too Many Requests for url: https://api.tavily.com/search') , type : <class 'str'> 
+ 
+
+ Web Results : 
+
+ [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")] 
+
+
+web_documents: [Document(metadata={}, page_content="H\nT\nT\nP\nE\nr\nr\no\nr\n(\n'\n4\n2\n9\n \nC\nl\ni\ne\nn\nt\n \nE\nr\nr\no\nr\n:\n \nT\no\no\n \nM\na\nn\ny\n \nR\ne\nq\nu\ne\ns\nt\ns\n \nf\no\nr\n \nu\nr\nl\n:\n \nh\nt\nt\np\ns\n:\n/\n/\na\np\ni\n.\nt\na\nv\ni\nl\ny\n.\nc\no\nm\n/\ns\ne\na\nr\nc\nh\n'\n)")]
+Attempt 1 using openai
+-------FINAL ANSWER GENERATION--------
+------ main_answer='The query cannot be answered with the provided context' citations=[]
+Attempt 1 using openai
+---GENERATING FOLLOW-UP QUESTIONS BASED ON FINAL ANSWER AND HISTORY---
+Attempt 1 using openai
+--- IS VISUALIZABLE ROUTE ---
+Attempt 1 using openai
