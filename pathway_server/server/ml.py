@@ -373,7 +373,6 @@ class MessageProcessor(BaseMessageProcessor):
 
             charts.append(transformed_chart)
 
-        print(state["kpi_answer"])
         await self.handle_response(
             chat_id,
             state["final_answer"],
