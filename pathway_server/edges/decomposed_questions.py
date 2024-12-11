@@ -181,6 +181,8 @@ def aggregate_child_answers(root):
 def repeat_1(state: state.OverallState):
     question_tree = QuestionNode.from_dict(state["question_tree_1"])
     x_layer_questions = get_nodes_by_layer(question_tree, 1)
+    if len(x_layer_questions) == 0:
+        return nodes.combine_answer_v3.__name__
     return [
         Send(
             f"rag_1_time",
@@ -198,6 +200,8 @@ def repeat_1(state: state.OverallState):
 def repeat_2(state: state.OverallState):
     question_tree = QuestionNode.from_dict(state["question_tree_2"])
     x_layer_questions = get_nodes_by_layer(question_tree, 1)
+    if len(x_layer_questions) == 0:
+        return nodes.combine_answer_v3.__name__
     return [
         Send(
             f"rag_2_time",
@@ -215,6 +219,8 @@ def repeat_2(state: state.OverallState):
 def repeat_3(state: state.OverallState):
     question_tree = QuestionNode.from_dict(state["question_tree_3"])
     x_layer_questions = get_nodes_by_layer(question_tree, 1)
+    if len(x_layer_questions) == 0:
+        return nodes.combine_answer_v3.__name__
     return [
         Send(
             f"rag_3_time",
