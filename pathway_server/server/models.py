@@ -29,6 +29,7 @@ class Message(Base):
     chat = relationship("Chat", back_populates="messages")
     intermediate_questions = relationship("IntermediateQuestion", back_populates="message", cascade="all, delete-orphan")
     charts = relationship("Chart", back_populates="message", cascade="all, delete-orphan")
+    kpi_analysis = relationship("KPIAnalysis", back_populates="message", cascade="all, delete-orphan")
     nodes = relationship("Nodes", back_populates="message", cascade="all, delete-orphan")
 
 class IntermediateQuestion(Base):
@@ -55,6 +56,17 @@ class Chart(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     message = relationship("Message", back_populates="charts")
+
+
+class KPIAnalysis(Base):
+    __tablename__ = "kpi_analysis"
+
+    id = Column(Integer, primary_key=True, index=True)
+    message_id = Column(Integer, ForeignKey("messages.id"))
+    data = Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    message = relationship("Message", back_populates="kpi_analysis")
 
 class Nodes(Base):
     __tablename__ = "nodes"

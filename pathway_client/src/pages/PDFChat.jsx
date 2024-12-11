@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import Split from 'react-split';
-import PDFRenderer from '../components/storage/PDFRenderer';
-import ChatContainer from '../components/app/ChatContainer';
-import { chatApi } from '../utils/api';
-import { useUser } from '../context/UserContext';
-import toast from 'react-hot-toast';
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import Split from "react-split";
+import PDFRenderer from "../components/storage/PDFRenderer";
+import ChatContainer from "../components/app/ChatContainer";
+import { chatApi } from "../utils/api";
+import { useUser } from "../context/UserContext";
+import toast from "react-hot-toast";
 
 export default function PDFChat() {
   const location = useLocation();
   const { currentSpace } = useUser();
-  const [pdfUrl, setPdfUrl] = useState('');
+  const [pdfUrl, setPdfUrl] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [notes, setNotes] = useState([]);
   const [chatId, setChatId] = useState(null);
@@ -18,19 +18,24 @@ export default function PDFChat() {
   const [showChat, setShowChat] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [splitSizes, setSplitSizes] = useState([70, 30]);
-  const [newNote, setNewNote] = useState('');
+  const [newNote, setNewNote] = useState("");
 
   useEffect(() => {
-    const url = localStorage.getItem('pdf_req_url');
+    const url = localStorage.getItem("pdf_req_url");
     if (url) {
       setPdfUrl(url);
-      const filename = decodeURIComponent(url.split('path=').pop());
+      const filename = decodeURIComponent(url.split("path=").pop());
       loadNotes(filename);
+    }
+
+    const pageNo = localStorage.getItem("pdf_req_pageno");
+    if (pageNo) {
+      setCurrentPage(parseInt(pageNo));
     }
   }, []);
 
   const loadNotes = (filename) => {
-    const storedNotes = JSON.parse(localStorage.getItem('pdf_notes') || '{}');
+    const storedNotes = JSON.parse(localStorage.getItem("pdf_notes") || "{}");
     setNotes(storedNotes[filename] || []);
   };
 
@@ -38,19 +43,19 @@ export default function PDFChat() {
     try {
       setIsLoading(true);
       if (!currentSpace?.id) {
-        throw new Error('Please select a space first');
+        throw new Error("Please select a space first");
       }
 
       const chat = await chatApi.createChat(currentSpace.id);
       setChatId(chat.id);
       setShowChat(true);
-      
+
       if (showNotes) {
         setShowNotes(false);
       }
     } catch (error) {
-      console.error('Error creating chat:', error);
-      toast.error(error.message || 'Failed to create chat. Please try again.');
+      console.error("Error creating chat:", error);
+      toast.error(error.message || "Failed to create chat. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -76,14 +81,17 @@ export default function PDFChat() {
 
   const handleAddNote = () => {
     if (newNote.trim()) {
-      const updatedNotes = [...notes, { id: Date.now(), text: newNote, created_at: new Date().toISOString() }];
+      const updatedNotes = [
+        ...notes,
+        { id: Date.now(), text: newNote, created_at: new Date().toISOString() },
+      ];
       setNotes(updatedNotes);
-      setNewNote('');
+      setNewNote("");
 
-      const filename = decodeURIComponent(pdfUrl.split('path=').pop());
-      const storedNotes = JSON.parse(localStorage.getItem('pdf_notes') || '{}');
+      const filename = decodeURIComponent(pdfUrl.split("path=").pop());
+      const storedNotes = JSON.parse(localStorage.getItem("pdf_notes") || "{}");
       storedNotes[filename] = updatedNotes;
-      localStorage.setItem('pdf_notes', JSON.stringify(storedNotes));
+      localStorage.setItem("pdf_notes", JSON.stringify(storedNotes));
     }
   };
 
@@ -96,35 +104,55 @@ export default function PDFChat() {
               onClick={toggleNotes}
               className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
                 showNotes
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
             >
-              {showNotes ? 'Hide Notes' : 'Show Notes'}
+              {showNotes ? "Hide Notes" : "Show Notes"}
             </button>
             <button
               onClick={toggleChat}
               disabled={isLoading}
               className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
                 showChat
-                  ? 'bg-green-500 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               } disabled:bg-gray-300 disabled:cursor-not-allowed`}
             >
               {isLoading ? (
                 <span className="flex items-center">
-                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Creating Chat...
                 </span>
-              ) : showChat ? 'Hide Chat' : 'Start Chat'}
+              ) : showChat ? (
+                "Hide Chat"
+              ) : (
+                "Start Chat"
+              )}
             </button>
           </div>
 
-          {(showNotes || showChat) ? (
-            <Split 
+          {showNotes || showChat ? (
+            <Split
               sizes={splitSizes}
               minSize={300}
               expandToMin={false}
@@ -135,13 +163,14 @@ export default function PDFChat() {
               direction="horizontal"
               cursor="col-resize"
               className="flex gap-0 flex-1 min-h-0 split-parent"
-              onDragEnd={sizes => setSplitSizes(sizes)}
+              onDragEnd={(sizes) => setSplitSizes(sizes)}
             >
               <div className="overflow-auto split-child">
                 {pdfUrl && (
                   <PDFRenderer
                     pdf={pdfUrl}
-                    setPage={setCurrentPage}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
                   />
                 )}
               </div>
@@ -152,10 +181,14 @@ export default function PDFChat() {
                     <h2 className="text-xl font-semibold p-4">Notes</h2>
                     <div className="flex-1 overflow-y-auto p-4 space-y-4">
                       {notes.map((note) => (
-                        <div key={note.id} className="bg-gray-50 p-4 rounded-lg">
+                        <div
+                          key={note.id}
+                          className="bg-gray-50 p-4 rounded-lg"
+                        >
                           <p className="whitespace-pre-wrap">{note.text}</p>
                           <div className="text-sm text-gray-500 mt-2">
-                            Created: {new Date(note.created_at).toLocaleString()}
+                            Created:{" "}
+                            {new Date(note.created_at).toLocaleString()}
                           </div>
                         </div>
                       ))}
@@ -195,7 +228,8 @@ export default function PDFChat() {
               {pdfUrl && (
                 <PDFRenderer
                   pdf={pdfUrl}
-                  setPage={setCurrentPage}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
                 />
               )}
             </div>

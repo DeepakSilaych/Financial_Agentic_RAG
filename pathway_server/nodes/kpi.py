@@ -507,7 +507,7 @@ def generate_answer_from_kpis(state: state.KPIState):
     ##### Server Logging part
 
     output_state = {
-        "partial_answer": res,
+        "final_answer": res,
         "prev_node": child_node,
         "log_tree": log_tree,
     }

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Outlet, useLocation, useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Outlet, useLocation, useNavigate, Link } from "react-router-dom";
 import {
   Menu,
   PanelLeftClose,
@@ -12,36 +12,113 @@ import {
   ChevronRight,
   UserCircle,
   Plus,
-  X
-} from 'lucide-react';
-import * as Dialog from '@radix-ui/react-dialog';
-import Sidebar from './app/Sidebar';
-import SpaceSwitcher from './space/SpaceSwitcher';
-import SpaceMembers from './space/SpaceMembers';
-import { useUser } from '../context/UserContext';
-import { spaceApi } from '../utils/api';
-import { motion } from 'framer-motion';
-import ChatInput from './app/ChatInput';
+  X,
+} from "lucide-react";
+import * as Dialog from "@radix-ui/react-dialog";
+import Sidebar from "./app/Sidebar";
+import SpaceSwitcher from "./space/SpaceSwitcher";
+import SpaceMembers from "./space/SpaceMembers";
+import { useUser } from "../context/UserContext";
+import { spaceApi } from "../utils/api";
+import { motion } from "framer-motion";
+import ChatInput from "./app/ChatInput";
 
 const getBreadcrumbs = (pathname) => {
-  const parts = pathname.split('/').filter(Boolean);
-  if (parts.length === 0) return [{ name: 'Chat', path: '/chat' }];
+  const parts = pathname.split("/").filter(Boolean);
+  if (parts.length === 0) return [{ name: "Chat", path: "/chat" }];
 
   return parts.map((part, index) => {
-    const path = '/' + parts.slice(0, index + 1).join('/');
+    const path = "/" + parts.slice(0, index + 1).join("/");
     let name = part.charAt(0).toUpperCase() + part.slice(1);
     if (name.length === 24 && /^[0-9a-f]{24}$/.test(part)) {
-      name = 'Chat Session';
+      name = "Chat Session";
     }
     return { name, path };
   });
 };
 
+const NewChatDialog = ({ isOpen, onOpenChange, currentSpaceId }) => {
+  const navigate = useNavigate();
+  const [message, setMessage] = useState("");
+
+  return (
+    <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+        <Dialog.Content className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-white rounded-xl p-6 w-[95vw] max-w-[650px] shadow-lg">
+          <Dialog.Title className="text-xl font-semibold mb-4 text-gray-800">
+            New Chat
+          </Dialog.Title>
+          <form
+            className="mb-4 flex flex-col space-y-4 justify-center"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                const response = await fetch(
+                  `http://localhost:8000/spaces/${currentSpaceId}/chats`,
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      space_id: currentSpaceId,
+                      title:
+                        message.slice(0, 50) +
+                        (message.length > 50 ? "..." : ""),
+                      first_message: message,
+                    }),
+                  }
+                );
+
+                if (!response.ok) {
+                  throw new Error("Failed to create chat");
+                }
+
+                const newChat = await response.json();
+                onOpenChange(false);
+
+                // Wait a bit for the chat to be fully created before navigating
+                await new Promise((resolve) => setTimeout(resolve, 500));
+                navigate(`/app/chat/${newChat.id}`);
+              } catch (error) {
+                console.error("Error creating chat:", error);
+              }
+            }}
+          >
+            <input
+              type="text"
+              value={message}
+              onChange={(e) => {
+                setMessage(e.target.value);
+              }}
+              placeholder="Enter chat title..."
+              className="w-full p-2 bg-gray-50 rounded-xl border-none outline-none text-gray-800 placeholder:text-gray-400 resize-none transition-all duration-500 focus:bg-gray-100"
+              style={{ height: "40px" }}
+            />
+            <button className="bg-bluecolor text-white px-6 py-2 rounded-md ml-auto">
+              Create
+            </button>
+          </form>
+          <Dialog.Close asChild>
+            <button
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              aria-label="Close"
+            >
+              <X size={20} />
+            </button>
+          </Dialog.Close>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+};
+
 const Layout = () => {
   const [isCreateSpaceOpen, setIsCreateSpaceOpen] = useState(false);
   const [isNewChatDialogOpen, setIsNewChatDialogOpen] = useState(false);
-  const [newSpaceName, setNewSpaceName] = useState('');
-  const [newSpaceDescription, setNewSpaceDescription] = useState('');
+  const [newSpaceName, setNewSpaceName] = useState("");
+  const [newSpaceDescription, setNewSpaceDescription] = useState("");
   const [isCreatingSpace, setIsCreatingSpace] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const { user, setUser, currentSpace } = useUser();
@@ -54,18 +131,18 @@ const Layout = () => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.ctrlKey && e.key === 'k') {
+      if (e.ctrlKey && e.key === "k") {
         e.preventDefault();
         setIsNewChatDialogOpen(true);
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   if (!user) {
-    navigate('/login');
+    navigate("/login");
   }
 
   const handleCreateSpace = async (e) => {
@@ -77,17 +154,17 @@ const Layout = () => {
       await spaceApi.createSpace({
         name: newSpaceName.trim(),
         space_id: currentSpace.id,
-        description: newSpaceDescription.trim() || null
+        description: newSpaceDescription.trim() || null,
       });
-      setNewSpaceName('');
-      setNewSpaceDescription('');
+      setNewSpaceName("");
+      setNewSpaceDescription("");
       setIsCreateSpaceOpen(false);
       // Refresh spaces in the parent component
       if (currentSpace) {
         await fetchSpaces(currentSpace.id);
       }
     } catch (error) {
-      console.error('Error creating space:', error);
+      console.error("Error creating space:", error);
       // You might want to show an error message to the user here
     } finally {
       setIsCreatingSpace(false);
@@ -95,7 +172,7 @@ const Layout = () => {
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -111,14 +188,18 @@ const Layout = () => {
           className={`
             fixed lg:relative inset-y-0 left-0 
             transform transition-all duration-300 ease-in-out
-            ${isSidebarOpen ? 'translate-x-0 w-72' : '-translate-x-full lg:translate-x-0 lg:w-20'}
+            ${
+              isSidebarOpen
+                ? "translate-x-0 w-72"
+                : "-translate-x-full lg:translate-x-0 lg:w-20"
+            }
           `}
         >
           <Sidebar isCollapsed={!isSidebarOpen} />
         </aside>
       </motion.div>
 
-      <motion.main 
+      <motion.main
         initial={{ y: 1000, opacity: 1 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
@@ -131,7 +212,10 @@ const Layout = () => {
               onClick={() => setSidebarOpen(!isSidebarOpen)}
               className="lg:hidden text-gray-500 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 rounded-md"
             >
-              <Menu size={20} className="transition-transform duration-200 ease-in-out" />
+              <Menu
+                size={20}
+                className="transition-transform duration-200 ease-in-out"
+              />
             </button>
 
             <button
@@ -141,21 +225,29 @@ const Layout = () => {
                 text-gray-500 hover:text-gray-600 hover:bg-gray-100
                 focus:outline-none focus:ring-2 focus:ring-blue-500
                 transition-all duration-200 ease-in-out
-                ${isSidebarOpen ? 'transform rotate-0' : 'transform rotate-180'}
+                ${isSidebarOpen ? "transform rotate-0" : "transform rotate-180"}
               `}
               title={isSidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
             >
               {isSidebarOpen ? (
-                <PanelLeftClose size={18} className="transition-transform duration-200" />
+                <PanelLeftClose
+                  size={18}
+                  className="transition-transform duration-200"
+                />
               ) : (
-                <PanelLeft size={18} className="transition-transform duration-200" />
+                <PanelLeft
+                  size={18}
+                  className="transition-transform duration-200"
+                />
               )}
             </button>
 
             <nav className="hidden md:flex items-center space-x-1">
               {breadcrumbs.map((crumb, index) => (
                 <React.Fragment key={crumb.path}>
-                  {index > 0 && <ChevronRight size={16} className="text-gray-400" />}
+                  {index > 0 && (
+                    <ChevronRight size={16} className="text-gray-400" />
+                  )}
                   <a
                     href={crumb.path}
                     className="text-sm text-gray-600 hover:text-blue-600 font-medium"
@@ -205,8 +297,13 @@ const Layout = () => {
             <SpaceMembers />
 
             <button className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <UserCircle size={18} className="text-gray-500 hover:text-gray-600" />
-              <span className="text-sm font-medium text-gray-700">{user.name}</span>
+              <UserCircle
+                size={18}
+                className="text-gray-500 hover:text-gray-600"
+              />
+              <span className="text-sm font-medium text-gray-700">
+                {user.name}
+              </span>
             </button>
           </div>
         </div>
@@ -236,7 +333,10 @@ const Layout = () => {
             </div>
             <form onSubmit={handleCreateSpace}>
               <div className="mb-4">
-                <label htmlFor="spaceName" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="spaceName"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Space Name *
                 </label>
                 <input
@@ -250,7 +350,10 @@ const Layout = () => {
                 />
               </div>
               <div className="mb-6">
-                <label htmlFor="spaceDescription" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="spaceDescription"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Description (optional)
                 </label>
                 <textarea
@@ -274,66 +377,24 @@ const Layout = () => {
                   type="submit"
                   disabled={isCreatingSpace || !newSpaceName.trim()}
                   className={`px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md
-                    ${isCreatingSpace || !newSpaceName.trim() 
-                      ? 'opacity-50 cursor-not-allowed' 
-                      : 'hover:bg-blue-700'}`}
+                    ${
+                      isCreatingSpace || !newSpaceName.trim()
+                        ? "opacity-50 cursor-not-allowed"
+                        : "hover:bg-blue-700"
+                    }`}
                 >
-                  {isCreatingSpace ? 'Creating...' : 'Create Space'}
+                  {isCreatingSpace ? "Creating..." : "Create Space"}
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
-
-      <Dialog.Root open={isNewChatDialogOpen} onOpenChange={setIsNewChatDialogOpen}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
-          <Dialog.Content className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-white rounded-xl p-6 w-[95vw] max-w-[550px] shadow-lg">
-            <Dialog.Title className="text-xl font-semibold mb-4 text-gray-800">New Chat</Dialog.Title>
-            <ChatInput 
-              isDialog={true}
-              onSendMessage={async (message, mode, researchMode, files) => {
-                try {
-                  const response = await fetch(`http://localhost:8000/spaces/${currentSpace.id}/chats`, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                      space_id: currentSpace.id,
-                      title: message.slice(0, 50) + (message.length > 50 ? '...' : ''),
-                      first_message: message
-                    })
-                  });
-                  
-                  if (!response.ok) {
-                    throw new Error('Failed to create chat');
-                  }
-                  
-                  const newChat = await response.json();
-                  setIsNewChatDialogOpen(false);
-                  
-                  // Wait a bit for the chat to be fully created before navigating
-                  await new Promise(resolve => setTimeout(resolve, 500));
-                  navigate(`/app/chat/${newChat.id}`);
-                } catch (error) {
-                  console.error('Error creating chat:', error);
-                }
-              }}
-              className="mb-4"
-            />
-            <Dialog.Close asChild>
-              <button
-                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-                aria-label="Close"
-              >
-                <X size={20} />
-              </button>
-            </Dialog.Close>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
+      <NewChatDialog
+        isOpen={isNewChatDialogOpen}
+        onOpenChange={setIsNewChatDialogOpen}
+        currentSpaceId={currentSpace?.id}
+      />
     </motion.div>
   );
 };

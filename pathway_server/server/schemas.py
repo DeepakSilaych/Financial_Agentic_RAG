@@ -45,12 +45,16 @@ class ChartResponse(ChartDataBase):
     
     model_config = ConfigDict(from_attributes=True)
 
+class KPIAnalysisResponse(BaseModel):
+    data: str
+
 class MessageResponse(MessageBase):
     id: int
     chat_id: int
     timestamp: datetime
     intermediate_questions: List["IntermediateQuestionResponse"] = []
     charts: List[ChartResponse] = []
+    kpi_analysis: List[KPIAnalysisResponse] = []
     
     model_config = ConfigDict(from_attributes=True)
 

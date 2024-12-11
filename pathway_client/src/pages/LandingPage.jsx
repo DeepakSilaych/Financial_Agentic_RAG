@@ -1,10 +1,21 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform, useAnimation, useInView } from 'framer-motion';
-import { ArrowRight, FileText, MessageSquare, Search, Shield, ChevronDown, BotMessageSquare } from 'lucide-react';
-
-// Import your logo
-import Logo from '../assets/logo.svg';
+import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useAnimation,
+  useInView,
+} from "framer-motion";
+import {
+  ArrowRight,
+  FileText,
+  MessageSquare,
+  Search,
+  Shield,
+  ChevronDown,
+  BotMessageSquare,
+} from "lucide-react";
 
 const ScrollIndicator = () => (
   <motion.div
@@ -24,7 +35,11 @@ const FeatureCard = ({ icon: Icon, title, description }) => {
 
   useEffect(() => {
     if (inView) {
-      controls.start({ opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } });
+      controls.start({
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.8, ease: "easeOut" },
+      });
     }
   }, [controls, inView]);
 
@@ -83,7 +98,11 @@ const VideoSection = ({ src, title, description, reverse }) => {
 
   useEffect(() => {
     if (inView) {
-      controls.start({ opacity: 1, x: 0, transition: { duration: 1, ease: "easeOut" } });
+      controls.start({
+        opacity: 1,
+        x: 0,
+        transition: { duration: 1, ease: "easeOut" },
+      });
     }
   }, [controls, inView]);
 
@@ -92,7 +111,9 @@ const VideoSection = ({ src, title, description, reverse }) => {
       ref={ref}
       initial={{ opacity: 0, x: reverse ? 50 : -50 }}
       animate={controls}
-      className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-12 py-20`}
+      className={`flex flex-col ${
+        reverse ? "md:flex-row-reverse" : "md:flex-row"
+      } items-center gap-12 py-20`}
     >
       <div className="flex-1">
         <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-2xl border border-blue-500/20 transform transition-transform hover:scale-[1.02]">
@@ -108,7 +129,9 @@ const VideoSection = ({ src, title, description, reverse }) => {
         </div>
       </div>
       <div className="flex-1 space-y-6">
-        <h3 className="text-4xl font-bold text-gray-900 leading-tight">{title}</h3>
+        <h3 className="text-4xl font-bold text-gray-900 leading-tight">
+          {title}
+        </h3>
         <p className="text-xl text-gray-600 leading-relaxed">{description}</p>
         <motion.div
           whileHover={{ x: 10 }}
@@ -123,50 +146,57 @@ const VideoSection = ({ src, title, description, reverse }) => {
 
 const LandingPage = () => {
   const { scrollYProgress } = useScroll();
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
   const features = [
     {
       icon: FileText,
-      title: 'Smart Document Management',
-      description: 'Upload and organize your documents with AI-powered categorization. Supports PDFs, Word docs, and more.'
+      title: "Smart Document Management",
+      description:
+        "Upload and organize your documents with AI-powered categorization. Supports PDFs, Word docs, and more.",
     },
     {
       icon: MessageSquare,
-      title: 'Interactive Chat',
-      description: 'Have natural conversations with your documents. Get instant answers and insights from your content.'
+      title: "Interactive Chat",
+      description:
+        "Have natural conversations with your documents. Get instant answers and insights from your content.",
     },
     {
       icon: Search,
-      title: 'Semantic Search',
-      description: 'Find exactly what you need with context-aware search that understands meaning, not just keywords.'
+      title: "Semantic Search",
+      description:
+        "Find exactly what you need with context-aware search that understands meaning, not just keywords.",
     },
     {
       icon: Shield,
-      title: 'Enterprise Security',
-      description: 'Your documents are encrypted and secure. We prioritize data privacy and compliance.'
-    }
+      title: "Enterprise Security",
+      description:
+        "Your documents are encrypted and secure. We prioritize data privacy and compliance.",
+    },
   ];
 
   const benefits = [
     {
       title: "Save Hours of Time",
-      description: "Stop manually searching through documents. Our AI instantly finds the information you need.",
+      description:
+        "Stop manually searching through documents. Our AI instantly finds the information you need.",
       stat: "85%",
-      statText: "reduction in search time"
+      statText: "reduction in search time",
     },
     {
       title: "Enhance Productivity",
-      description: "Focus on high-value work while AI handles document analysis and information retrieval.",
+      description:
+        "Focus on high-value work while AI handles document analysis and information retrieval.",
       stat: "3x",
-      statText: "faster document processing"
+      statText: "faster document processing",
     },
     {
       title: "Better Insights",
-      description: "Discover connections and insights across your document library that you might have missed.",
+      description:
+        "Discover connections and insights across your document library that you might have missed.",
       stat: "100%",
-      statText: "accurate responses"
-    }
+      statText: "accurate responses",
+    },
   ];
 
   return (
@@ -215,15 +245,17 @@ const LandingPage = () => {
                 <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
                   Transform Your
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-                    {' '}Document Experience{' '}
+                    {" "}
+                    Document Experience{" "}
                   </span>
                   with AI
                 </h1>
 
                 {/* Subheading */}
                 <p className="text-xl md:text-2xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
-                  Upload, search, and chat with your documents using state-of-the-art AI technology.
-                  Experience seamless document management like never before.
+                  Upload, search, and chat with your documents using
+                  state-of-the-art AI technology. Experience seamless document
+                  management like never before.
                 </p>
 
                 {/* CTA Buttons */}
@@ -258,19 +290,29 @@ const LandingPage = () => {
                   className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center"
                 >
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-gray-900 mb-1">10k+</div>
+                    <div className="text-3xl font-bold text-gray-900 mb-1">
+                      10k+
+                    </div>
                     <div className="text-sm text-gray-600">Active Users</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-gray-900 mb-1">1M+</div>
-                    <div className="text-sm text-gray-600">Documents Processed</div>
+                    <div className="text-3xl font-bold text-gray-900 mb-1">
+                      1M+
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      Documents Processed
+                    </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-gray-900 mb-1">99.9%</div>
+                    <div className="text-3xl font-bold text-gray-900 mb-1">
+                      99.9%
+                    </div>
                     <div className="text-sm text-gray-600">Uptime</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-gray-900 mb-1">24/7</div>
+                    <div className="text-3xl font-bold text-gray-900 mb-1">
+                      24/7
+                    </div>
                     <div className="text-sm text-gray-600">Support</div>
                   </div>
                 </motion.div>
@@ -306,7 +348,8 @@ const LandingPage = () => {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="text-xl text-gray-600 max-w-3xl mx-auto"
               >
-                Everything you need to manage and interact with your documents intelligently
+                Everything you need to manage and interact with your documents
+                intelligently
               </motion.p>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -360,7 +403,8 @@ const LandingPage = () => {
                 See FinSight in Action
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Watch how FinSight transforms document interaction into an intuitive, AI-powered experience.
+                Watch how FinSight transforms document interaction into an
+                intuitive, AI-powered experience.
               </p>
             </motion.div>
 
@@ -394,27 +438,31 @@ const LandingPage = () => {
                 Loved by Teams Worldwide
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                See what professionals are saying about their experience with FinSight.
+                See what professionals are saying about their experience with
+                FinSight.
               </p>
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
                 {
-                  quote: "FinSight has completely transformed how we handle documentation. The AI-powered search is a game-changer.",
+                  quote:
+                    "FinSight has completely transformed how we handle documentation. The AI-powered search is a game-changer.",
                   author: "Sarah Chen",
-                  role: "Technical Lead, TechCorp"
+                  role: "Technical Lead, TechCorp",
                 },
                 {
-                  quote: "The natural language interface makes finding information in our docs incredibly fast and intuitive.",
+                  quote:
+                    "The natural language interface makes finding information in our docs incredibly fast and intuitive.",
                   author: "Michael Rodriguez",
-                  role: "Product Manager, InnovateCo"
+                  role: "Product Manager, InnovateCo",
                 },
                 {
-                  quote: "We've cut our document processing time by 75%. The ROI was immediate and substantial.",
+                  quote:
+                    "We've cut our document processing time by 75%. The ROI was immediate and substantial.",
                   author: "Emily Thompson",
-                  role: "Operations Director, GlobalTech"
-                }
+                  role: "Operations Director, GlobalTech",
+                },
               ].map((testimonial, index) => (
                 <motion.div
                   key={index}
@@ -424,9 +472,15 @@ const LandingPage = () => {
                   transition={{ duration: 1, delay: index * 0.2 }}
                   className="bg-white p-8 rounded-xl shadow-lg"
                 >
-                  <p className="text-gray-600 mb-6 italic">"{testimonial.quote}"</p>
-                  <div className="font-bold text-gray-900">{testimonial.author}</div>
-                  <div className="text-sm text-gray-500">{testimonial.role}</div>
+                  <p className="text-gray-600 mb-6 italic">
+                    "{testimonial.quote}"
+                  </p>
+                  <div className="font-bold text-gray-900">
+                    {testimonial.author}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    {testimonial.role}
+                  </div>
                 </motion.div>
               ))}
             </div>
@@ -447,8 +501,8 @@ const LandingPage = () => {
                 Ready to Transform Your Document Workflow?
               </h2>
               <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
-                Join thousands of professionals who are already experiencing the future of document management.
-                Get started with FinSight today.
+                Join thousands of professionals who are already experiencing the
+                future of document management. Get started with FinSight today.
               </p>
               <Link
                 to="/app"

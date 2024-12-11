@@ -2238,9 +2238,9 @@ If no follow-up is necessary, respond with no follow-up questions. Otherwise, su
                 give your output in JSON format with keys as metric name and value as their calculated value.
                 """
 
-        get_charts_desc_prompt = """
+        get_charts_desc_prompt = f"""
                 You are a financial data visualization expert.
-                Given a text description of financial data, your goal is to generate {num_charts} most appropriate charts to visualize the data. 
+                Given a text description of financial data, your goal is to generate {config.NUM_CHARTS} most appropriate charts to visualize the data. 
                 Consider these chart types and their use cases in no particular priority order=
                 1. Bar Charts
                 - Best for= Category comparison, ranking, discrete data
@@ -2735,9 +2735,9 @@ Output:
 
 """
 
-        get_charts_desc_prompt = """
+        get_charts_desc_prompt = f"""
         You are a financial data visualization expert.
-        Given a text description of financial data, your goal is to generate {num_charts} most appropriate charts to visualize the data. 
+        Given a text description of financial data, your goal is to generate {config.NUM_CHARTS} most appropriate charts to visualize the data. 
         Consider these chart types and their use cases in no particular priority order:
         1. Bar Charts
         - Best for: Category comparison, ranking, discrete data
@@ -5168,9 +5168,9 @@ JMESPATH Expression examples : "year == `2021` || "year == `2022`"
                 give your output in JSON format with keys as metric name and value as their calculated value.
                 """
 
-        get_charts_desc_prompt = """
+        get_charts_desc_prompt = f"""
                 You are a financial data visualization expert.
-                Given a text description of financial data, your goal is to generate {num_charts} most appropriate charts to visualize the data. 
+                Given a text description of financial data, your goal is to generate {config.NUM_CHARTS} most appropriate charts to visualize the data. 
                 Consider these chart types and their use cases in no particular priority order=
                 1. Bar Charts
                 - Best for= Category comparison, ranking, discrete data
@@ -5665,9 +5665,9 @@ Output:
 
 """
 
-        get_charts_desc_prompt = """
+        get_charts_desc_prompt = f"""
         You are a financial data visualization expert.
-        Given a text description of financial data, your goal is to generate {num_charts} most appropriate charts to visualize the data. 
+        Given a text description of financial data, your goal is to generate {config.NUM_CHARTS} most appropriate charts to visualize the data. 
         Consider these chart types and their use cases in no particular priority order:
         1. Bar Charts
         - Best for: Category comparison, ranking, discrete data
@@ -8200,9 +8200,9 @@ JMESPATH Expression examples : "year == `2021` || "year == `2022`"
                 give your output in JSON format with keys as metric name and value as their calculated value.
                 """
 
-        get_charts_desc_prompt = """
+        get_charts_desc_prompt = f"""
                 You are a financial data visualization expert.
-                Given a text description of financial data, your goal is to generate {num_charts} most appropriate charts to visualize the data. 
+                Given a text description of financial data, your goal is to generate {config.NUM_CHARTS} most appropriate charts to visualize the data. 
                 Consider these chart types and their use cases in no particular priority order=
                 1. Bar Charts
                 - Best for= Category comparison, ranking, discrete data
@@ -8697,9 +8697,9 @@ Output:
 
 """
 
-        get_charts_desc_prompt = """
+        get_charts_desc_prompt = f"""
         You are a financial data visualization expert.
-        Given a text description of financial data, your goal is to generate {num_charts} most appropriate charts to visualize the data. 
+        Given a text description of financial data, your goal is to generate {config.NUM_CHARTS} most appropriate charts to visualize the data. 
         Consider these chart types and their use cases in no particular priority order:
         1. Bar Charts
         - Best for: Category comparison, ranking, discrete data
@@ -11076,9 +11076,9 @@ JMESPATH Expression examples : "year == `2021` || "year == `2022`"
                 give your output in JSON format with keys as metric name and value as their calculated value.
                 """
 
-        get_charts_desc_prompt = """
+        get_charts_desc_prompt = f"""
                 You are a financial data visualization expert.
-                Given a text description of financial data, your goal is to generate {num_charts} most appropriate charts to visualize the data. 
+                Given a text description of financial data, your goal is to generate {config.NUM_CHARTS} most appropriate charts to visualize the data. 
                 Consider these chart types and their use cases in no particular priority order=
                 1. Bar Charts
                 - Best for= Category comparison, ranking, discrete data
@@ -11573,9 +11573,9 @@ Output:
 
 """
 
-        get_charts_desc_prompt = """
+        get_charts_desc_prompt = f"""
         You are a financial data visualization expert.
-        Given a text description of financial data, your goal is to generate {num_charts} most appropriate charts to visualize the data. 
+        Given a text description of financial data, your goal is to generate {config.NUM_CHARTS} most appropriate charts to visualize the data. 
         Consider these chart types and their use cases in no particular priority order:
         1. Bar Charts
         - Best for: Category comparison, ranking, discrete data
@@ -13975,9 +13975,9 @@ You are required to calculate the value of the metric using the calculator tool.
 give your output in JSON format with keys as metric name and value as their calculated value.
 """
 
-        get_charts_desc_prompt = """
+        get_charts_desc_prompt = f"""
                 You are a financial data visualization expert.
-                Given a text description of financial data, your goal is to generate {num_charts} most appropriate charts to visualize the data. 
+                Given a text description of financial data, your goal is to generate {config.NUM_CHARTS} most appropriate charts to visualize the data. 
                 Consider these chart types and their use cases in no particular priority order=
                 1. Bar Charts
                 - Best for= Category comparison, ranking, discrete data
@@ -14464,9 +14464,9 @@ Output:
 
 """
 
-        get_charts_desc_prompt = """
+        get_charts_desc_prompt = f"""
         You are a financial data visualization expert.
-        Given a text description of financial data, your goal is to generate {num_charts} most appropriate charts to visualize the data. 
+        Given a text description of financial data, your goal is to generate {config.NUM_CHARTS} most appropriate charts to visualize the data. 
         Consider these chart types and their use cases in no particular priority order:
         1. Bar Charts
         - Best for: Category comparison, ranking, discrete data

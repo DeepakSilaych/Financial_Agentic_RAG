@@ -73,6 +73,8 @@ const GraphTab = ({ isVisible = true, onToggle }) => {
         });
       }
 
+      networkRef.current.stabilize()
+
       setError(null);
     } catch (err) {
       console.error('Error adding node:', err);

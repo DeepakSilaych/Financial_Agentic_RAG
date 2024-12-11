@@ -47,7 +47,7 @@ class LLM(BaseChatModel):
             "openai": lambda: ChatOpenAI(model="gpt-4o-mini"),
             "anthropic": lambda: ChatAnthropic(model="claude-3-5-haiku-20241022"),  # type: ignore
             "mistral": lambda: ChatMistralAI(model="mistral-large-latest"),  # type: ignore
-            "gemini": lambda: ChatGemini(model="gemini-1.5-flash"),
+            # "gemini": lambda: ChatGemini(model="gemini-1.5-flash"),
             "llama": lambda: Llama("meta/meta-llama-3-70b-instruct"),
         }
 
@@ -62,14 +62,14 @@ class LLM(BaseChatModel):
             self.openai,
             self.anthropic,
             self.mistral,
-            self.gemini,
+            # self.gemini,
             self.llama,
         ]
         self._model_names = [
             "openai",
             "anthropic",
             "mistral",
-            "gemini",
+            # "gemini",
             "llama",
         ]
         # Find the index corresponding to `model_given`
@@ -79,6 +79,17 @@ class LLM(BaseChatModel):
         self._model_names = (
             self._model_names[start_index:] + self._model_names[:start_index]
         )
+
+
+    def reorder_models(self, initial_model: str) -> None:
+        # Find the index corresponding to `model_given`
+        start_index = self._model_names.index(initial_model)
+        # Reorder model_order to start from `model_given`
+        self._models = self._models[start_index:] + self._models[:start_index]
+        self._model_names = (
+            self._model_names[start_index:] + self._model_names[:start_index]
+        )
+
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -116,15 +127,7 @@ class LLM(BaseChatModel):
                 except Exception as e:
                     log_message(f"{model} failed on attempt {attempt + 1}: {e}")
 
-        user_input_given = input("All models failed. Do you want to retry? (y/n): ").strip().lower()
-        if user_input_given in {"yes", "y"}:
-            log_message("Retrying as per user request...")
-            from dotenv import load_dotenv
-            load_dotenv(override=True)
-            self.instanciate_models()
-            return self.invoke(input_given, config, stop=stop, **kwargs)  # Recursive retry
-        else:
-            raise RuntimeError("All models failed, and user chose not to retry.")
+        raise RuntimeError("All models failed, and user chose not to retry.")
 
     @override
     def with_structured_output(

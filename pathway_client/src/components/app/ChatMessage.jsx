@@ -1,11 +1,42 @@
-import { BotMessageSquareIcon, CheckSquare, Square, ExternalLink, FileText, Check, User, BarChart2, LineChart, PieChart, BookmarkPlus } from 'lucide-react';
-import React, { useState, useCallback } from 'react';
-import ReactMarkdown from 'react-markdown';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Bar, Line, Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
-import { Dialog } from '@headlessui/react';
-import { notesApi } from '../../utils/api';
+import {
+  BotMessageSquareIcon,
+  CheckSquare,
+  Square,
+  ExternalLink,
+  FileText,
+  Check,
+  User,
+  BarChart2,
+  LineChart,
+  PieChart,
+  BookmarkPlus,
+} from "lucide-react";
+import React, { useState, useCallback } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import { motion, AnimatePresence } from "framer-motion";
+import { Bar, Line, Pie } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import {
+  Description,
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
+import { notesApi } from "../../utils/api";
+import { useNavigate } from "react-router-dom";
 
 ChartJS.register(
   CategoryScale,
@@ -21,7 +52,11 @@ ChartJS.register(
 
 // Avatar Component
 export const Avatar = ({ isUser }) => (
-  <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${isUser ? 'bg-blue-500' : 'bg-purple-500'}`}>
+  <div
+    className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+      isUser ? "bg-blue-500" : "bg-purple-500"
+    }`}
+  >
     {isUser ? (
       <User size={18} className="text-white" />
     ) : (
@@ -31,11 +66,18 @@ export const Avatar = ({ isUser }) => (
 );
 
 // Message Content Component
-const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, isLastInGroup }) => {
+const MessageContent = ({
+  content,
+  isUser,
+  processBotMessage,
+  isFirstInGroup,
+  isLastInGroup,
+}) => {
   const { text, citations } = processBotMessage();
-  const [selectedText, setSelectedText] = useState('');
+  const [selectedText, setSelectedText] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const navigate = useNavigate();
 
   const handleMouseUp = useCallback(() => {
     const selection = window.getSelection();
@@ -53,18 +95,24 @@ const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, is
       try {
         await notesApi.createNote(selectedFile, selectedText);
         setIsDialogOpen(false);
-        setSelectedText('');
+        setSelectedText("");
         setSelectedFile(null);
       } catch (error) {
-        console.error('Error saving note:', error);
+        console.error("Error saving note:", error);
       }
     }
   }, [selectedFile, selectedText]);
 
   return (
     <div className="space-y-2 p-4" onMouseUp={handleMouseUp}>
-      <div className="prose prose-sm max-w-none relative">
-        <ReactMarkdown>{text}</ReactMarkdown>
+      <div className="max-w-none relative">
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeRaw]}
+          className="prose prose-sm"
+        >
+          {text}
+        </ReactMarkdown>
         {selectedText && (
           <motion.button
             initial={{ opacity: 0 }}
@@ -80,32 +128,41 @@ const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, is
       {citations.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-2">
           {citations.map((citation, index) => {
-            const [_, id, rest] = citation.match(/^(\d+)\/(.*)/) || [];
-            const isUrl = rest && rest.includes('://');
-            
-            return isUrl ? (
+            const parts = citation.split("/");
+            const id = parts[0];
+            let name, pageNo;
+            if (parts.length > 2) {
+              name = parts.slice(1, -1).join("/");
+              pageNo = parts.at(-1);
+            } else {
+              name = parts[1];
+            }
+
+            const onClick = () => {
+              localStorage.setItem(
+                "pdf_req_url",
+                `http://localhost:8000/spaces/1/file/download?path=${name}`
+              );
+              localStorage.setItem("pdf_req_pageno", pageNo);
+              navigate(`/app/storage/pdf`);
+            };
+
+            return (
               <motion.a
                 key={index}
-                href={rest}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-2 py-1 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
+                className="cursor-pointer inline-flex items-center px-2 py-1 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  onClick();
+                }}
               >
                 <ExternalLink size={14} className="mr-1" />
-                Source {id}
+                {id}. {name} {pageNo ? `(pg. ${pageNo})` : ""}
               </motion.a>
-            ) : (
-              <motion.span
-                key={index}
-                className="inline-flex items-center px-2 py-1 text-sm bg-gray-50 text-gray-600 rounded-md cursor-pointer"
-                whileHover={{ scale: 1.02 }}
-                onClick={() => setSelectedFile(rest)}
-              >
-                <FileText size={14} className="mr-1" />
-                Source {id}
-              </motion.span>
             );
           })}
         </div>
@@ -175,14 +232,17 @@ const MessageContent = ({ content, isUser, processBotMessage, isFirstInGroup, is
 
 // Intermediate Question Component
 const IntermediateQuestion = ({ question, onAnswerSubmit }) => {
-  const [answer, setAnswer] = useState('');
+  const [answer, setAnswer] = useState("");
   const [selectedOptions, setSelectedOptions] = useState([]);
-  const isMultipleChoice = Array.isArray(question.options) && question.options.length > 0;
+  const isMultipleChoice =
+    Array.isArray(question.options) && question.options.length > 0;
   const isAnswered = question.answer !== undefined;
 
   const handleOptionClick = (option) => {
-    setSelectedOptions(prev => 
-      prev.includes(option) ? prev.filter(item => item !== option) : [...prev, option]
+    setSelectedOptions((prev) =>
+      prev.includes(option)
+        ? prev.filter((item) => item !== option)
+        : [...prev, option]
     );
   };
 
@@ -190,7 +250,7 @@ const IntermediateQuestion = ({ question, onAnswerSubmit }) => {
     e.preventDefault();
     if (answer.trim() || selectedOptions.length > 0) {
       onAnswerSubmit(question.id, answer.trim() || selectedOptions);
-      setAnswer('');
+      setAnswer("");
       setSelectedOptions([]);
     }
   };
@@ -208,7 +268,7 @@ const IntermediateQuestion = ({ question, onAnswerSubmit }) => {
         </div>
         <div className="flex-1">
           <h4 className="text-gray-700 mb-3">{question.question}</h4>
-          
+
           {isAnswered ? (
             <div className="bg-gray-50 p-3 rounded-md border border-gray-200">
               <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
@@ -216,10 +276,9 @@ const IntermediateQuestion = ({ question, onAnswerSubmit }) => {
                 <span>Answered</span>
               </div>
               <div className="text-gray-700">
-                {Array.isArray(question.answer) 
-                  ? question.answer.join(', ')
-                  : question.answer
-                }
+                {Array.isArray(question.answer)
+                  ? question.answer.join(", ")
+                  : question.answer}
               </div>
             </div>
           ) : isMultipleChoice ? (
@@ -274,9 +333,9 @@ const IntermediateQuestion = ({ question, onAnswerSubmit }) => {
 // Chart Component
 const ChartComponent = ({ chart }) => {
   const chartIcons = {
-    'bar': <BarChart2 size={18} className="text-blue-600" />,
-    'line': <LineChart size={18} className="text-blue-600" />,
-    'pie': <PieChart size={18} className="text-blue-600" />
+    bar: <BarChart2 size={18} className="text-blue-600" />,
+    line: <LineChart size={18} className="text-blue-600" />,
+    pie: <PieChart size={18} className="text-blue-600" />,
   };
 
   const getChartOptions = (type) => {
@@ -285,56 +344,56 @@ const ChartComponent = ({ chart }) => {
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          position: 'top',
-          align: 'center',
+          position: "top",
+          align: "center",
           labels: {
             padding: 8,
             usePointStyle: true,
-            pointStyle: 'circle',
+            pointStyle: "circle",
             boxWidth: 6,
             boxHeight: 6,
             font: {
               size: 10,
-              family: "'Inter', sans-serif"
-            }
-          }
+              family: "'Inter', sans-serif",
+            },
+          },
         },
         title: {
-          display: false
+          display: false,
         },
         tooltip: {
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          titleColor: '#1f2937',
-          bodyColor: '#4b5563',
-          borderColor: 'rgba(0, 0, 0, 0.1)',
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          titleColor: "#1f2937",
+          bodyColor: "#4b5563",
+          borderColor: "rgba(0, 0, 0, 0.1)",
           borderWidth: 1,
           padding: 8,
           boxPadding: 3,
           usePointStyle: true,
           bodyFont: {
             size: 10,
-            family: "'Inter', sans-serif"
+            family: "'Inter', sans-serif",
           },
           titleFont: {
             size: 11,
             family: "'Inter', sans-serif",
-            weight: '600'
-          }
-        }
+            weight: "600",
+          },
+        },
       },
       animation: {
         duration: 500,
-        easing: 'easeOutQuart'
-      }
+        easing: "easeOutQuart",
+      },
     };
 
-    if (type === 'bar' || type === 'line') {
+    if (type === "bar" || type === "line") {
       return {
         ...baseOptions,
         scales: {
           x: {
             grid: {
-              display: false
+              display: false,
             },
             ticks: {
               maxRotation: 45,
@@ -342,42 +401,42 @@ const ChartComponent = ({ chart }) => {
               padding: 5,
               font: {
                 size: 10,
-                family: "'Inter', sans-serif"
-              }
-            }
+                family: "'Inter', sans-serif",
+              },
+            },
           },
           y: {
             beginAtZero: true,
             grid: {
-              color: 'rgba(0, 0, 0, 0.06)',
-              drawBorder: false
+              color: "rgba(0, 0, 0, 0.06)",
+              drawBorder: false,
             },
             ticks: {
               padding: 5,
               font: {
                 size: 10,
-                family: "'Inter', sans-serif"
-              }
-            }
-          }
-        }
+                family: "'Inter', sans-serif",
+              },
+            },
+          },
+        },
       };
     }
 
-    if (type === 'pie') {
+    if (type === "pie") {
       return {
         ...baseOptions,
         plugins: {
           ...baseOptions.plugins,
           legend: {
             ...baseOptions.plugins.legend,
-            position: 'right',
+            position: "right",
             labels: {
               ...baseOptions.plugins.legend.labels,
-              padding: 10
-            }
-          }
-        }
+              padding: 10,
+            },
+          },
+        },
       };
     }
 
@@ -386,47 +445,52 @@ const ChartComponent = ({ chart }) => {
 
   const getDatasetStyle = (index, type) => {
     const colors = [
-      'rgba(66, 133, 244, 0.8)',   // Google Blue
-      'rgba(234, 67, 53, 0.8)',    // Google Red
-      'rgba(251, 188, 4, 0.8)',    // Google Yellow
-      'rgba(52, 168, 83, 0.8)',    // Google Green
-      'rgba(103, 58, 183, 0.8)',   // Purple
-      'rgba(255, 152, 0, 0.8)',    // Orange
+      "rgba(66, 133, 244, 0.8)", // Google Blue
+      "rgba(234, 67, 53, 0.8)", // Google Red
+      "rgba(251, 188, 4, 0.8)", // Google Yellow
+      "rgba(52, 168, 83, 0.8)", // Google Green
+      "rgba(103, 58, 183, 0.8)", // Purple
+      "rgba(255, 152, 0, 0.8)", // Orange
     ];
 
     const baseStyle = {
       backgroundColor: colors[index % colors.length],
-      borderColor: colors[index % colors.length].replace('0.8', '1'),
+      borderColor: colors[index % colors.length].replace("0.8", "1"),
       borderWidth: 1.5,
-      hoverBackgroundColor: colors[index % colors.length].replace('0.8', '0.9'),
-      hoverBorderColor: colors[index % colors.length].replace('0.8', '1'),
-      hoverBorderWidth: 2
+      hoverBackgroundColor: colors[index % colors.length].replace("0.8", "0.9"),
+      hoverBorderColor: colors[index % colors.length].replace("0.8", "1"),
+      hoverBorderWidth: 2,
     };
 
-    if (type === 'line') {
+    if (type === "line") {
       return {
         ...baseStyle,
         fill: false,
         tension: 0.3,
         pointRadius: 3,
         pointHoverRadius: 5,
-        pointBackgroundColor: colors[index % colors.length].replace('0.8', '1'),
-        pointBorderColor: '#fff',
+        pointBackgroundColor: colors[index % colors.length].replace("0.8", "1"),
+        pointBorderColor: "#fff",
         pointBorderWidth: 1.5,
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: colors[index % colors.length].replace('0.8', '1')
+        pointHoverBackgroundColor: "#fff",
+        pointHoverBorderColor: colors[index % colors.length].replace(
+          "0.8",
+          "1"
+        ),
       };
     }
 
-    if (type === 'pie') {
+    if (type === "pie") {
       return {
-        backgroundColor: colors.map(color => color.replace('0.8', '0.75')),
-        borderColor: colors.map(color => color.replace('0.8', '1')),
+        backgroundColor: colors.map((color) => color.replace("0.8", "0.75")),
+        borderColor: colors.map((color) => color.replace("0.8", "1")),
         borderWidth: 1,
-        hoverBackgroundColor: colors.map(color => color.replace('0.8', '0.85')),
-        hoverBorderColor: colors.map(color => color.replace('0.8', '1')),
+        hoverBackgroundColor: colors.map((color) =>
+          color.replace("0.8", "0.85")
+        ),
+        hoverBorderColor: colors.map((color) => color.replace("0.8", "1")),
         hoverBorderWidth: 2,
-        hoverOffset: 4
+        hoverOffset: 4,
       };
     }
 
@@ -438,21 +502,21 @@ const ChartComponent = ({ chart }) => {
       ...chart.data,
       datasets: chart.data.datasets.map((dataset, index) => ({
         ...dataset,
-        ...getDatasetStyle(index, chart.chart_type)
-      }))
+        ...getDatasetStyle(index, chart.chart_type),
+      })),
     };
 
     const commonProps = {
       options: getChartOptions(chart.chart_type),
-      data: chartData
+      data: chartData,
     };
 
     switch (chart.chart_type) {
-      case 'bar':
+      case "bar":
         return <Bar {...commonProps} />;
-      case 'line':
+      case "line":
         return <Line {...commonProps} />;
-      case 'pie':
+      case "pie":
         return <Pie {...commonProps} />;
       default:
         return null;
@@ -460,48 +524,100 @@ const ChartComponent = ({ chart }) => {
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="w-full max-w-lg mx-auto my-2 bg-white rounded-lg shadow-sm overflow-hidden"
-    >
+    <div className="w-full max-w-lg bg-white rounded-lg shadow-sm overflow-hidden">
       <div className="p-2 border-b flex items-center gap-2">
         {chartIcons[chart.chart_type]}
-        <span className="font-medium text-gray-700 text-xs">{chart.title || `${chart.chart_type.charAt(0).toUpperCase() + chart.chart_type.slice(1)} Chart`}</span>
+        <span className="font-medium text-gray-700 text-xs">
+          {chart.title ||
+            `${
+              chart.chart_type.charAt(0).toUpperCase() +
+              chart.chart_type.slice(1)
+            } Chart`}
+        </span>
       </div>
       <div className="p-2">
-        <div className="aspect-[16/9] w-full" style={{ height: '200px' }}>
+        <div className="aspect-[16/9] w-full" style={{ height: "200px" }}>
           {getChartComponent()}
         </div>
       </div>
-    </motion.div>
+    </div>
+  );
+};
+
+const KpiAnalysisDialog = ({ kpiAnalysis }) => {
+  const [isKpiDialogOpen, setIsKpiDialogOpen] = useState(false);
+  return (
+    <>
+      <button
+        onClick={() => setIsKpiDialogOpen(true)}
+        className="rounded-md w-full bg-bluecolor/20 py-2 px-4 text-sm font-medium focus:outline-none data-[hover]:bg-black/30 data-[focus]:outline-1 data-[focus]:outline-white ml-auto"
+      >
+        View Financial Analysis (using KPIs)
+      </button>
+      <Dialog
+        open={isKpiDialogOpen}
+        as="div"
+        className="relative z-10 focus:outline-none"
+        onClose={() => setIsKpiDialogOpen(false)}
+      >
+        <div className="fixed inset-0 bg-black/75 z-10 w-screen overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4">
+            <DialogPanel
+              transition
+              className="max-w-[45rem] rounded-xl bg-white p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+            >
+              <DialogTitle as="h3" className="text-3xl font-medium">
+                Key Performance Indicators Analysis
+              </DialogTitle>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                className="prose prose-sm"
+              >
+                {kpiAnalysis}
+              </ReactMarkdown>
+              <div className="mt-4">
+                <button
+                  className="inline-flex items-center gap-2 rounded-md bg-bluecolor py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-gray-700"
+                  onClick={() => setIsKpiDialogOpen(false)}
+                >
+                  Got it, thanks!
+                </button>
+              </div>
+            </DialogPanel>
+          </div>
+        </div>
+      </Dialog>
+    </>
   );
 };
 
 // Main ChatMessage Component
-const ChatMessage = ({ 
-  content, 
-  isUser, 
-  intermediate_questions = [], 
-  charts = [], 
+const ChatMessage = ({
+  content,
+  isUser,
+  intermediate_questions = [],
+  charts = [],
+  kpiAnalysis = null,
   onAnswerSubmit,
   isFirstInGroup,
-  isLastInGroup
+  isLastInGroup,
 }) => {
   const processBotMessage = () => {
-    if (!content) return { text: '', citations: [] };
+    if (!content) return { text: "", citations: [] };
 
     const citations = [];
     const segments = content.split(/(\[\[.+?\]\])/g);
-    const text = segments.map(segment => {
-      if (segment.startsWith('[[') && segment.endsWith(']]')) {
-        const citation = segment.slice(2, -2);
-        citations.push(citation);
-        return '';
-      }
-      return segment;
-    }).join('');
-    
+    const text = segments
+      .map((segment) => {
+        if (segment.startsWith("[[") && segment.endsWith("]]")) {
+          const citation = segment.slice(2, -2);
+          citations.push(citation);
+          return `<sup><u>${citation.split("/")[0]}</u></sup>`;
+        }
+        return segment;
+      })
+      .join("");
+
     return { text, citations };
   };
 
@@ -510,35 +626,45 @@ const ChatMessage = ({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={`flex flex-col ${isUser ? 'text-gray-800' : 'text-gray-800'} w-full`}
+      className={`flex flex-col ${
+        isUser ? "text-gray-800" : "text-gray-800"
+      } w-full`}
     >
-      <MessageContent 
-        content={content} 
-        isUser={isUser} 
+      <MessageContent
+        content={content}
+        isUser={isUser}
         processBotMessage={processBotMessage}
         isFirstInGroup={isFirstInGroup}
         isLastInGroup={isLastInGroup}
       />
-      
+
       {charts && charts.length > 0 && (
-        <div className="px-4 pb-4 space-y-3">
+        <div className="px-4 pb-4 space-y-3 flex gap-4 items-center">
           {charts.map((chart, index) => (
             <ChartComponent key={index} chart={chart} />
           ))}
         </div>
       )}
-      
-      {intermediate_questions && intermediate_questions.length > 0 && (
-        <div className="px-4 pb-4">
-          {intermediate_questions.map((question, index) => (
-            <IntermediateQuestion
-              key={index}
-              question={question}
-              onAnswerSubmit={onAnswerSubmit}
-            />
-          ))}
+
+      {kpiAnalysis && (
+        <div className="pb-4 w-full px-6">
+          <KpiAnalysisDialog kpiAnalysis={kpiAnalysis} />
         </div>
       )}
+
+      {!content &&
+        intermediate_questions &&
+        intermediate_questions.length > 0 && (
+          <div className="px-4 pb-4">
+            {intermediate_questions.map((question, index) => (
+              <IntermediateQuestion
+                key={index}
+                question={question}
+                onAnswerSubmit={onAnswerSubmit}
+              />
+            ))}
+          </div>
+        )}
     </motion.div>
   );
 };

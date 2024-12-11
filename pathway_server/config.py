@@ -28,7 +28,7 @@ SLOW2_VECTOR_STORE_DATA_DIR = "MultiData/server2_data"
 SLOW2_VECTOR_STORE_CACHE_DIR = "MultiCache/server2_cache"
 
 CACHE_STORE_HOST = "127.0.0.1"
-CACHE_STORE_PORT = 8000
+CACHE_STORE_PORT = 8010
 
 MULTI_SERVER_HOST = "127.0.0.1"
 MULTI_SERVER_PORT = 8080
@@ -52,7 +52,7 @@ DOCS_RELEVANCE_THRESHOLD = 1
 
 # Number of metrics and charts for post processing
 NUM_METRICS = 3
-NUM_CHARTS = 5
+NUM_CHARTS = 2
 
 cache_retriever_DOCS = 3
 
