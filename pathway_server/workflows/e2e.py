@@ -38,7 +38,6 @@ def send_to_answer_analysis(state: state.OverallState):
 graph = StateGraph(state.OverallState)
 
 graph.add_node(nodes.general_llm.__name__, nodes.general_llm)
-graph.add_node(nodes.check_context.__name__,nodes.check_context)
 graph.add_node("standalone_rag", map_fields_in_node(rag_e2e, {"answer":"final_answer" ,  "prev_node" : "combine_answer_parents" , "citations":"combined_citations"}))
 graph.add_node("web_rag", map_fields_in_node(web_rag, {"answer":"final_answer" ,  "prev_node" : "prev_node"}))
 graph.add_node(nodes.identify_missing_reports.__name__, nodes.identify_missing_reports)
@@ -60,20 +59,12 @@ if WORKFLOW_SETTINGS["check_safety"]:
         nodes.check_safety.__name__,
         edges.query_safe_or_not,
         {
-            "yes": nodes.check_context.__name__,
+            "yes": nodes.combine_conversation_history.__name__,
             "no": END,
         },
     )
 else:
-    graph.add_edge(START, nodes.check_context.__name__)
-graph.add_conditional_edges(
-    nodes.check_context.__name__,
-    edges.combine_history_or_not,
-    {
-        "yes":nodes.combine_conversation_history.__name__,
-        "no": nodes.split_path_decider_1.__name__
-    }
-)
+    graph.add_edge(START, nodes.combine_conversation_history.__name__)
 graph.add_node(nodes.ask_clarifying_questions.__name__, nodes.ask_clarifying_questions)
 graph.add_node(nodes.refine_query.__name__, nodes.refine_query)
 graph.add_node(nodes.split_path_decider_1.__name__, nodes.split_path_decider_1)
@@ -152,7 +143,6 @@ e2e = graph.compile(
         nodes.ask_clarifying_questions.__name__,
         nodes.identify_missing_reports.__name__,
         nodes.download_missing_reports.__name__,
-        nodes.ask_follow_up_questions.__name__ , 
+        nodes.ask_follow_up_questions.__name__,
     ],
-
 )

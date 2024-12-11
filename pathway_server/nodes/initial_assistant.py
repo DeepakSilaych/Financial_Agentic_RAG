@@ -8,7 +8,7 @@
 # 2. **Decision-Making Process**: Forms a prompt for the AI model to refine the query and decide
 #    whether the RAG pipeline should be triggered or not.
 # 3. **Logging and Output**: Logs all critical steps including refined queries and pipeline decisions
-#    to a logging system. Additionally, generates a structured output state that can be used in the 
+#    to a logging system. Additionally, generates a structured output state that can be used in the
 #    broader application pipeline.
 #
 # The function also integrates error handling, logging, and image URL handling (if provided).
@@ -28,7 +28,6 @@ import uuid
 from utils import send_logs
 from config import LOGGING_SETTINGS
 from retriever import cache_retriever
-
 
 
 class QueryDraftDecision(BaseModel):
@@ -51,17 +50,33 @@ import jsonlines
 def combine_conversation_history(state: state.OverallState, vector_store=None):
     messages = state.get("messages", [])
     user_id = state["user_id"]
-    num_messages = len(state["messages"])
+    num_messages = len(messages)
     if num_messages == 0:
-        log_message("No conversation history available.")
+        file_path = os.path.join("data_convo", "conversation_history.jsonl")
+        if os.path.exists(file_path):
+            log_message(f"Loading conversation history from {file_path}.")
+            with jsonlines.open(file_path) as reader:
+                for record in reader:
+                    if record["record_id"] == user_id:
+                        messages.append(
+                            HumanMessage(role="User", content=record["query"])
+                        )
+                        messages.append(
+                            AIMessage(role="Chatbot", content=record["answer"])
+                        )
+        else:
+            log_message(f"No external conversation history found in {file_path}.")
+
+    if num_messages == 0:
+        log_message("No conversational history available.")
         recent_messages = "No prior conversation history available."
     else:
         log_message(
-            f"Using the last {min(config.NUM_PREV_MESSAGES, num_messages)} messages for context.",
+            f"Using the last {min(config.NUM_PREV_MESSAGES, num_messages)} messages for context."
         )
         recent_messages = "\n".join(
             f"{msg.role}: {msg.content}"
-            for msg in state["messages"][-config.NUM_PREV_MESSAGES :]
+            for msg in messages[-config.NUM_PREV_MESSAGES :]
         )
 
     log_message("Retrieving relevant conversational history from vector DB.")
@@ -69,13 +84,12 @@ def combine_conversation_history(state: state.OverallState, vector_store=None):
     retrieved_contexts = cache_retriever.similarity_search(
         query,
         config.NUM_PREV_MESSAGES,
-        metadata_filter=nodes.convert_metadata_to_jmespath(
-            {"record_id": user_id}
-        ),
+        metadata_filter=nodes.convert_metadata_to_jmespath({"record_id": user_id}),
     )
 
     retrieved_context = "\n".join(
-        f"User:{ctx.page_content}\n Chatbot : {ctx.metadata['answer']}" for ctx in retrieved_contexts
+        f"User:{ctx.page_content}\n Chatbot : {ctx.metadata['answer']}"
+        for ctx in retrieved_contexts
     )
 
     # Combine both sources of context
