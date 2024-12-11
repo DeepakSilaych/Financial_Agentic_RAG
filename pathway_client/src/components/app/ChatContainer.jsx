@@ -16,6 +16,8 @@ import Tab from "./Tab";
 import { useUser } from "../../context/UserContext";
 import { motion } from "framer-motion";
 
+import LogoWithoutText from "../../assets/logo-without-text.svg";
+
 // Loading Animation Component
 const LoadingDots = () => (
   <div className="flex space-x-2">
@@ -54,10 +56,7 @@ const EmptyState = () => (
   <div className="h-full flex flex-col items-center justify-center text-center">
     <div className="max-w-2xl mx-auto px-4">
       <div className="mb-8">
-        <BotMessageSquareIcon
-          size={40}
-          className="text-blue-500 mx-auto mb-4"
-        />
+        <img src={LogoWithoutText} alt="FinSight AI" className="w-24 h-24" />
         <h2 className="text-2xl font-semibold text-gray-800 mb-2">
           Welcome to FinSight AI
         </h2>
@@ -108,9 +107,7 @@ const MessageGroupHeader = ({ isUser }) => (
     }`}
   >
     <Avatar isUser={isUser} />
-    <span className="text-sm text-gray-500">
-      {isUser ? "You" : "Assistant"}
-    </span>
+    <span className="text-sm text-gray-500">{isUser ? "You" : "FinSight"}</span>
   </div>
 );
 

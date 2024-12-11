@@ -38,6 +38,8 @@ import {
 import { notesApi } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 
+import LogoWithoutText from "../../assets/logo-without-text.svg";
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -54,13 +56,13 @@ ChartJS.register(
 export const Avatar = ({ isUser }) => (
   <div
     className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-      isUser ? "bg-blue-500" : "bg-purple-500"
+      isUser ? "bg-blue-500" : "bg-white"
     }`}
   >
     {isUser ? (
       <User size={18} className="text-white" />
     ) : (
-      <BotMessageSquareIcon size={18} className="text-white" />
+      <img src={LogoWithoutText} alt="FinSight AI" className="w-5 h-5" />
     )}
   </div>
 );
@@ -264,7 +266,7 @@ const IntermediateQuestion = ({ question, onAnswerSubmit }) => {
     >
       <div className="flex items-start p-4">
         <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
-          <BotMessageSquareIcon size={18} className="text-blue-600" />
+          <img src={LogoWithoutText} alt="FinSight AI" className="w-5 h-5" />
         </div>
         <div className="flex-1">
           <h4 className="text-gray-700 mb-3">{question.question}</h4>
