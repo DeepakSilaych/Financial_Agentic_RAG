@@ -63,7 +63,7 @@ MAX_METADATA_FILTERING_RETRIES = 2
 MAX_HALLUCINATION_RETRIES = 1
 MAX_ANSWER_GENERATION_RETRIES = 1
 
-METADATA_FILTER_INIT = ["company_name", "year"]  # ["company_name" , "year" , "topics"]
+METADATA_FILTER_INIT = ["company_name", "year"]
 
 # Max number of personas to create
 MAX_PERSONAS_GENERATED = 4
@@ -78,7 +78,6 @@ EVAL_QUERY_BATCH_SIZE = 10
 
 # Max number of retries for the entire pipeline
 MAX_RETRIES = 3
-
 
 # Max number of questions that the query clarifier should ask
 MAX_QUESTIONS_TO_ASK = 3
@@ -96,7 +95,7 @@ SIMULATE_ERRORS = {
     "retriever": False,
 }
 
-RAG_ENDPOINT=False
+RAG_ENDPOINT = False
 
 # Set to "stdout" to log to stdout, "server" to send the logs to the server, or a file name to log to a file
 LOG_FILE_NAME = "pipeline_log.txt"
@@ -227,7 +226,7 @@ LOGGING_SETTINGS = {
     "check_hallucination": True,
     "check_hallucination_hhem": True,
     ####
-    "general_llm" : True , 
+    "general_llm": True,
     "aggregate1": True,
     "decomposer_node_2": True,
     "rag_2_time": True,
