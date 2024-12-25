@@ -1,5 +1,7 @@
 # Multi-Agent RAG System - Pathway High Prep
 
+[Final Report](./final_report.pdf)
+
 ## Running Instructions
 
 1. Run the vector store: `python vector_store.py`
