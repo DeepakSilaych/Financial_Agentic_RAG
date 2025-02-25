@@ -478,11 +478,16 @@ You are a financial data visualization expert. Your task is to generate charts t
 
 ########
 Important: Never generate or invent data that is not explicitly mentioned in the provided description. Only use the exact data mentioned by the user. If the description lacks specific data (such as numerical values or clear categories), do not attempt to fill in gaps or create assumptions.
+******
+* If there are fewer than 3 categories or data points, do not create a pie chart.
+* The data must represent proportions or percentages that add up to 100%.
+* Ensure that the data provided for both the labels and values is used exactly as provided by the user for generating the chart.
+* If the user does not specify labels or values, do not create a chart.
 ########
 
 Here are some examples to guide you:
 
-Example 
+Example 1:
 Title: Company's revenue stream from different geographical location
 Text description: "The company has a diverse revenue stream with the majority of sales coming from its North American market (50%), followed by Europe (30%) and Asia (20%) 
 Output:
@@ -492,6 +497,41 @@ Output:
 "values": [50, 30, 20]
 "title" : "Company's revenue stream from different geographical location"
 }}
+
+Example 2:
+Title: Department-wise Expense Distribution
+Text description: "The company spends 40% on R&D, 60% on marketing and operations."
+Output:
+{{
+"type": "Pie Chart",
+"labels": [],
+"values": [],
+"title": ""
+}}
+
+Example 3:
+Title: Budget Allocation
+Text description: "The company has a budget of $1 million."
+Output:
+{{
+"type": "Pie Chart",
+"labels": [],
+"values": [],
+"title": ""
+}}
+
+Example 4:
+Title: Market Share of Leading Smartphone Brands
+Text description: The market share of Apple in 2022 was 50%, Samsung was about 30-40% and OnePlus was lowest.
+Output:
+{{
+"type": "Pie Chart",
+"labels": [],
+"values": [],
+"title": ""
+}}
+Reason: The data points are not clear for Samsung and OnePlus, so no chart is generated.
+
 
 ########
 Important notes:
@@ -521,12 +561,15 @@ Important: Never generate or invent data that is not explicitly mentioned in the
 * Do not automatically generate x-axis values as 1, 2, 3, ... unless explicitly specified by the user.
 * Always take the x-axis and y-axis values directly from the user input.
 * Ensure that the data provided for both the x-axis and y-axis is used exactly as provided by the user for generating the chart.
+* If the user does not specify x-axis/y-axis values, do not create a chart.
+* If some data points are missing, do not create a line chart.
+* If the data points for any series are fewer than 3, do not create a chart.
 ########
 
 
 Here are some examples to guide you:
 
-Example 
+Example 1: 
 Title: Apple's Quarterly Revenue vs Google's Quarterly Revenue
 For Apple, the revenues are 2.1, 2.5, 2.8, and 3.3 billion dollars across four quarters. Google’s revenues are 3.4, 2.5, 4.8, and 10.3 billion dollars for the year 2021. 
 Output:
@@ -541,11 +584,37 @@ Output:
 "title" : "Apple's Quarterly Revenue vs Google's Quarterly Revenue"
 }}
 
+Example 2:
+Title: Monthly Sales Data
+Text description: "The company reports sales of $1 million and $2 million for January and February."
+Output:
+{{
+"type": "Line Chart",
+"data": {{}},
+"x_label" : "",
+"y_label" : "",
+"title" : ""
+}}
+Reason: The data points are less than 3 for any series, so no chart is generated.
+
+Example 3:
+Title: Revenue Growth of Amazon and Microsoft
+Text description: Amazon had a revenue of 20 billion dollars in 2021, 50 billion dollars in 2023, and 60 billion dollars in 2022. Microsoft’s revenue was 40 billion dollars in 2020, 80 billion dollars in 2023, and 100 billion dollars in 2022.
+Output:
+{{
+"type": "Line Chart",
+"data": {{}},
+"x_label" : "",
+"y_label" : "",
+"title" : ""
+}}
+Reason: The data points are missing for Amazon in 2020 and Microsoft in 2021, so no chart is generated.
+
 ########
 Important notes:
 - **x** and **y** values must be of type **float**.
-- The `data` dictionary should contain company names as keys and their associated data in a list of tuples 
-- The list format is strictly `("x_value", "y_value")` where `x_value` and `y_value` are both **float** types.
+- The data dictionary should contain company names as keys and their associated data in a list of tuples 
+- The list format is strictly ("x_value", "y_value") where x_value and y_value are both **float** types.
 - Make sure the **x_label**, **y_label**, and **title** are strings.
 - The final dictionary must match the format exactly as shown.
 ########
@@ -554,6 +623,103 @@ Important notes:
 Return a dictionary which should contain the following keys:
 {{
 "type": "Line Chart",
+"data": {{
+    <company name>: <List of x,y lists>,
+}},
+"x_label" : <x_label>,
+"y_label" : <y_label>,
+"title" : <title>
+}}
+"""
+        get_bar_chart_prompt = """
+You are a financial data visualization expert. Your task is to generate charts to visualize the data based on a given text description of financial data. The chart title is given as {title}, and you should use this title to accurately visualize the financial information provided.
+
+########
+Important: Never generate or invent data that is not explicitly mentioned in the provided description. Only use the exact data mentioned by the user. If the description lacks specific data (such as numerical values or clear categories), do not attempt to fill in gaps or create assumptions.
+******
+* Always take the x-axis and y-axis values directly from the user input.
+* Ensure that the data provided for both the x-axis and y-axis is used exactly as provided by the user for generating the chart.
+* If the some data points are missing, do not create a bar chart.
+* If the data points for any category are fewer than 3, do not create a bar chart.
+########
+
+########
+Note:  Limit your output data from given data which are relevant to this TITLE: {title}. DO NOT try to create or generate data that is not explicitly mentioned in the provided description just for generating the specified number of charts.
+******
+* Do not automatically generate x-axis values as 1, 2, 3, ... unless explicitly specified by the user.
+* Always take the x-axis and y-axis values directly from the user input.
+* Ensure that the data provided for both the x-axis and y-axis is used exactly as provided by the user for generating the chart.
+########
+
+Here are some examples to guide you:
+
+Example 1:
+Title: Comparison of Microsoft and Amazon across Profit
+Text description: Microsoft reported a profit of 2.1 billion dollars in 2020, 0.8 billion dollars in 2021, and 15 billion dollars in 2022. Amazon, on the other hand, posted a profit of 5.1 billion dollars in 2020, 1.9 billion dollars in 2021, and 22 billion dollars in 2022. For Apple, the revenues are 2.1, 2.5, 2.8, and 3.3 billion dollars across four quarters. Google’s revenues are 3.4, 2.5, 4.8, and 10.3 billion dollars for the year 2021. 
+Output:
+{{
+"type": "Bar Chart",
+"data": {{
+    "microsoft": [[2020, 2.1], [2021, 0.8], [2022, 15]],
+    "amazon": [[2020, 5.1], [2021, 1.9], [2022, 22]]
+}},
+"x_labels": ["Years"],
+"y_label": "Profit (in billion $)",
+"title": "Comparison of Microsoft and Amazon across Profit"
+}}
+
+Example 2:
+Title: Comparison of Tesla and Ford Across Revenue
+Text description: Tesla's revenue in 2019 and 2020 was 10 billion dollars, 2021 it was 11 billion dollars and in 2022 it was greater than in 2020. Ford reported a revenue of 15 billion dollars in 2019 and 19 billion dollars in 2020 and 2021 and 30 billion dollars in 2022
+Output:
+{{
+"type": "Bar Chart",
+"data": {{}},
+"x_labels": [],
+"y_label": "",
+"title": ""
+}}
+Reason: The data point is missing for Tesla in 2022, so no chart is generated.
+
+Example 3:
+Title: Revenue Comparison of Company A and Company B
+Text description: Company A had a revenue of 50 billion dollars in 2020 and  B’s revenue was 60 billion dollars in 2021.
+Output:
+{{
+"type": "Bar Chart",
+"data": {{}},
+"x_labels": [],
+"y_label": "",
+"title": ""
+}}
+Reason: The data points are missing for Company A in 2021 and Company B in 2020, so no chart is generated.
+
+Example 4:
+Title: Revenue Comparison of Company A and Company B
+Text description: Company A had a revenue of 50 billion dollars in 2020 and 55 billion dollars in 2021. Company B’s revenue was 45 billion dollars in 2020 and 60 billion dollars in 2021.
+Output:
+{{
+"type": "Bar Chart",
+"data": {{}},
+"x_labels": [],
+"y_label": "",
+"title": ""
+}}
+Reason: The data points are less than 3 for any category, so no chart is generated.
+
+########
+Important notes:
+- **x** and **y** values must be of type **float**.
+- The data dictionary should contain company names as keys and their associated data in a list of tuples 
+- The list format is strictly ("x_value", "y_value") where x_value and y_value are both **float** types.
+- Make sure the **x_label**, **y_label**, and **title** are strings.
+- The final dictionary must match the format exactly as shown.
+########
+
+#### OUTPUT ####
+Return a dictionary which should contain the following keys:
+{{
+"type": "Bar Chart",
 "data": {{
     <company name>: <List of x,y lists>,
 }},
@@ -631,6 +797,7 @@ Return a dictionary which should contain the following keys:
         ]
 }}
 """
+
         process_answer_system_prompt = """
 
 You are a question answer auditing agent, and the current year is 2024. You will be given a question and answer, and a few other input. 

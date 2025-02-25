@@ -39,6 +39,7 @@ import { notesApi } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 
 import LogoWithoutText from "../../assets/logo-without-text.svg";
+import { API_BASE_URL } from "../../utils/api";
 
 ChartJS.register(
   CategoryScale,
@@ -143,7 +144,7 @@ const MessageContent = ({
             const onClick = () => {
               localStorage.setItem(
                 "pdf_req_url",
-                `http://localhost:8000/spaces/1/file/download?path=${name}`
+                `${API_BASE_URL}/spaces/1/file/download?path=${name}`
               );
               localStorage.setItem("pdf_req_pageno", pageNo);
               navigate(`/app/storage/pdf`);

@@ -41,7 +41,7 @@ import config
 
 class PWValue(pw.Schema):
     company_name: str
-    filing_year: str
+    filing_year: Optional[str]
     key: Optional[str]
 
 

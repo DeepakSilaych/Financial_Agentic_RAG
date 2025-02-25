@@ -25,6 +25,8 @@ import { format } from "date-fns";
 import * as Select from "@radix-ui/react-select";
 import { ChevronDown } from "lucide-react";
 
+import { API_BASE_URL } from "../../utils/api";
+
 const LLMSelect = ({ selectedLLM, setSelectedLLM }) => {
   const LLM_OPTIONS = [
     { value: "openai", label: "GPT 4o" },
@@ -189,7 +191,7 @@ const ChatInput = ({
       setIsLoadingFiles(true);
       setFileError(null);
       const response = await fetch(
-        `http://localhost:8000/spaces/${currentSpace.id}/files/${path}`
+        `${API_BASE_URL}/spaces/${currentSpace.id}/files/${path}`
       );
       if (!response.ok) {
         throw new Error("Failed to load files");

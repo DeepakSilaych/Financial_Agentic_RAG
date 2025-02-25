@@ -281,41 +281,6 @@ const LandingPage = () => {
                     </motion.div>
                   </a>
                 </div>
-
-                {/* Trust Badges */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.8, duration: 0.8 }}
-                  className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center"
-                >
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-gray-900 mb-1">
-                      10k+
-                    </div>
-                    <div className="text-sm text-gray-600">Active Users</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-gray-900 mb-1">
-                      1M+
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      Documents Processed
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-gray-900 mb-1">
-                      99.9%
-                    </div>
-                    <div className="text-sm text-gray-600">Uptime</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-gray-900 mb-1">
-                      24/7
-                    </div>
-                    <div className="text-sm text-gray-600">Support</div>
-                  </div>
-                </motion.div>
               </motion.div>
             </motion.div>
           </div>

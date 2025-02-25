@@ -18,6 +18,7 @@ import {
 import { format } from "date-fns";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../utils/api";
 
 // Inline Button component
 const Button = ({
@@ -166,7 +167,7 @@ const FileTable = ({
       setError(null);
       console.log("Loading items for space:", spaceId, "path:", currentPath);
       const response = await fetch(
-        `http://localhost:8000/spaces/${spaceId}/files/${currentPath}`
+        `${API_BASE_URL}/spaces/${spaceId}/files/${currentPath}`
       );
       const data = await response.json();
       console.log("Loaded items:", data);
@@ -208,7 +209,7 @@ const FileTable = ({
         // Ensure proper path handling
         const uploadPath = currentPath === "" ? "/" : `/${currentPath}/`;
         const response = await fetch(
-          `http://localhost:8000/spaces/${spaceId}/files${uploadPath}upload`,
+          `${API_BASE_URL}/spaces/${spaceId}/files${uploadPath}upload`,
           {
             method: "POST",
             body: formData,
@@ -245,7 +246,7 @@ const FileTable = ({
         currentPath
       );
       const response = await fetch(
-        `http://localhost:8000/spaces/${spaceId}/files/${currentPath}`,
+        `${API_BASE_URL}/spaces/${spaceId}/files/${currentPath}`,
         {
           method: "DELETE",
           headers: {
@@ -271,7 +272,7 @@ const FileTable = ({
     try {
       console.log("Creating folder:", newFolderName, "at path:", currentPath);
       const response = await fetch(
-        `http://localhost:8000/spaces/${spaceId}/files/${currentPath}`,
+        `${API_BASE_URL}/spaces/${spaceId}/files/${currentPath}`,
         {
           method: "POST",
           headers: {
@@ -298,7 +299,7 @@ const FileTable = ({
       const full_path =
         currentPath === "" ? filename : `${currentPath}/${filename}`;
       const response = await fetch(
-        `http://localhost:8000/spaces/${spaceId}/file/download?path=${full_path}`
+        `${API_BASE_URL}/spaces/${spaceId}/file/download?path=${full_path}`
       );
       if (!response.ok) {
         throw new Error(`Download failed with status: ${response.status}`);
@@ -326,7 +327,7 @@ const FileTable = ({
     const path = currentPath === "" ? file.name : `${currentPath}/${file.name}`;
     localStorage.setItem(
       "pdf_req_url",
-      `http://localhost:8000/spaces/${spaceId}/file/download?path=${path}`
+      `${API_BASE_URL}/spaces/${spaceId}/file/download?path=${path}`
     );
     navigate(`/app/storage/pdf`);
   };

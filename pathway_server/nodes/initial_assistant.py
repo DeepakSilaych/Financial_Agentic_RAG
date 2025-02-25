@@ -48,25 +48,20 @@ import jsonlines
 
 
 def combine_conversation_history(state: state.OverallState, vector_store=None):
-    messages = state.get("messages", [])
+    messages = []
     user_id = state["user_id"]
-    num_messages = len(messages)
-    if num_messages == 0:
-        file_path = os.path.join("data_convo", "conversation_history.jsonl")
-        if os.path.exists(file_path):
-            log_message(f"Loading conversation history from {file_path}.")
-            with jsonlines.open(file_path) as reader:
-                for record in reader:
-                    if record["record_id"] == user_id:
-                        messages.append(
-                            HumanMessage(role="User", content=record["query"])
-                        )
-                        messages.append(
-                            AIMessage(role="Chatbot", content=record["answer"])
-                        )
-        else:
-            log_message(f"No external conversation history found in {file_path}.")
+    file_path = os.path.join("data_convo", "conversation_history.jsonl")
+    if os.path.exists(file_path):
+        log_message(f"Loading conversation history from {file_path}.")
+        with jsonlines.open(file_path) as reader:
+            for record in reader:
+                if record["record_id"] == user_id:
+                    messages.append(HumanMessage(role="User", content=record["query"]))
+                    messages.append(AIMessage(role="Chatbot", content=record["answer"]))
+    else:
+        log_message(f"No external conversation history found in {file_path}.")
 
+    num_messages = len(messages)
     if num_messages == 0:
         log_message("No conversational history available.")
         recent_messages = "No prior conversation history available."

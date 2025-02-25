@@ -23,6 +23,8 @@ import { spaceApi } from "../utils/api";
 import { motion } from "framer-motion";
 import ChatInput from "./app/ChatInput";
 
+import { API_BASE_URL } from "../utils/api";
+
 const getBreadcrumbs = (pathname) => {
   const parts = pathname.split("/").filter(Boolean);
   if (parts.length === 0) return [{ name: "Chat", path: "/chat" }];
@@ -55,7 +57,7 @@ const NewChatDialog = ({ isOpen, onOpenChange, currentSpaceId }) => {
               e.preventDefault();
               try {
                 const response = await fetch(
-                  `http://localhost:8000/spaces/${currentSpaceId}/chats`,
+                  `${API_BASE_URL}/spaces/${currentSpaceId}/chats`,
                   {
                     method: "POST",
                     headers: {

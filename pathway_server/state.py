@@ -219,7 +219,7 @@ class OverallState(TypedDict):
     user_id: str
     messages: Annotated[List[str], operator.add]
     question: str
-    context_required : bool
+    context_required: bool
     follow_up_questions: List[str]
     combined_citations: Annotated[List[dict], operator.add]
     final_answer: str
@@ -227,8 +227,8 @@ class OverallState(TypedDict):
     combined_documents: Annotated[List[Document], operator.add]
     missing_company_year_pairs: List[dict]
     reports_to_download: List[dict]
-    answer : str # For appending citations to standalone_rag , web_rag  
-    citations : str
+    answer: str  # For appending citations to standalone_rag , web_rag
+    citations: str
     db_state: List[dict]
 
     personas: List[dict[str, str]]
@@ -301,9 +301,17 @@ class OverallState(TypedDict):
     combine_answer_parents: Annotated[
         str, prev_node_merge2
     ]  # parent nodes for final_combine_answer_analysis
-    aggregate1_parents: Annotated[str, prev_node_merge2]  # parent nodes for aggregate nodes
-    aggregate2_parents: Annotated[str, prev_node_merge2]  # parent nodes for aggregate nodes    
-    aggregate3_parents: Annotated[str, prev_node_merge2]  # parent nodes for aggregate nodes    
+    aggregate1_parents: Annotated[
+        str, prev_node_merge2
+    ]  # parent nodes for aggregate nodes
+    aggregate2_parents: Annotated[
+        str, prev_node_merge2
+    ]  # parent nodes for aggregate nodes
+    aggregate3_parents: Annotated[
+        str, prev_node_merge2
+    ]  # parent nodes for aggregate nodes
+
+
 class InternalRAGState(TypedDict):
     ## Ques
     user_id: str
@@ -375,9 +383,12 @@ class InternalRAGState(TypedDict):
 
     send_log_tree_logs: str
     prev_node_rewrite: str
-    aggregate1_parents: Annotated[str, prev_node_merge2]  # parent nodes for aggregate nodes
+    aggregate1_parents: Annotated[
+        str, prev_node_merge2
+    ]  # parent nodes for aggregate nodes
 
     cache_output: str
+
 
 class QuestionDecomposer(TypedDict):
     subquestions: Annotated[List[str], operator.add]
@@ -415,9 +426,30 @@ class PieChart(BaseModel):
 
 # General Chart Class that accepts any type of chart
 class Chart(BaseModel):
-    chart: List[
-        Union[BarChart, LineChart, PieChart, Literal[""]]
-    ]  # Chart type can be any of the above
+    chart: Union[BarChart, LineChart, PieChart, Literal[""]]  # Can be a chart or ""
+
+    @classmethod
+    def from_data(cls, data: dict, chart_type: str) -> "Chart":
+        """
+        Factory method to create a chart or return "" if no valid chart can be produced.
+
+        :param data: The input data dictionary for the chart.
+        :param chart_type: The type of chart to create ("Bar Chart", "Line Chart", "Pie Chart").
+        :return: A Chart instance or an empty string if invalid.
+        """
+        if chart_type == "Bar Chart":
+            if len(data.get("data", {})) < 3:  # Validate enough data points
+                return cls(chart="")
+            return cls(chart=BarChart(**data))
+        elif chart_type == "Line Chart":
+            if len(data.get("data", {})) < 3:  # Validate enough data points
+                return cls(chart="")
+            return cls(chart=LineChart(**data))
+        elif chart_type == "Pie Chart":
+            if len(data.get("values", [])) < 3:  # Validate enough data points
+                return cls(chart="")
+            return cls(chart=PieChart(**data))
+        return cls(chart="")  # If chart type is unrecognized, return ""
 
 
 # General Chart Class that accepts any type of chart
@@ -504,8 +536,10 @@ class PersonaState(TypedDict):
     persona_generated_questions: Annotated[List[str], operator.add]
     persona_generated_answers: Annotated[List[str], operator.add]
     persona_specific_answers: Annotated[List[str], operator.add]
-    prev_node : Annotated[str , prev_node_merge]
-    persona_last_nodes : Annotated[str , prev_node_merge2] # parent nodes for combine_persona_specific_answers
+    prev_node: Annotated[str, prev_node_merge]
+    persona_last_nodes: Annotated[
+        str, prev_node_merge2
+    ]  # parent nodes for combine_persona_specific_answers
     log_tree: Annotated[
         Dict[str, List[str]], add_child_to_node
     ]  # [ key ( prev_node_name+//+uuid ) : value ( List[str (prev_node_name+//+uuid )])]
