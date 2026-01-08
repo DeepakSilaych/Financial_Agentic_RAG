@@ -18,8 +18,8 @@ services:
     ports:
       - "4111:5173"
     environment:
-      - VITE_API_URL=http://localhost:4112
-      - VITE_WS_URL=ws://localhost:4112
+      - VITE_API_URL=https://api.finsight.deepaksilaych.me
+      - VITE_WS_URL=wss://api.finsight.deepaksilaych.me
     depends_on:
       - backend
     restart: unless-stopped

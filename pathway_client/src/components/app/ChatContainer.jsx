@@ -53,8 +53,8 @@ const LoadingMessage = () => (
 
 // Empty State Component
 const EmptyState = () => (
-  <div className="h-full flex flex-col items-center justify-center text-center">
-    <div className="max-w-2xl mx-auto px-4">
+  <div className="h-full flex flex-col items-center justify-center text-center overflow-y-auto py-8">
+    <div className="max-w-3xl mx-auto px-4">
       <div className="mb-8">
         <img src={LogoWithoutText} alt="FinSight AI" className="w-24 h-24" />
         <h2 className="text-2xl font-semibold text-gray-800 mb-2">
@@ -63,6 +63,22 @@ const EmptyState = () => (
         <p className="text-gray-600">
           Your intelligent assistant for document analysis and insights
         </p>
+      </div>
+
+      <div className="mb-8">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="aspect-video">
+            <iframe
+              className="w-full h-full"
+              src="https://www.youtube.com/embed/FxBmS5VKLNU"
+              title="FinSight Demo"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+        <p className="text-gray-500 text-sm mt-2">Watch a quick demo</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 mb-8">
