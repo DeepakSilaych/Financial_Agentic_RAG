@@ -9,7 +9,7 @@ import asyncio
 
 from server.database import engine
 from server import models
-from server.routes import chat_router, file_router, ws_router, space_router
+from server.routes import chat_router, file_router, ws_router, space_router, auth_router
 
 from fastapi.websockets import WebSocket, WebSocketDisconnect
 
@@ -142,6 +142,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
 
 # Include routers
+app.include_router(auth_router)
 app.include_router(chat_router)
 app.include_router(file_router)
 app.include_router(ws_router)

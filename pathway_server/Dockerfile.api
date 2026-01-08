@@ -1,0 +1,18 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+RUN pip install --upgrade pip
+
+COPY requirements.api.txt ./
+RUN pip install -r requirements.api.txt
+
+COPY backend_server.py ./
+COPY server/ ./server/
+
+EXPOSE 8000
+
+CMD ["uvicorn", "backend_server:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { spaceApi, chatApi } from "../utils/api";
+import { spaceApi, chatApi, authApi } from "../utils/api";
 
 const UserContext = createContext();
 
@@ -7,12 +7,10 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Space-related state
   const [spaces, setSpaces] = useState([]);
   const [currentSpace, setCurrentSpace] = useState(null);
   const [spaceMembers, setSpaceMembers] = useState([]);
 
-  // Chat-related state
   const [chats, setChats] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
 
@@ -38,15 +36,14 @@ export const UserProvider = ({ children }) => {
 
   const checkAuth = async () => {
     try {
-      // For development, using hardcoded user
-      setUser({
-        id: 1,
-        name: "user",
-        email: "user@example.com",
-      });
+      const storedUser = localStorage.getItem("finsight_user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
       setLoading(false);
     } catch (error) {
       console.error("Auth check failed:", error);
+      localStorage.removeItem("finsight_user");
       setLoading(false);
     }
   };
@@ -160,16 +157,41 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const login = async (credentials) => {
+  const login = async (email, password) => {
     try {
-      await checkAuth();
+      const response = await authApi.login(email, password);
+      const userData = response.user;
+      localStorage.setItem("finsight_user", JSON.stringify(userData));
+      setUser(userData);
+      return { success: true };
     } catch (error) {
       console.error("Login failed:", error);
-      throw error;
+      const message = error.response?.data?.detail || "Invalid email or password";
+      return { success: false, error: message };
     }
   };
 
-  const logout = () => {
+  const signup = async (name, email, password) => {
+    try {
+      const response = await authApi.signup(name, email, password);
+      const userData = response.user;
+      localStorage.setItem("finsight_user", JSON.stringify(userData));
+      setUser(userData);
+      return { success: true };
+    } catch (error) {
+      console.error("Signup failed:", error);
+      const message = error.response?.data?.detail || "Registration failed";
+      return { success: false, error: message };
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await authApi.logout();
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+    localStorage.removeItem("finsight_user");
     setUser(null);
     setSpaces([]);
     setCurrentSpace(null);
@@ -179,31 +201,26 @@ export const UserProvider = ({ children }) => {
   };
 
   const value = {
-    // Auth state
     user,
     loading,
     login,
+    signup,
     logout,
 
-    // Space state
     spaces,
     currentSpace,
     spaceMembers,
 
-    // Space actions
     setCurrentSpace,
 
-    // Chat state
     chats,
     currentChat,
     setCurrentChat,
 
-    // Fetch functions
     fetchSpaces,
     fetchSpaceMembers,
     fetchChats,
 
-    // Chat actions
     createChat,
     updateChatTitle,
     getChat,

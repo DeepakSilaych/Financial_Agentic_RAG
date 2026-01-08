@@ -60,7 +60,8 @@ const Sidebar = ({ isCollapsed }) => {
   };
 
   const filteredChats = chats.filter((chat) =>
-    chat.title?.toLowerCase().includes(searchTerm.toLowerCase())
+    chat.title?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    chat.messages?.length > 0
   );
 
   const isActiveRoute = (path) => location.pathname === path;

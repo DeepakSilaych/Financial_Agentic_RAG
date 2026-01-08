@@ -11,7 +11,6 @@ import { UserProvider } from './context/UserContext';
 import { SettingsProvider } from './context/SettingsContext';
 import { useUser } from './context/UserContext';
 import LoginPage from './pages/LoginPage';
-import SignupPage from './pages/SignupPage';
 import Help from './pages/Help';
 import Documentation from './pages/Documentation';
 import Notifications from './pages/Notifications';
@@ -65,15 +64,7 @@ createRoot(document.getElementById('root')).render(
             
             <Route path="/login" element={
               <PublicRoute>
-                <Navbar />
                 <LoginPage />
-              </PublicRoute>
-            } />
-            
-            <Route path="/signup" element={
-              <PublicRoute>
-                <Navbar />
-                <SignupPage />
               </PublicRoute>
             } />
 

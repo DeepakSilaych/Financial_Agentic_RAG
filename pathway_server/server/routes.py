@@ -14,25 +14,67 @@ from typing import List, Dict, Any, Optional
 import logging
 import os
 from fastapi import HTTPException
+from pydantic import BaseModel
 
 from . import schemas
 from .database import get_db, SessionLocal
 from .websocket import manager
 from . import chat_handler, file_handler
-from . import ml
+from . import ml_mock
 from . import models
-import config
-from llm import llm
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Create routers
 space_router = APIRouter(prefix="/spaces", tags=["space"])
 chat_router = APIRouter(prefix="/spaces/{space_id}/chats", tags=["chat"])
 file_router = APIRouter(prefix="/spaces", tags=["files"])
 ws_router = APIRouter(tags=["websocket"])
+auth_router = APIRouter(prefix="/auth", tags=["auth"])
+
+DEMO_USERS = {
+    "demo@finsight.ai": {"id": 1, "name": "Demo User", "email": "demo@finsight.ai", "password": "demo123"},
+    "admin@finsight.ai": {"id": 2, "name": "Admin", "email": "admin@finsight.ai", "password": "admin123"},
+    "user@example.com": {"id": 3, "name": "Test User", "email": "user@example.com", "password": "password"},
+}
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+class SignupRequest(BaseModel):
+    name: str
+    email: str
+    password: str
+
+class UserResponse(BaseModel):
+    id: int
+    name: str
+    email: str
+
+@auth_router.post("/login")
+def login(request: LoginRequest):
+    user = DEMO_USERS.get(request.email)
+    if not user or user["password"] != request.password:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    return {"user": {"id": user["id"], "name": user["name"], "email": user["email"]}}
+
+@auth_router.post("/signup")
+def signup(request: SignupRequest):
+    if request.email in DEMO_USERS:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    new_id = len(DEMO_USERS) + 1
+    DEMO_USERS[request.email] = {
+        "id": new_id,
+        "name": request.name,
+        "email": request.email,
+        "password": request.password
+    }
+    return {"user": {"id": new_id, "name": request.name, "email": request.email}}
+
+@auth_router.post("/logout")
+def logout():
+    return {"message": "Logged out successfully"}
 
 
 # Space routes
@@ -117,8 +159,7 @@ async def websocket_endpoint(websocket: WebSocket, space_id: int, chat_id: int):
                 model = data.get("llm")
 
                 try:
-                    llm.reorder_models(model)
-                    processor = ml.MessageProcessor(mode)
+                    processor = ml_mock.MockMessageProcessor(mode)
                     await processor.run(
                         chat_id=chat_id,
                         space_id=space_id,

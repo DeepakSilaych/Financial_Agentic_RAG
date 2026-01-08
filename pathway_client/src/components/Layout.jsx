@@ -13,6 +13,7 @@ import {
   UserCircle,
   Plus,
   X,
+  LogOut,
 } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import Sidebar from "./app/Sidebar";
@@ -123,7 +124,7 @@ const Layout = () => {
   const [newSpaceDescription, setNewSpaceDescription] = useState("");
   const [isCreatingSpace, setIsCreatingSpace] = useState(false);
   const [notifications, setNotifications] = useState([]);
-  const { user, setUser, currentSpace } = useUser();
+  const { user, setUser, currentSpace, logout } = useUser();
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -298,14 +299,25 @@ const Layout = () => {
             <SpaceSwitcher />
             <SpaceMembers />
 
-            <button className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <div className="flex items-center space-x-2 p-2 rounded-lg">
               <UserCircle
                 size={18}
-                className="text-gray-500 hover:text-gray-600"
+                className="text-gray-500"
               />
               <span className="text-sm font-medium text-gray-700">
                 {user.name}
               </span>
+            </div>
+
+            <button
+              onClick={() => {
+                logout();
+                navigate("/");
+              }}
+              className="flex items-center space-x-2 p-2 rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors"
+              title="Logout"
+            >
+              <LogOut size={18} />
             </button>
           </div>
         </div>

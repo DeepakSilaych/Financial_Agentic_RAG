@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export const API_BASE_URL = "http://localhost:8000";
-export const WS_BASE_URL = "ws://localhost:8000";
+export const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+export const WS_BASE_URL = import.meta.env.VITE_WS_URL || "ws://localhost:8000";
 
 // Create axios instance with default config
 const api = axios.create({
@@ -296,14 +296,41 @@ export const notesApi = {
   },
 };
 
-// Auto-completion related API calls
 export const autoCompleteApi = {
-  // Get auto-completion suggestions
   getSuggestions: async (query) => {
     try {
       return await api.post("/api/auto-complete", { query });
     } catch (error) {
       console.error("Error getting auto-completion suggestions:", error);
+      throw error;
+    }
+  },
+};
+
+export const authApi = {
+  login: async (email, password) => {
+    try {
+      return await api.post("/auth/login", { email, password });
+    } catch (error) {
+      console.error("Login error:", error);
+      throw error;
+    }
+  },
+
+  signup: async (name, email, password) => {
+    try {
+      return await api.post("/auth/signup", { name, email, password });
+    } catch (error) {
+      console.error("Signup error:", error);
+      throw error;
+    }
+  },
+
+  logout: async () => {
+    try {
+      return await api.post("/auth/logout");
+    } catch (error) {
+      console.error("Logout error:", error);
       throw error;
     }
   },
