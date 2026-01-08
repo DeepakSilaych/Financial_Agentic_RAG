@@ -55,30 +55,20 @@ const LoadingMessage = () => (
 const EmptyState = () => (
   <div className="h-full flex flex-col items-center justify-center text-center overflow-y-auto py-8">
     <div className="max-w-3xl mx-auto px-4">
-      <div className="mb-8">
-        <img src={LogoWithoutText} alt="FinSight AI" className="w-24 h-24" />
-        <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-          Welcome to FinSight AI
-        </h2>
-        <p className="text-gray-600">
-          Your intelligent assistant for document analysis and insights
-        </p>
-      </div>
-
-      <div className="mb-8">
+      <div className="mb-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="aspect-video">
             <iframe
-              className="w-full h-full"
-              src="https://www.youtube.com/embed/FxBmS5VKLNU"
-              title="FinSight Demo"
+              className="w-full h-full max-w-2xl mx-auto"
+              src="https://www.youtube.com/embed/6lSDO5A-Eds?si=zH4ezxBzGlWp7KS1"
+              title="YouTube video player"
               frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
             />
           </div>
         </div>
-        <p className="text-gray-500 text-sm mt-2">Watch a quick demo</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 mb-8">
@@ -118,9 +108,8 @@ const EmptyState = () => (
 // Message Group Header Component
 const MessageGroupHeader = ({ isUser }) => (
   <div
-    className={`flex items-center gap-2 mb-2 ${
-      isUser ? "flex-row-reverse" : "flex-row"
-    }`}
+    className={`flex items-center gap-2 mb-2 ${isUser ? "flex-row-reverse" : "flex-row"
+      }`}
   >
     <Avatar isUser={isUser} />
     <span className="text-sm text-gray-500">{isUser ? "You" : "FinSight"}</span>
@@ -137,9 +126,8 @@ const MessageGroup = ({ group, onAnswerSubmit }) => (
   >
     <MessageGroupHeader isUser={group.isUser} />
     <div
-      className={`flex flex-col ${
-        group.isUser ? "items-end" : "items-start"
-      } space-y-1 max-w-[80%]`}
+      className={`flex flex-col ${group.isUser ? "items-end" : "items-start"
+        } space-y-1 max-w-[80%]`}
     >
       <div className="w-full bg-blue-200 rounded-lg shadow-sm overflow-hidden">
         {group.messages.map((message, messageIndex) => (
@@ -382,14 +370,14 @@ const ChatContainer = ({ chatId }) => {
                   (q) => q.id === data.question_id
                 )
                   ? {
-                      ...msg,
-                      intermediate_questions: msg.intermediate_questions.map(
-                        (q) =>
-                          q.id === data.question_id
-                            ? { ...q, answer: data.answer }
-                            : q
-                      ),
-                    }
+                    ...msg,
+                    intermediate_questions: msg.intermediate_questions.map(
+                      (q) =>
+                        q.id === data.question_id
+                          ? { ...q, answer: data.answer }
+                          : q
+                    ),
+                  }
                   : msg
               )
             );
@@ -461,11 +449,11 @@ const ChatContainer = ({ chatId }) => {
         prev.map((msg) =>
           msg.intermediate_questions && msg.intermediate_questions.length > 0
             ? {
-                ...msg,
-                intermediate_questions: msg.intermediate_questions.map((q) =>
-                  q.id === questionId ? { ...q, answer } : q
-                ),
-              }
+              ...msg,
+              intermediate_questions: msg.intermediate_questions.map((q) =>
+                q.id === questionId ? { ...q, answer } : q
+              ),
+            }
             : msg
         )
       );
