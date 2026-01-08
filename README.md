@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="pathway_client/src/assets/logo.svg" alt="FinSight" height="64" />
+  <img src="pathway_client/src/assets/logo-without-text.svg" alt="FinSight" height="64" />
 </p>
 
 <p align="center">
